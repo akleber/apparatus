@@ -1,0 +1,12 @@
+[Unit]
+Description=apparatus web application
+After=network.target
+
+[Service]
+User=andreas
+WorkingDirectory=/home/andreas/apparatus
+ExecStart=/home/andreas/apparatus/venv/bin/waitress-serve --threads=2 apparatus:app
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
