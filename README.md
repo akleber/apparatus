@@ -26,5 +26,7 @@ ln -s /home/andreas/ags/apparatus.service /etc/systemd/system/apparatus.service
 /verifyMail/<mailVerificationToken>
 * Thank you
 
-
 /dsgvoData/<dsgvoToken>
+
+/e/<tinylink> -> redirect
+/qr/<tinylink>
