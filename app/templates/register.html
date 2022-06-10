@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Apparatus</title>
+  <meta charset="utf-8">
+  <meta name="robots" content="index, follow">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="description" content="Apparatus event registration.">
+  <!--<link rel="shortcut icon" href="../img/favicons/favicon.ico">
+    <link rel="icon" href="../img/favicons/favicon.png">-->
+  <link rel="stylesheet" href="{{ url_for('static', filename='spectre.min.css') }}">
+  <!--<link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css">-->
+</head>
+
+<body>
+  <div
+    style="background-image: url('{{ url_for('static', filename='banner.jpg') }}'); height: 100px; background-position: center; background-repeat: no-repeat; background-size: cover; position: relative;">
+  </div>
+
+  <!-- 100% width container with max-width set to grid-lg (960px) -->
+  <div class="container grid-lg">
+    <H1 class="text-left mt-2">{{ title }}</H1>
+
+    <div>
+      <p>
+        Der Förderverein der Carl-Ulrich-Schule freut sich, Ihren Kindern in diesem Schuljahr endlich wieder
+        eine vielfältige AG-Auswahl anbieten zu können.
+      </p>
+      <p>
+        Bitte füllen Sie das Anmeldeformular sorgfältig und vollständig aus.
+        Nur unter Angabe Ihrer E-Mail-Adresse und einer Telefonnummer für Notfälle, unter der Sie zu den AG- Zeiten
+        erreichbar sind, sowie der Kenntnisnahme unserer AGB kann an Ihr Kind ein AG-Platz vergeben werden.
+        Sollten Sie keine E-Mail-Adresse haben, vermerken Sie dies bitte in dem entsprechenden Feld.
+      </p>
+      <p>
+        Fördervereinsmitglieder werden bei der Platzvergabe bevorzugt.
+        Sollten sich mehr Kinder für eine AG anmelden, als Plätze vorhanden sind, werden die Teilnehmer ausgelost. Bei
+        zu geringen Anmeldungen muss ein AG-Angebot gegebenenfalls ausfallen.
+      </p>
+      <p>
+        Alle Kinder, die für eine AG angenommen werden, erhalten in der KW 38 (20.-26.09.2021) eine
+        schriftliche Zusage über die Ranzenpost. Mit diesem Schreiben erhalten Sie auch alle weiteren
+        notwendigen, organisatorischen Informationen.<br />
+        Kinder, die keinen Platz bekommen haben, erhalten keine Post.<br />
+        Die AG-Angebote starten mit wenigen Ausnahmen in der KW 39 (27.9.-03.10.2021)
+      </p>
+      <p>
+        <b>Bitte geben Sie die Anmeldung bis 10. September 2021 über die Ranzenpost an uns zurück.</b>
+      </p>
+      <p>
+        Bei allen Fragen, Anregungen oder Problemen erreichen Sie uns unter: <a
+          href="">ag-foerderverein@cus-weiterstadt.de</a>
+      </p>
+    </div>
+
+    <div class="columns">
+      <div class="column col-9 col-xs-12">
+
+        <form class="form-horizontal">
+          <div class="form-group">
+            <div class="col-3 col-sm-12">
+              <label class="form-label" for="input-example-1">Vorname</label>
+            </div>
+            <div class="col-9 col-sm-12">
+              <input class="form-input" type="text" id="firstName" placeholder="Vorname">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-3 col-sm-12">
+              <label class="form-label" for="input-example-1">Nachname</label>
+            </div>
+            <div class="col-9 col-sm-12">
+              <input class="form-input" type="text" id="familyName" placeholder="Nachname">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-3 col-sm-12">
+              <label class="form-label" for="input-example-1">Klasse</label>
+            </div>
+            <div class="col-3 col-sm-12">
+              <input class="form-input" type="text" id="klasse" placeholder="Klasse">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-3 col-sm-12">
+              <label class="form-label" for="input-example-1">Telefonnummer</label>
+            </div>
+            <div class="col-9 col-sm-12">
+              <input class="form-input" type="text" id="telefonnummer" placeholder="Telefonnummer">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-3 col-sm-12">
+              <label class="form-label" for="input-example-1">eMail</label>
+            </div>
+            <div class="col-9 col-sm-12">
+              <input class="form-input" type="text" id="mail" placeholder="eMail">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-3 col-sm-12">
+              <label class="form-label" for="input-example-1">Ganztag</label>
+            </div>
+
+            <label class="form-checkbox form-inline">
+              <input type="checkbox"><i class="form-icon"></i> bis 14:30 Uhr
+            </label>
+            <label class="form-checkbox form-inline">
+              <input type="checkbox"><i class="form-icon"></i> bis 17:00 Uhr
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label class="form-switch">
+              <input type="checkbox">
+              <i class="form-icon"></i> Mitglied im Förderverein
+            </label>
+          </div>
+
+          <div class="form-group">
+            <div class="col-3 col-sm-12">
+              <label class="form-label" for="input-example-1">Name des Mitglieds</label>
+            </div>
+            <div class="col-9 col-sm-12">
+              <input class="form-input" type="text" id="foevMitgliedsname" placeholder="Name des Mitglieds">
+            </div>
+          </div>
+
+          <div class="p-2"></div>
+
+          <div class="form-group">
+            <label class="">
+              <u>AG-Wunsch (zwei Nennungen möglich)</u>
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label class="form-checkbox">
+              <input type="checkbox">
+              <i class="form-icon"></i> Schach AG&emsp;<span class="label"><a href="#">Infos</a></span>
+            </label>
+
+          </div>
+          <div class="form-group">
+            <label class="form-checkbox">
+              <input type="checkbox">
+              <i class="form-icon"></i> Basketball AG&emsp;<span class="label"><a href="#">Infos</a></span>
+            </label>
+          </div>
+
+          <div class="p-2"></div>
+
+          <div class="form-group">
+            <label class="form-switch">
+              <input type="checkbox">
+              <i class="form-icon"></i> Bei ausreichender Verfügbarkeit der Plätze möchte mein Kind an beiden Wunsch-AGs
+              teilnehmen.
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label class="form-switch">
+              <input type="checkbox">
+              <i class="form-icon"></i> <b>Mit der Weitergabe meiner Kontaktdaten an die AG-Leitung bin ich
+                einverstanden</b><br />
+              <span class="label label-warning">Nötig für die Anmeldung!</span>
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label class="form-switch">
+              <input type="checkbox">
+              <i class="form-icon"></i> <b>Ich habe die beiliegenden AGB gelesen und akzeptiert</b><br />
+              <span class="label label-warning">Nötig für die Anmeldung!</span>
+            </label>
+          </div>
+
+          <div class="p-2"></div>
+
+          <button class="btn btn-primary btn-block">Anmelden</button>
+
+          <div class="p-2"></div>
+          <div class="p-2"></div>
+          <div class="p-2"></div>
+
+        </form>
+
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="text-right text-small text-muted">
+      Apparatus by <a href="http://andreas.drosselweg7a.de">Andreas Kleber</a>
+    </div>
+
+    <div class="p-2"></div>
+
+
+  </div>
+
+</body>
+
+</html>

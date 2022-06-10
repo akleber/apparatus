@@ -22,11 +22,12 @@ ln -s /home/andreas/ags/apparatus.service /etc/systemd/system/apparatus.service
 
 /activityAdd
 /activityEdit/<activityID>
+/activityAbout/<activityID>
 
 /verifyMail/<mailVerificationToken>
 * Thank you
 
 /dsgvoData/<dsgvoToken>
 
-/e/<tinylink> -> redirect
+/t/<tinylink> -> redirect
 /qr/<tinylink>
