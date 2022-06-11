@@ -1,5 +1,5 @@
 from app import app, qrcode, get_db
-from flask import request, send_file, url_for, render_template, redirect
+from flask import request, send_file, url_for, render_template, redirect, make_response
 import markdown
 
 
@@ -32,3 +32,12 @@ def qr(tinylink):
 @app.route("/t/<tinylink>")
 def t(tinylink):
     return redirect(url_for("register", tinylink=tinylink))
+
+
+@app.route("/eventBanner/<eventID>/banner.jpg")
+def eventBanner(eventID):
+    cur = get_db().execute('SELECT bannerImage FROM event WHERE eventID = 1')
+    image = cur.fetchone()
+    response = make_response(image[0])
+    response.headers.set('Content-Type', 'image/jpeg')
+    return response
