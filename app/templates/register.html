@@ -15,8 +15,9 @@
 </head>
 
 <body>
+  <!-- todo: eventID-->
   <div
-    style="background-image: url('{{ url_for('eventBanner', eventID=1) }}'); height: 100px; background-position: center; background-repeat: no-repeat; background-size: cover; position: relative;">
+    style="background-image: url('{{ url_for('eventBanner', eventID=2) }}'); height: 100px; background-position: center; background-repeat: no-repeat; background-size: cover; position: relative;">
   </div>
 
   <!-- 100% width container with max-width set to grid-lg (960px) -->
@@ -24,7 +25,7 @@
     <H1 class="text-left mt-2">{{ title }}</H1>
 
     <div>
-        {{ description | safe  }}
+      {{ description | safe }}
     </div>
 
     <div class="columns">

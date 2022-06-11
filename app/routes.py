@@ -11,14 +11,19 @@ def index():
 
 @app.route("/register/<tinylink>", methods=["GET", "POST"])
 def register(tinylink):
-    title = "AG Angebot Förderverein CUS Schuljahr 2021/22"
     user = {"username": "Miguel"}
 
-    cur = get_db().execute('SELECT description FROM event WHERE eventID = 1')
-    rv = cur.fetchall()
-    cur.close()
-
-    return render_template("register.html", title=title, user=user, description=markdown.markdown(rv[0][0]))
+    cur = get_db().execute("SELECT title, description FROM event WHERE eventID = 1")
+    rv = cur.fetchone()
+    if rv:
+        title = rv[0]
+        description = rv[1]
+        return render_template(
+            "register.html",
+            title=title,
+            user=user,
+            description=markdown.markdown(description),
+        )
 
 
 @app.route("/qr/<tinylink>", methods=["GET"])
@@ -34,10 +39,17 @@ def t(tinylink):
     return redirect(url_for("register", tinylink=tinylink))
 
 
-@app.route("/eventBanner/<eventID>/banner.jpg")
+# todo: int -> uuid
+@app.route("/eventBanner/<int:eventID>/banner.jpg")
 def eventBanner(eventID):
-    cur = get_db().execute('SELECT bannerImage FROM event WHERE eventID = 1')
-    image = cur.fetchone()
-    response = make_response(image[0])
-    response.headers.set('Content-Type', 'image/jpeg')
-    return response
+    cur = get_db().execute(
+        "SELECT bannerImage FROM event WHERE eventID = ?", (eventID,)
+    )
+    rv = cur.fetchone()
+    if rv:
+        image = rv[0]
+        response = make_response(image)
+        response.headers.set("Content-Type", "image/jpeg")
+        return response
+    else:
+        return app.send_static_file("banner-fallback.jpg")
