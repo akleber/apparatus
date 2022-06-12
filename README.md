@@ -7,6 +7,8 @@ ln -s /home/andreas/ags/apparatus.service /etc/systemd/system/apparatus.service
 
 # Brainstorming
 
+* docx export of activies https://python-docx.readthedocs.io/en/latest/
+
 ## Pages
 
 /
@@ -16,7 +18,7 @@ ln -s /home/andreas/ags/apparatus.service /etc/systemd/system/apparatus.service
 /eventAdd
 /eventEdit/<eventID>
 /eventAttendees/<eventID>
-* xlsx
+* xlsx export
 /eventBanner/<eventID>/banner.jpg
 
 /eventView/<tinylink>
