@@ -7,7 +7,6 @@ ln -s /home/andreas/ags/apparatus.service /etc/systemd/system/apparatus.service
 
 # Brainstorming
 
-* docx export of activies https://python-docx.readthedocs.io/en/latest/
 
 ## Pages
 
@@ -16,16 +15,18 @@ ln -s /home/andreas/ags/apparatus.service /etc/systemd/system/apparatus.service
 * Create Event
 
 /eventAdd
-/eventEdit/<eventID>
-/eventAttendees/<eventID>
+/eventAdmin/<eventID>/edit
+/eventAdmin/<eventID>/attendees/xlsx
 * xlsx export
-/eventBanner/<eventID>/banner.jpg
 
-/eventView/<tinylink>
-/register/<eventID>
+/eventAdmin/<eventID>/activity/docx
+* docx export https://python-docx.readthedocs.io/en/latest/
+/eventAdmin/<eventID>/activity/add
+/eventAdmin/<eventID>/activity/<activityID>/edit
 
-/activityAdd
-/activityEdit/<activityID>
+/event/<eventID>/view
+/event/<eventID>/register
+/event/<eventID>/banner.jpg
 /activityAbout/<activityID>
 
 /verifyMail/<mailVerificationToken>
@@ -33,7 +34,10 @@ ln -s /home/andreas/ags/apparatus.service /etc/systemd/system/apparatus.service
 
 /dsgvoData/<dsgvoToken>
 
-/t/<tinylink> -> redirect
+/t/<tinylink>
+* redirect to eventID
+* rate limit
+
 /qr/<tinylink>
 
 
@@ -44,8 +48,9 @@ Fallback banner: http://dragdropsite.github.io/waterpipe.js/
 
 # Tests
 
-* http://127.0.0.1:5000/qr/abc123
-* http://127.0.0.1:5000/eventBanner/1/banner.jpg
-* http://127.0.0.1:5000/eventBanner/2/banner.jpg
-* http://127.0.0.1:5000/t/abc
+http://127.0.0.1:5000/qr/1
+http://127.0.0.1:5000/event/1/banner.jpg
+http://127.0.0.1:5000/event/2/banner.jpg
+http://127.0.0.1:5000/t/abc
+http://127.0.0.1:5000/event/1/view
 
