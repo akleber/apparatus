@@ -17,27 +17,27 @@
 <body>
   <!-- todo: eventID-->
   <div
-    style="background-image: url('{{ url_for('eventBanner', eventID=2) }}'); height: 100px; background-position: center; background-repeat: no-repeat; background-size: cover; position: relative;">
+    style="background-image: url('{{ url_for('eventBanner', eventID=event_data.eventID) }}'); height: 100px; background-position: center; background-repeat: no-repeat; background-size: cover; position: relative;">
   </div>
 
   <!-- 100% width container with max-width set to grid-lg (960px) -->
   <div class="container grid-lg">
-    <H1 class="text-left mt-2">{{ title }}</H1>
+    <H1 class="text-left mt-2">{{ event_data.title }}</H1>
 
     <div>
-      {{ description | safe }}
+      {{ event_data.description | safe }}
     </div>
 
     <div class="columns">
       <div class="column col-9 col-xs-12">
 
-        <form class="form-horizontal">
+        <form class="form-horizontal" action="{{ url_for('register', eventID=event_data.eventID) }}" method="POST">
           <div class="form-group">
             <div class="col-3 col-sm-12">
               <label class="form-label" for="input-example-1">Vorname</label>
             </div>
             <div class="col-9 col-sm-12">
-              <input class="form-input" type="text" id="firstName" placeholder="Vorname">
+              <input class="form-input" type="text" name="firstName" placeholder="Vorname">
             </div>
           </div>
 
@@ -46,7 +46,7 @@
               <label class="form-label" for="input-example-1">Nachname</label>
             </div>
             <div class="col-9 col-sm-12">
-              <input class="form-input" type="text" id="familyName" placeholder="Nachname">
+              <input class="form-input" type="text" name="familyName" placeholder="Nachname">
             </div>
           </div>
 
@@ -55,7 +55,7 @@
               <label class="form-label" for="input-example-1">Klasse</label>
             </div>
             <div class="col-3 col-sm-12">
-              <input class="form-input" type="text" id="klasse" placeholder="Klasse">
+              <input class="form-input" type="text" name="klasse" placeholder="Klasse">
             </div>
           </div>
 
@@ -64,7 +64,7 @@
               <label class="form-label" for="input-example-1">Telefonnummer</label>
             </div>
             <div class="col-9 col-sm-12">
-              <input class="form-input" type="text" id="telefonnummer" placeholder="Telefonnummer">
+              <input class="form-input" type="text" name="telefonnummer" placeholder="Telefonnummer">
             </div>
           </div>
 
@@ -73,7 +73,7 @@
               <label class="form-label" for="input-example-1">eMail</label>
             </div>
             <div class="col-9 col-sm-12">
-              <input class="form-input" type="text" id="mail" placeholder="eMail">
+              <input class="form-input" type="text" name="mail" placeholder="eMail">
             </div>
           </div>
 
@@ -83,16 +83,16 @@
             </div>
 
             <label class="form-checkbox form-inline">
-              <input type="checkbox"><i class="form-icon"></i> bis 14:30 Uhr
+              <input type="checkbox" name="ganztag" value="1"><i class="form-icon"></i> bis 14:30 Uhr
             </label>
             <label class="form-checkbox form-inline">
-              <input type="checkbox"><i class="form-icon"></i> bis 17:00 Uhr
+              <input type="checkbox" name="ganztag" value="2"><i class="form-icon"></i> bis 17:00 Uhr
             </label>
           </div>
 
           <div class="form-group">
             <label class="form-switch">
-              <input type="checkbox">
+              <input type="checkbox" name="foevMitglied">
               <i class="form-icon"></i> Mitglied im Förderverein
             </label>
           </div>
@@ -102,7 +102,7 @@
               <label class="form-label" for="input-example-1">Name des Mitglieds</label>
             </div>
             <div class="col-9 col-sm-12">
-              <input class="form-input" type="text" id="foevMitgliedsname" placeholder="Name des Mitglieds">
+              <input class="form-input" type="text" name="foevMitgliedsname" placeholder="Name des Mitglieds">
             </div>
           </div>
 
@@ -114,25 +114,21 @@
             </label>
           </div>
 
+          {% for a in activity_data %}
           <div class="form-group">
             <label class="form-checkbox">
-              <input type="checkbox">
-              <i class="form-icon"></i> Schach AG&emsp;<span class="label"><a href="#">Infos</a></span>
-            </label>
-
-          </div>
-          <div class="form-group">
-            <label class="form-checkbox">
-              <input type="checkbox">
-              <i class="form-icon"></i> Basketball AG&emsp;<span class="label"><a href="#">Infos</a></span>
+              <input type="checkbox" name="activity" value="{{ a['activityID'] }}">
+              <i class="form-icon"></i> {{ a['title'] }} &emsp;<span class="label"><a
+                  href="{{ url_for('activityAbout', activityID=a['activityID']) }}">Infos</a></span>
             </label>
           </div>
+          {% endfor %}
 
           <div class="p-2"></div>
 
           <div class="form-group">
             <label class="form-switch">
-              <input type="checkbox">
+              <input type="checkbox" name="beideAGs">
               <i class="form-icon"></i> Bei ausreichender Verfügbarkeit der Plätze möchte mein Kind an beiden Wunsch-AGs
               teilnehmen.
             </label>
@@ -140,7 +136,7 @@
 
           <div class="form-group">
             <label class="form-switch">
-              <input type="checkbox">
+              <input type="checkbox" required>
               <i class="form-icon"></i> <b>Mit der Weitergabe meiner Kontaktdaten an die AG-Leitung bin ich
                 einverstanden</b><br />
               <span class="label label-warning">Nötig für die Anmeldung!</span>
@@ -149,7 +145,7 @@
 
           <div class="form-group">
             <label class="form-switch">
-              <input type="checkbox">
+              <input type="checkbox" required>
               <i class="form-icon"></i> <b>Ich habe die beiliegenden AGB gelesen und akzeptiert</b><br />
               <span class="label label-warning">Nötig für die Anmeldung!</span>
             </label>

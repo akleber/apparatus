@@ -19,7 +19,8 @@ ln -s /home/andreas/ags/apparatus.service /etc/systemd/system/apparatus.service
 * xlsx
 /eventBanner/<eventID>/banner.jpg
 
-/register/<tinylink>
+/eventView/<tinylink>
+/register/<eventID>
 
 /activityAdd
 /activityEdit/<activityID>
@@ -37,4 +38,12 @@ ln -s /home/andreas/ags/apparatus.service /etc/systemd/system/apparatus.service
 # References
 
 Fallback banner: http://dragdropsite.github.io/waterpipe.js/
+
+
+# Tests
+
+* http://127.0.0.1:5000/qr/abc123
+* http://127.0.0.1:5000/eventBanner/1/banner.jpg
+* http://127.0.0.1:5000/eventBanner/2/banner.jpg
+* http://127.0.0.1:5000/t/abc
 
