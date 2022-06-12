@@ -32,6 +32,9 @@
       <div class="column col-9 col-xs-12">
 
         <form class="form-horizontal" action="{{ url_for('register', eventID=event_data.eventID) }}" method="POST">
+
+          <input type="hidden" name="eventID" value="{{ event_data.eventID }}">
+
           <div class="form-group">
             <div class="col-3 col-sm-12">
               <label class="form-label" for="input-example-1">Vorname</label>
