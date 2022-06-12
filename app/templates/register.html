@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'eventBase.html' %}
 
 {% block content %}
 
@@ -105,7 +105,7 @@
         <label class="form-checkbox">
           <input type="checkbox" name="activity" value="{{ a['activityID'] }}">
           <i class="form-icon"></i> {{ a['title'] }} &emsp;<span class="label"><a
-              href="{{ url_for('activityAbout', activityID=a['activityID']) }}">Infos</a></span>
+              href="{{ url_for('activityAbout', activityID=a['activityID']) }}" target="_blank">Infos</a></span>
         </label>
       </div>
       {% endfor %}

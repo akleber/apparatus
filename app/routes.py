@@ -57,11 +57,19 @@ def eventAdd():
 @app.route("/activityAbout/<activityID>", methods=["GET"])
 def activityAbout(activityID):
     cur = get_db().execute(
-        "SELECT title, description FROM activity WHERE activityID = ?", (activityID,)
+        "SELECT eventID, title, description FROM activity WHERE activityID = ?",
+        (activityID,),
     )
     rv = cur.fetchone()
     if not rv:
         return abort(404)
+
+    event_data = {}
+    event_data["eventID"] = rv[0]
+
+    activity_data = []
+    a = {"title": rv[1], "description": markdown.markdown(rv[2])}
+    activity_data.append(a)
 
     return render_template(
         "activityAbout.html", event_data=event_data, activity_data=activity_data
