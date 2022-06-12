@@ -1,186 +1,153 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-  <title>Apparatus</title>
-  <meta charset="utf-8">
-  <meta name="robots" content="none">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="description" content="Apparatus event registration.">
-  <!--<link rel="shortcut icon" href="../img/favicons/favicon.ico">
-    <link rel="icon" href="../img/favicons/favicon.png">-->
-  <link rel="stylesheet" href="{{ url_for('static', filename='spectre.min.css') }}">
-  <!--<link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css">-->
-</head>
+{% block content %}
 
-<body>
-  <!-- todo: eventID-->
-  <div
-    style="background-image: url('{{ url_for('eventBanner', eventID=event_data.eventID) }}'); height: 100px; background-position: center; background-repeat: no-repeat; background-size: cover; position: relative;">
-  </div>
+<H1 class="text-left mt-2">{{ event_data.title }}</H1>
 
-  <!-- 100% width container with max-width set to grid-lg (960px) -->
-  <div class="container grid-lg">
-    <H1 class="text-left mt-2">{{ event_data.title }}</H1>
+<div>
+  {{ event_data.description | safe }}
+</div>
 
-    <div>
-      {{ event_data.description | safe }}
-    </div>
+<div class="columns">
+  <div class="column col-9 col-xs-12">
 
-    <div class="columns">
-      <div class="column col-9 col-xs-12">
+    <form class="form-horizontal" action="{{ url_for('register', eventID=event_data.eventID) }}" method="POST">
 
-        <form class="form-horizontal" action="{{ url_for('register', eventID=event_data.eventID) }}" method="POST">
+      <input type="hidden" name="eventID" value="{{ event_data.eventID }}">
 
-          <input type="hidden" name="eventID" value="{{ event_data.eventID }}">
-
-          <div class="form-group">
-            <div class="col-3 col-sm-12">
-              <label class="form-label" for="input-example-1">Vorname</label>
-            </div>
-            <div class="col-9 col-sm-12">
-              <input class="form-input" type="text" name="firstName" placeholder="Vorname">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="col-3 col-sm-12">
-              <label class="form-label" for="input-example-1">Nachname</label>
-            </div>
-            <div class="col-9 col-sm-12">
-              <input class="form-input" type="text" name="familyName" placeholder="Nachname">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="col-3 col-sm-12">
-              <label class="form-label" for="input-example-1">Klasse</label>
-            </div>
-            <div class="col-3 col-sm-12">
-              <input class="form-input" type="text" name="klasse" placeholder="Klasse">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="col-3 col-sm-12">
-              <label class="form-label" for="input-example-1">Telefonnummer</label>
-            </div>
-            <div class="col-9 col-sm-12">
-              <input class="form-input" type="text" name="telefonnummer" placeholder="Telefonnummer">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="col-3 col-sm-12">
-              <label class="form-label" for="input-example-1">eMail</label>
-            </div>
-            <div class="col-9 col-sm-12">
-              <input class="form-input" type="text" name="mail" placeholder="eMail">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="col-3 col-sm-12">
-              <label class="form-label" for="input-example-1">Ganztag</label>
-            </div>
-
-            <label class="form-radio form-inline">
-              <input type="radio" name="ganztag" value="0" checked><i class="form-icon"></i> kein Teilnahme&emsp;&emsp;
-            </label>
-            <label class="form-radio form-inline">
-              <input type="radio" name="ganztag" value="1"><i class="form-icon"></i> bis 14:30 Uhr&emsp;&emsp;
-            </label>
-            <label class="form-radio form-inline">
-              <input type="radio" name="ganztag" value="2"><i class="form-icon"></i> bis 17:00 Uhr
-            </label>
-          </div>
-
-          <div class="form-group">
-            <label class="form-switch">
-              <input type="checkbox" name="foevMitglied">
-              <i class="form-icon"></i> Mitglied im Förderverein
-            </label>
-          </div>
-
-          <div class="form-group">
-            <div class="col-3 col-sm-12">
-              <label class="form-label" for="input-example-1">Name des Mitglieds</label>
-            </div>
-            <div class="col-9 col-sm-12">
-              <input class="form-input" type="text" name="foevMitgliedsname" placeholder="Name des Mitglieds">
-            </div>
-          </div>
-
-          <div class="p-2"></div>
-
-          <div class="form-group">
-            <label class="">
-              <u>AG-Wunsch (zwei Nennungen möglich)</u>
-            </label>
-          </div>
-
-          {% for a in activity_data %}
-          <div class="form-group">
-            <label class="form-checkbox">
-              <input type="checkbox" name="activity" value="{{ a['activityID'] }}">
-              <i class="form-icon"></i> {{ a['title'] }} &emsp;<span class="label"><a
-                  href="{{ url_for('activityAbout', activityID=a['activityID']) }}">Infos</a></span>
-            </label>
-          </div>
-          {% endfor %}
-
-          <div class="p-2"></div>
-
-          <div class="form-group">
-            <label class="form-switch">
-              <input type="checkbox" name="beideAGs">
-              <i class="form-icon"></i> Bei ausreichender Verfügbarkeit der Plätze möchte mein Kind an beiden Wunsch-AGs
-              teilnehmen.
-            </label>
-          </div>
-
-          <div class="form-group">
-            <label class="form-switch">
-              <input type="checkbox" required>
-              <i class="form-icon"></i> <b>Mit der Weitergabe meiner Kontaktdaten an die AG-Leitung bin ich
-                einverstanden</b><br />
-              <span class="text-small text-warning">Nötig für die Anmeldung!</span>
-            </label>
-          </div>
-
-          <div class="form-group">
-            <label class="form-switch">
-              <input type="checkbox" required>
-              <i class="form-icon"></i> <b>Ich habe die beiliegenden AGB gelesen und akzeptiert</b><br />
-              <span class="text-small text-warning">Nötig für die Anmeldung!</span>
-            </label>
-          </div>
-
-          <div class="p-2"></div>
-
-          <button class="btn btn-primary btn-block">Anmelden</button>
-
-          <div class="p-2"></div>
-          <div class="p-2"></div>
-          <div class="p-2"></div>
-
-        </form>
-
+      <div class="form-group">
+        <div class="col-3 col-sm-12">
+          <label class="form-label" for="input-example-1">Vorname</label>
+        </div>
+        <div class="col-9 col-sm-12">
+          <input class="form-input" type="text" name="firstName" placeholder="Vorname">
+        </div>
       </div>
-    </div>
 
-    <div class="divider"></div>
+      <div class="form-group">
+        <div class="col-3 col-sm-12">
+          <label class="form-label" for="input-example-1">Nachname</label>
+        </div>
+        <div class="col-9 col-sm-12">
+          <input class="form-input" type="text" name="familyName" placeholder="Nachname">
+        </div>
+      </div>
 
-    <div class="text-right text-small text-muted">
-      Apparatus by <a href="http://andreas.drosselweg7a.de">Andreas Kleber</a>
-    </div>
+      <div class="form-group">
+        <div class="col-3 col-sm-12">
+          <label class="form-label" for="input-example-1">Klasse</label>
+        </div>
+        <div class="col-3 col-sm-12">
+          <input class="form-input" type="text" name="klasse" placeholder="Klasse">
+        </div>
+      </div>
 
-    <div class="p-2"></div>
+      <div class="form-group">
+        <div class="col-3 col-sm-12">
+          <label class="form-label" for="input-example-1">Telefonnummer</label>
+        </div>
+        <div class="col-9 col-sm-12">
+          <input class="form-input" type="text" name="telefonnummer" placeholder="Telefonnummer">
+        </div>
+      </div>
 
+      <div class="form-group">
+        <div class="col-3 col-sm-12">
+          <label class="form-label" for="input-example-1">eMail</label>
+        </div>
+        <div class="col-9 col-sm-12">
+          <input class="form-input" type="text" name="mail" placeholder="eMail">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-3 col-sm-12">
+          <label class="form-label" for="input-example-1">Ganztag</label>
+        </div>
+
+        <label class="form-radio form-inline">
+          <input type="radio" name="ganztag" value="0" checked><i class="form-icon"></i> kein Teilnahme&emsp;&emsp;
+        </label>
+        <label class="form-radio form-inline">
+          <input type="radio" name="ganztag" value="1"><i class="form-icon"></i> bis 14:30 Uhr&emsp;&emsp;
+        </label>
+        <label class="form-radio form-inline">
+          <input type="radio" name="ganztag" value="2"><i class="form-icon"></i> bis 17:00 Uhr
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label class="form-switch">
+          <input type="checkbox" name="foevMitglied">
+          <i class="form-icon"></i> Mitglied im Förderverein
+        </label>
+      </div>
+
+      <div class="form-group">
+        <div class="col-3 col-sm-12">
+          <label class="form-label" for="input-example-1">Name des Mitglieds</label>
+        </div>
+        <div class="col-9 col-sm-12">
+          <input class="form-input" type="text" name="foevMitgliedsname" placeholder="Name des Mitglieds">
+        </div>
+      </div>
+
+      <div class="p-2"></div>
+
+      <div class="form-group">
+        <label class="">
+          <u>AG-Wunsch (zwei Nennungen möglich)</u>
+        </label>
+      </div>
+
+      {% for a in activity_data %}
+      <div class="form-group">
+        <label class="form-checkbox">
+          <input type="checkbox" name="activity" value="{{ a['activityID'] }}">
+          <i class="form-icon"></i> {{ a['title'] }} &emsp;<span class="label"><a
+              href="{{ url_for('activityAbout', activityID=a['activityID']) }}">Infos</a></span>
+        </label>
+      </div>
+      {% endfor %}
+
+      <div class="p-2"></div>
+
+      <div class="form-group">
+        <label class="form-switch">
+          <input type="checkbox" name="beideAGs">
+          <i class="form-icon"></i> Bei ausreichender Verfügbarkeit der Plätze möchte mein Kind an beiden Wunsch-AGs
+          teilnehmen.
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label class="form-switch">
+          <input type="checkbox" required>
+          <i class="form-icon"></i> <b>Mit der Weitergabe meiner Kontaktdaten an die AG-Leitung bin ich
+            einverstanden</b><br />
+          <span class="text-small text-warning">Nötig für die Anmeldung!</span>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label class="form-switch">
+          <input type="checkbox" required>
+          <i class="form-icon"></i> <b>Ich habe die beiliegenden AGB gelesen und akzeptiert</b><br />
+          <span class="text-small text-warning">Nötig für die Anmeldung!</span>
+        </label>
+      </div>
+
+      <div class="p-2"></div>
+
+      <button class="btn btn-primary btn-block">Anmelden</button>
+
+      <div class="p-2"></div>
+      <div class="p-2"></div>
+      <div class="p-2"></div>
+
+    </form>
 
   </div>
+</div>
 
-</body>
-
-</html>
+{% endblock %}

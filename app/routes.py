@@ -56,7 +56,16 @@ def eventAdd():
 
 @app.route("/activityAbout/<activityID>", methods=["GET"])
 def activityAbout(activityID):
-    return "activityAbout"
+    cur = get_db().execute(
+        "SELECT title, description FROM activity WHERE activityID = ?", (activityID,)
+    )
+    rv = cur.fetchone()
+    if not rv:
+        return abort(404)
+
+    return render_template(
+        "activityAbout.html", event_data=event_data, activity_data=activity_data
+    )
 
 
 @app.route("/gdpr/<gdprData>")
