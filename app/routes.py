@@ -14,7 +14,7 @@ import markdown
 @app.route("/")
 @app.route("/index")
 def index():
-    return "Hello, World!"
+    return render_template("index.html")
 
 
 @app.route("/event/<eventID>/view", methods=["GET"])
@@ -49,9 +49,19 @@ def register(eventID):
     return "registered: " + str(request.form)
 
 
+@app.route("/eventAdd")
+def eventAdd():
+    return "event add"
+
+
 @app.route("/activityAbout/<activityID>", methods=["GET"])
 def activityAbout(activityID):
     return "activityAbout"
+
+
+@app.route("/gdpr/<gdprData>")
+def gdpr(gdprData):
+    return "GDPR data"
 
 
 @app.route("/qr/<eventID>", methods=["GET"])
