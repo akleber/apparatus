@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS "attendee" (
 	"userID"	INTEGER NOT NULL,
 	"klasse"	TEXT,
 	"ganztag"	INTEGER,
-	"telefonummer"	TEXT,
+	"telefonnummer"	TEXT,
 	"foevMitgliedsname"	TEXT,
 	"beideAGs"	INTEGER,
 	"primaryActivityChoice"	INTEGER,
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS "user" (
 	"familyName"	TEXT,
 	"mail"	TEXT,
 	"mailVerificationToken"	TEXT,
-	"dsgvoToken"	TEXT,
+	"gdprToken"	TEXT,
 	PRIMARY KEY("userID" AUTOINCREMENT)
 );
 DROP TABLE IF EXISTS "event";

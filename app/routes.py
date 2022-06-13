@@ -9,6 +9,7 @@ from flask import (
     abort,
 )
 import markdown
+import uuid
 
 
 @app.route("/")
@@ -46,7 +47,37 @@ def eventView(eventID):
 
 @app.route("/event/<eventID>/register", methods=["POST"])
 def register(eventID):
-    return "registered: " + str(request.form)
+    data = {
+        "firstName": request.form.get("firstName"),
+        "familyName": request.form.get("familyName"),
+        "mail": request.form.get("mail"),
+        "mailVerificationToken": str(uuid.uuid4()),
+        "gdprToken": str(uuid.uuid4()),
+    }
+    sql = """INSERT INTO user (firstName, familyName, mail, mailVerificationToken, dsgvoToken) 
+             VALUES (:firstName, :familyName, :mail, :mailVerificationToken, :gdprToken) RETURNING userID;"""
+    cur = get_db().execute(sql, data)
+    userID = cur.lastrowid
+
+    activities = request.form.getlist("activity")
+    data = {
+        "userID": userID,
+        "klasse": request.form.get("klasse", ""),
+        "ganztag": request.form.get("ganztag", ""),
+        "telefonnummer": request.form.get("telefonnummer", ""),
+        "foevMitgliedsname": request.form.get("foevMitgliedsname", ""),
+        "beideAGs": request.form.get("beideAGs", ""),
+        "primaryActivityChoice": activities[0] if len(activities) >= 1 else "",
+        "secondaryActivityChoice": activities[1] if len(activities) == 2 else "",
+    }
+    # fix typo telefonummer
+    sql = """INSERT INTO attendee (userID, klasse, ganztag, telefonummer, 
+             foevMitgliedsname, beideAGs, primaryActivityChoice, secondaryActivityChoice) 
+             VALUES (:userID, :klasse, :ganztag, :telefonnummer, :foevMitgliedsname,
+             :beideAGs, :primaryActivityChoice, :secondaryActivityChoice);"""
+    cur = get_db().execute(sql, data)
+    get_db().commit()
+    return "registered"
 
 
 @app.route("/eventAdd")
