@@ -31,3 +31,4 @@ def close_connection(exception):
 
 
 from app import routes
+from app import routesEventAdmin

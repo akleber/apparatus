@@ -1,4 +1,3 @@
-import tempfile
 from app import app, qrcode, get_db, limiter
 from flask import (
     request,
@@ -8,11 +7,7 @@ from flask import (
     redirect,
     make_response,
     abort,
-    send_from_directory,
 )
-from pyexcel_xlsx import save_data
-from collections import OrderedDict
-from datetime import datetime
 import markdown
 import uuid
 
@@ -96,23 +91,6 @@ def register(eventID):
 
     return render_template(
         "registered.html", event_data=event_data, user_data=user_data
-    )
-
-
-@app.route("/eventAdmin/<eventID>/attendees/xlsx")
-def eventAdmin_attendees_xlsx(eventID):
-    timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-
-    tempfolder = app.root_path + "/temp"
-    filename = f"event_export_{timestamp}.xlsx"
-
-    data = OrderedDict()
-    data.update({"Sheet 1": [[1, 2, 3], [4, 5, 6]]})
-    data.update({"Sheet 2": [["row 1", "row 2", "row 3"]]})
-    save_data(tempfolder + "/" + filename, data)
-
-    return send_from_directory(
-        tempfolder, filename, as_attachment=True, cache_timeout=0
     )
 
 
