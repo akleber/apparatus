@@ -47,7 +47,7 @@ def eventView(eventID):
 
 @app.route("/event/<eventID>/register", methods=["POST"])
 def register(eventID):
-    data = {
+    user_data = {
         "firstName": request.form.get("firstName"),
         "familyName": request.form.get("familyName"),
         "mail": request.form.get("mail"),
@@ -56,11 +56,11 @@ def register(eventID):
     }
     sql = """INSERT INTO user (firstName, familyName, mail, mailVerificationToken, dsgvoToken) 
              VALUES (:firstName, :familyName, :mail, :mailVerificationToken, :gdprToken) RETURNING userID;"""
-    cur = get_db().execute(sql, data)
+    cur = get_db().execute(sql, user_data)
     userID = cur.lastrowid
 
     activities = request.form.getlist("activity")
-    data = {
+    attendee_data = {
         "userID": userID,
         "klasse": request.form.get("klasse", ""),
         "ganztag": request.form.get("ganztag", ""),
@@ -75,9 +75,23 @@ def register(eventID):
              foevMitgliedsname, beideAGs, primaryActivityChoice, secondaryActivityChoice) 
              VALUES (:userID, :klasse, :ganztag, :telefonnummer, :foevMitgliedsname,
              :beideAGs, :primaryActivityChoice, :secondaryActivityChoice);"""
-    cur = get_db().execute(sql, data)
+    cur = get_db().execute(sql, attendee_data)
     get_db().commit()
-    return "registered"
+
+    # get event title
+    cur = get_db().execute(
+        "SELECT title FROM event WHERE eventID = ?",
+        (eventID,),
+    )
+    rv = cur.fetchone()
+    if not rv:
+        return abort(404)
+
+    event_data = {"eventID": eventID, "title": rv[0]}
+
+    return render_template(
+        "registered.html", event_data=event_data, user_data=user_data
+    )
 
 
 @app.route("/eventAdd")
