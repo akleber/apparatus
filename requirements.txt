@@ -11,3 +11,4 @@ zipp==3.8.0
 flask-qrcode
 Markdown==3.3.7
 Flask-Limiter==2.4.6
+pyexcel_xlsx==0.6.0
