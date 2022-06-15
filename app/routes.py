@@ -1,7 +1,5 @@
-from app import app, qrcode, get_db, limiter
+from app import app, get_db, limiter
 from flask import (
-    request,
-    send_file,
     url_for,
     render_template,
     redirect,
@@ -124,19 +122,6 @@ def activityAbout(activityID):
 @app.route("/gdpr/<gdprData>")
 def gdpr(gdprData):
     return "GDPR data"
-
-
-@app.route("/qr/<eventID>", methods=["GET"])
-def qr(eventID):
-    cur = get_db().execute("SELECT tinyurl FROM event WHERE eventID = ?", (eventID,))
-    rv = cur.fetchone()
-    if not rv:
-        return abort(404)
-
-    url = url_for("t", tinylink=rv[0])
-    return send_file(
-        qrcode(request.url_root[:-1] + url, mode="raw"), mimetype="image/png"
-    )
 
 
 @app.route("/t/<tinylink>")

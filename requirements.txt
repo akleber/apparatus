@@ -12,3 +12,5 @@ flask-qrcode
 Markdown==3.3.7
 Flask-Limiter==2.4.6
 pyexcel_xlsx==0.6.0
+python-docx==0.8.11
+htmldocx==0.0.6

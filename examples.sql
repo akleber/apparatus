@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS "user" (
 DROP TABLE IF EXISTS "event";
 CREATE TABLE IF NOT EXISTS "event" (
 	"eventID"	INTEGER NOT NULL,
-	"tinyurl"	TEXT NOT NULL,
+	"tinylink"	TEXT NOT NULL,
 	"active"	INTEGER NOT NULL,
 	"title"	TEXT NOT NULL,
 	"description"	TEXT,

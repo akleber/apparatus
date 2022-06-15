@@ -5,9 +5,21 @@
 <H1 class="text-left mt-2">Verwaltung</H1>
 <H2 class="text-left mt-2">{{ event_data.title }}</H2>
 
-<div>
-    <a href="{{ url_for('eventAdmin_attendees_xlsx', eventID=event_data.eventID) }}">Download Excel Teilnehmerliste</a>
-</div>
+<p>
+    <a href="{{ url_for('eventAdmin_attendees_xlsx', eventID=event_data.eventID) }}">Download Excel
+        Teilnehmerliste</a>
+</p>
+
+<p>
+    <a href="{{ url_for('eventAdmin_activity_docx', eventID=event_data.eventID) }}">Download AG Übersicht</a>
+</p>
+
+<p>
+    QR Code mit der URL zur Anmeldung: {{ request.url_root[:-1] }}{{ url_for("t",
+    tinylink=event_data.tinyurl) }}
+</p>
+<img src="{{ url_for('qr', eventID=event_data.eventID) }}" />
+
 
 <div class="p-2"></div>
 

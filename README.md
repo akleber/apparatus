@@ -23,6 +23,7 @@ ln -s /home/andreas/ags/apparatus.service /etc/systemd/system/apparatus.service
 * docx export https://python-docx.readthedocs.io/en/latest/
 /eventAdmin/<eventID>/activity/add
 /eventAdmin/<eventID>/activity/<activityID>/edit
+/eventAdmin/<eventID>/qr
 
 /event/<eventID>/view
 /event/<eventID>/register
@@ -37,8 +38,6 @@ ln -s /home/andreas/ags/apparatus.service /etc/systemd/system/apparatus.service
 /t/<tinylink>
 * redirect to eventID
 * rate limit
-
-/qr/<tinylink>
 
 
 # References
