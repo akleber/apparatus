@@ -18,17 +18,14 @@ import sqlite3
 
 @app.route("/eventAdmin/<eventID>", methods=["GET"])
 def eventAdmin(eventID):
-    cur = get_db().execute(
-        "SELECT title, tinylink FROM event WHERE eventID = ?", (eventID,)
+    con = get_db()
+    cur = con.execute(
+        "SELECT eventID, title, tinylink FROM event WHERE eventID = ?", (eventID,)
     )
     rv = cur.fetchone()
     if not rv:
         return abort(404)
-
-    event_data = {}
-    event_data["eventID"] = eventID
-    event_data["title"] = rv[0]
-    event_data["tinylink"] = rv[1]
+    event_data = dict(rv)
 
     return render_template("eventAdmin.html", event_data=event_data)
 
@@ -40,7 +37,7 @@ def qr(eventID):
     if not rv:
         return abort(404)
 
-    url = url_for("t", tinylink=rv[0])
+    url = url_for("t", tinylink=rv["tinylink"])
     return send_file(
         qrcode(request.url_root[:-1] + url, mode="raw"), mimetype="image/png"
     )
@@ -48,21 +45,20 @@ def qr(eventID):
 
 @app.route("/eventAdmin/<eventID>/attendees/xlsx")
 def eventAdmin_attendees_xlsx(eventID):
-    excelrows = []
+    excel_rows = []
     con = get_db()
-    con.row_factory = sqlite3.Row
     cur = con.execute("SELECT * FROM eventAttendees WHERE eventID = ?", (eventID,))
 
-    col_names = []
+    excel_col_names = []
     for col_name in cur.description:
-        col_names.append(col_name[0])
-    excelrows.append(col_names)
+        excel_col_names.append(col_name[0])
+    excel_rows.append(excel_col_names)
 
     for row in cur:
-        excelrows.append(list(row))
+        excel_rows.append(list(row))
 
     data = OrderedDict()
-    data.update({"Sheet 1": excelrows})
+    data.update({"Sheet 1": excel_rows})
     # data.update({"Sheet 2": [["row 1", "row 2", "row 3"]]})
 
     io = BytesIO()
@@ -81,8 +77,7 @@ def eventAdmin_activity_docx(eventID):
     rv = cur.fetchone()
     if not rv:
         return abort(404)
-
-    eventTitle = rv[0]
+    eventTitle = rv["title"]
 
     cur = get_db().execute(
         "SELECT title, description FROM activity WHERE eventID = ?", (eventID,)
@@ -93,14 +88,13 @@ def eventAdmin_activity_docx(eventID):
 
     new_parser = HtmlToDocx()
 
-    for a in cur:
-        document.add_heading(a[0], level=1)
+    for activity in cur:
+        document.add_heading(activity["title"], level=1)
 
-        md = a[1]
+        md = activity["description"]
         html = markdown.markdown(md)
 
         new_parser.add_html_to_document(html, document)
-        # p = document.add_paragraph(a[1])
 
     file = BytesIO()
     document.save(file)
