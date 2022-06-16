@@ -1,13 +1,31 @@
-from app import app, get_db, limiter
+from app import app, get_db, limiter, mail
 from flask import (
     url_for,
     render_template,
     redirect,
     make_response,
     abort,
+    request,
 )
 import markdown
 import uuid
+from threading import Thread
+from flask_mail import Message
+
+
+def send_async_email(app, msg):
+    with app.app_context():
+        mail.send(msg)
+
+
+def send_email(subject, sender, recipients, text_body, html_body):
+    # todo fix mail
+    return
+
+    msg = Message(subject, sender=sender, recipients=recipients)
+    msg.body = text_body
+    msg.html = html_body
+    Thread(target=send_async_email, args=(app, msg)).start()
 
 
 @app.route("/")
@@ -52,7 +70,7 @@ def register(eventID):
         "mailVerificationToken": str(uuid.uuid4()),
         "gdprToken": str(uuid.uuid4()),
     }
-    sql = """INSERT INTO user (firstName, familyName, mail, mailVerificationToken, dsgvoToken) 
+    sql = """INSERT INTO user (firstName, familyName, mail, mailVerificationToken, gdprToken) 
              VALUES (:firstName, :familyName, :mail, :mailVerificationToken, :gdprToken) RETURNING userID;"""
     cur = get_db().execute(sql, user_data)
     userID = cur.lastrowid
@@ -68,8 +86,7 @@ def register(eventID):
         "primaryActivityChoice": activities[0] if len(activities) >= 1 else "",
         "secondaryActivityChoice": activities[1] if len(activities) == 2 else "",
     }
-    # fix typo telefonummer
-    sql = """INSERT INTO attendee (userID, klasse, ganztag, telefonummer, 
+    sql = """INSERT INTO attendee (userID, klasse, ganztag, telefonnummer, 
              foevMitgliedsname, beideAGs, primaryActivityChoice, secondaryActivityChoice) 
              VALUES (:userID, :klasse, :ganztag, :telefonnummer, :foevMitgliedsname,
              :beideAGs, :primaryActivityChoice, :secondaryActivityChoice);"""
@@ -87,8 +104,18 @@ def register(eventID):
 
     event_data = {"eventID": eventID, "title": rv[0]}
 
+    send_email(
+        "Anmeldebestätigung",
+        sender="no-reply@drosselweg7a.de",
+        recipients=[user_data["mail"]],
+        text_body=render_template(
+            "email_registered.txt", user_data=user_data, event_data=event_data
+        ),
+        html_body=None,
+    )
+
     return render_template(
-        "registered.html", event_data=event_data, user_data=user_data
+        "registered.html", user_data=user_data, event_data=event_data
     )
 
 
@@ -127,7 +154,7 @@ def gdpr(gdprData):
 @app.route("/t/<tinylink>")
 @limiter.limit("10/minute")
 def t(tinylink):
-    cur = get_db().execute("SELECT eventID FROM event WHERE tinyurl = ?", (tinylink,))
+    cur = get_db().execute("SELECT eventID FROM event WHERE tinylink = ?", (tinylink,))
     rv = cur.fetchone()
     if not rv:
         return abort(404)

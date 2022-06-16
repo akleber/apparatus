@@ -1,0 +1,7 @@
+Hallo {{ user_data.firstname }},
+
+Deine Anmeldung zu '{{ event_data.title }}' haben wir erhalten.
+Dies ist aber noch keine Bestätigung für einen Platz in der AG.
+Darüber wirst Du gesondert informiert.
+
+Viele Grüße vom AG Organisationsteam

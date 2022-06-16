@@ -18,7 +18,7 @@ from io import BytesIO
 @app.route("/eventAdmin/<eventID>", methods=["GET"])
 def eventAdmin(eventID):
     cur = get_db().execute(
-        "SELECT title, tinyurl FROM event WHERE eventID = ?", (eventID,)
+        "SELECT title, tinylink FROM event WHERE eventID = ?", (eventID,)
     )
     rv = cur.fetchone()
     if not rv:
@@ -27,9 +27,22 @@ def eventAdmin(eventID):
     event_data = {}
     event_data["eventID"] = eventID
     event_data["title"] = rv[0]
-    event_data["tinyurl"] = rv[1]
+    event_data["tinylink"] = rv[1]
 
     return render_template("eventAdmin.html", event_data=event_data)
+
+
+@app.route("/eventAdmin/<eventID>/qr", methods=["GET"])
+def qr(eventID):
+    cur = get_db().execute("SELECT tinylink FROM event WHERE eventID = ?", (eventID,))
+    rv = cur.fetchone()
+    if not rv:
+        return abort(404)
+
+    url = url_for("t", tinylink=rv[0])
+    return send_file(
+        qrcode(request.url_root[:-1] + url, mode="raw"), mimetype="image/png"
+    )
 
 
 @app.route("/eventAdmin/<eventID>/attendees/xlsx")
@@ -46,19 +59,6 @@ def eventAdmin_attendees_xlsx(eventID):
     filename = f"event_export_{timestamp}.xlsx"
 
     return send_file(io, as_attachment=True, download_name=filename, cache_timeout=0)
-
-
-@app.route("/eventAdmin/<eventID>/qr", methods=["GET"])
-def qr(eventID):
-    cur = get_db().execute("SELECT tinyurl FROM event WHERE eventID = ?", (eventID,))
-    rv = cur.fetchone()
-    if not rv:
-        return abort(404)
-
-    url = url_for("t", tinylink=rv[0])
-    return send_file(
-        qrcode(request.url_root[:-1] + url, mode="raw"), mimetype="image/png"
-    )
 
 
 @app.route("/eventAdmin/<eventID>/activity/docx", methods=["GET"])

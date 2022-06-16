@@ -2,12 +2,15 @@ from flask import Flask, g
 from flask_qrcode import QRcode
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from flask_mail import Mail
 import sqlite3
 
 
 DATABASE = "apparatus.db"
 
 app = Flask(__name__)
+
+mail = Mail(app)
 
 # https://marcoagner.github.io/Flask-QRcode/
 qrcode = QRcode(app)

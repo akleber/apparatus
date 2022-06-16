@@ -4,6 +4,10 @@
 
 ln -s /home/andreas/ags/apparatus.service /etc/systemd/system/apparatus.service
 
+# ToDos
+
+* Finish eventAdmin
+* Form validation
 
 # Brainstorming
 
