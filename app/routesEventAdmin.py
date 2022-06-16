@@ -13,6 +13,7 @@ from docx import Document
 from htmldocx import HtmlToDocx
 import markdown
 from io import BytesIO
+import sqlite3
 
 
 @app.route("/eventAdmin/<eventID>", methods=["GET"])
@@ -47,9 +48,22 @@ def qr(eventID):
 
 @app.route("/eventAdmin/<eventID>/attendees/xlsx")
 def eventAdmin_attendees_xlsx(eventID):
+    excelrows = []
+    con = get_db()
+    con.row_factory = sqlite3.Row
+    cur = con.execute("SELECT * FROM eventAttendees WHERE eventID = ?", (eventID,))
+
+    col_names = []
+    for col_name in cur.description:
+        col_names.append(col_name[0])
+    excelrows.append(col_names)
+
+    for row in cur:
+        excelrows.append(list(row))
+
     data = OrderedDict()
-    data.update({"Sheet 1": [[1, 2, 3], [4, 5, 6]]})
-    data.update({"Sheet 2": [["row 1", "row 2", "row 3"]]})
+    data.update({"Sheet 1": excelrows})
+    # data.update({"Sheet 2": [["row 1", "row 2", "row 3"]]})
 
     io = BytesIO()
     save_data(io, data)

@@ -49,33 +49,15 @@ CREATE TABLE IF NOT EXISTS "activity" (
 	"lastChangedDate"	TEXT NOT NULL,
 	PRIMARY KEY("activityID" AUTOINCREMENT)
 );
-INSERT INTO "attendee" ("attendeeID","userID","klasse","ganztag","telefonnummer","foevMitgliedsname","beideAGs","primaryActivityChoice","secondaryActivityChoice") VALUES (1,2,'3c',1,'+491778026865','Birgit Kleber',1,1,'');
-INSERT INTO "attendee" ("attendeeID","userID","klasse","ganztag","telefonnummer","foevMitgliedsname","beideAGs","primaryActivityChoice","secondaryActivityChoice") VALUES (2,3,'',0,'','','',1,2);
+INSERT INTO "attendee" ("attendeeID","userID","klasse","ganztag","telefonnummer","foevMitgliedsname","beideAGs","primaryActivityChoice","secondaryActivityChoice") VALUES (1,2,'3c',1,'+491771234567','Molly Weasley',1,1,'');
+INSERT INTO "attendee" ("attendeeID","userID","klasse","ganztag","telefonnummer","foevMitgliedsname","beideAGs","primaryActivityChoice","secondaryActivityChoice") VALUES (3,26,'4a',1,'','Aberforth','',2,'');
+INSERT INTO "attendee" ("attendeeID","userID","klasse","ganztag","telefonnummer","foevMitgliedsname","beideAGs","primaryActivityChoice","secondaryActivityChoice") VALUES (4,27,'1a',2,'','','beide AGs',1,4);
+INSERT INTO "attendee" ("attendeeID","userID","klasse","ganztag","telefonnummer","foevMitgliedsname","beideAGs","primaryActivityChoice","secondaryActivityChoice") VALUES (5,28,'1a',2,'','Arthur Weasley','',2,5);
 INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (1,'Andreas','Kleber','andreas@drosselweg7a.de','3876a788-0f34-4f54-90ed-43695e626c42','0e818cff-1f45-4af2-8e10-31c36cdfdfa0');
-INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (2,'Jakob','Kleber','jakob.kleber@icloud.com','785042b3-0fab-486e-9e0b-9be1e25e3358','b4d09810-8f6e-495a-bd88-06ab5c62d1b1');
-INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (3,'Andreas','Kleber','','a2ff3e40-4e88-4654-9a83-b5e257986fa2','197856f8-6d15-437d-bd02-ac4c4f57f73e');
-INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (4,'Andreas','Kleber','andreas@drosselweg7a.de','4b8f06e4-8c04-4c16-8f59-9aa4951f348f','aa6091b8-9915-4131-89a5-4af7a2090b66');
-INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (5,'Andreas','Kleber','andreas@drosselweg7a.de','9fdd8c2a-6c52-4380-b132-8c8f36974606','c05bd674-4498-4d15-8e65-abfb5f8893f2');
-INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (6,'Andreas','Kleber','andreas@drosselweg7a.de','f12d7fcf-b559-479d-a4f6-743dc587af41','53fd9ebd-a640-40e1-aed7-7838e206239b');
-INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (7,'Andreas','Kleber','andreas@drosselweg7a.de','61e97277-6cd8-49cd-9238-7c8c61e7c4c3','e4f8db27-f9e7-4561-9d4d-aade3f599c2f');
-INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (8,'Andreas','Kleber','andreas@drosselweg7a.de','db182359-66c0-470a-9b3a-c787a2a9e047','ffa24718-b258-49d7-8fa3-86ac9104f143');
-INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (9,'Andreas','Kleber','andreas@drosselweg7a.de','ff341574-f47c-4d9c-922d-85d98356484f','5d2d7f44-039e-4503-9d66-79811193e8e4');
-INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (10,'Andreas','Kleber','andreas@drosselweg7a.de','e3551b9e-1cb0-4ac6-bc66-d40adb704dfe','71b40ce8-1c07-45e6-b37e-366d97920897');
-INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (11,'Andreas','Kleber','andreas@drosselweg7a.de','4bc4c43d-ba30-4b04-972c-773817be2c59','6664d5ff-7544-47d0-b8f2-fe1b4ea5df2e');
-INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (12,'Andreas','Kleber','andreas@drosselweg7a.de','a5306567-2906-4c8f-a5a5-7f410ece35da','591f167e-5f19-4979-abcf-5c795d91dc7d');
-INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (13,'Andreas','Kleber','andreas@drosselweg7a.de','ba22e362-be6c-4172-8a79-1142146f059b','c03db3ad-572b-4a10-a32d-ff38ad2cd0d3');
-INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (14,'Andreas','Kleber','andreas@drosselweg7a.de','a933ac25-af51-4362-8684-e52ffe5b5944','3e4460d9-76c2-41e0-982c-6692d5c7f427');
-INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (15,'Andreas','Kleber','andreas@drosselweg7a.de','bc8432b9-17a8-49f0-b8d8-88eb883a1113','930432e6-e225-473e-a486-ecfd6ffb8dca');
-INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (16,'Andreas','Kleber','andreas@drosselweg7a.de','fbf9401b-59b7-4634-bf6e-065f77754705','181cf772-8624-4c92-8498-4433ed179de9');
-INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (17,'Andreas','Kleber','andreas@drosselweg7a.de','a9c109a2-4e3a-4ac1-b613-fa8060114265','7ef014e5-1919-4733-a4c8-25b20ce77dea');
-INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (18,'Andreas','Kleber','andreas@drosselweg7a.de','fee235cb-0d3b-4c9f-981a-81f774777a88','2c403b6d-9ac4-45a4-a279-f6393ffe4de6');
-INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (19,'Andreas','Kleber','andreas@drosselweg7a.de','ee36261c-5395-4a87-8acf-2c761a576400','86f236a0-7afe-468e-a71b-1463d10d4ea2');
-INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (20,'Andreas','Kleber','andreas@drosselweg7a.de','155b2db1-d8c2-45c8-82c4-a4083a9236da','6a19a1cc-5e22-46a1-841e-a39bedd713c7');
-INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (21,'Andreas','Kleber','andreas@drosselweg7a.de','b7931a54-2ba4-4af6-bfa2-50bd8764659f','6b538f46-94ca-4219-a231-62334f84a600');
-INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (22,'Andreas','Kleber','andreas@drosselweg7a.de','ca57ad4e-8a13-442a-8f46-46d449b09ab2','1f40f0e6-113f-41e7-a86e-4f8e1a413428');
-INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (23,'Andreas','Kleber','andreas@drosselweg7a.de','9a100dd2-8421-49a4-b861-cfe4989b71e6','6c14cc7a-929d-4950-9adb-9dc72b3302bd');
-INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (24,'Andreas','Kleber','andreas@drosselweg7a.de','1faa62b7-32c7-4a3b-97b9-f0225a7de487','373e4461-9add-4af0-8e2a-0c0d65069434');
-INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (25,'Andreas','Kleber','andreas@drosselweg7a.de','359aed15-fa00-4418-816f-290c09ddf545','9f255afa-cf44-47cb-8715-db14ef30661d');
+INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (2,'Hermione','Granger','hermione@example.com','785042b3-0fab-486e-9e0b-9be1e25e3358','b4d09810-8f6e-495a-bd88-06ab5c62d1b1');
+INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (26,'Albus','Dumbledore','albus@hogwarts.edu','df975939-9b63-4d14-a29c-e10205827a2b','dcbd1286-d8fb-4c9b-8e8d-70bcbf52a816');
+INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (27,'Harry','Potter','harry@underthestairs.co.uk','3db2030f-49b5-4fcb-8879-483299cce3ab','cb06a96e-d28f-475f-b4c3-620f011d54d6');
+INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (28,'Ronald','Weasley','ron@burrow.com','bc4d1840-9f16-47a9-8e00-5ae19c934946','0bbd2d01-e204-4fdc-8768-e877a29e126b');
 INSERT INTO "event" ("eventID","tinylink","active","title","description","creator","creationDate","lastChangedDate","registrationDeadline","adminToken","bannerImage") VALUES (1,'abc',1,'AG Angebot Förderverein CUS Schuljahr 2021/22','Der Förderverein der Carl-Ulrich-Schule freut sich, Ihren Kindern in diesem Schuljahr endlich wieder eine vielfältige AG-Auswahl anbieten zu können.
 
 Bitte füllen Sie das Anmeldeformular sorgfältig und vollständig aus. Nur unter Angabe Ihrer E-Mail-Adresse und einer Telefonnummer für Notfälle, unter der Sie zu den AG- Zeiten erreichbar sind, sowie der Kenntnisnahme unserer AGB kann an Ihr Kind ein AG-Platz vergeben werden. Sollten Sie keine E-Mail-Adresse haben, vermerken Sie dies bitte in dem entsprechenden Feld.
@@ -103,7 +85,73 @@ Kinder, die Brettspiele mögen, und gerne mit ihren Eltern, Geschwistern oder au
 Helmut Büchsel *ist 67 Jahre alt, verheiratet und hat zwei erwachsene Kinder (35 und 30 Jahre alt).  
 Er übt mehrere ehrenamtliche Tätigkeiten aus, ist aktives Mitglied des Schachclubs SC Schachmatt Wei- terstadt und als Mitglied eines Seniorensportvereins als aktiver Sportler sehr häufig bei Leichtathletiksportfesten unterwegs.*
 ',8,'2022-06-06 16:51:53','2022-06-06 16:55:53');
-INSERT INTO "activity" ("activityID","eventID","active","title","description","seats","creationDate","lastChangedDate") VALUES (2,1,1,'Basketball AG','Ganz viel Rennen',11,'2022-06-06 16:51:53','2022-06-06 16:55:53');
+INSERT INTO "activity" ("activityID","eventID","active","title","description","seats","creationDate","lastChangedDate") VALUES (2,1,1,'Schach 2 – mit Vorkenntnissen','2.-4. Klasse  
+Dienstags, 15.25 - 16.10 Uhr, Bürgerzentrum, OG  
+*Helmut Büchsel*
+---
+
+Zielgruppe sind Schulkinder der 2. bis 4. Klasse mit Schach-Vorkenntnissen. Dabei wird der Unterricht je nach Vorkenntnissen der Kinder individuell durchgeführt. Zwischendrin spielen wir jedoch auch im- mer mal wieder andere Varianten von Brettspielen, um den Unterricht etwas aufzulockern.
+
+Kinder, die Brettspiele mögen, und gerne mit ihren Eltern, Geschwistern oder auch anderen Kindern spielen, werden sich bei uns gut aufgehoben fühlen.
+
+Helmut Büchsel *ist 67 Jahre alt, verheiratet und hat zwei erwachsene Kinder (35 und 30 Jahre alt).  
+Er übt mehrere ehrenamtliche Tätigkeiten aus, ist aktives Mitglied des Schachclubs SC Schachmatt Wei- terstadt und als Mitglied eines Seniorensportvereins als aktiver Sportler sehr häufig bei Leichtathletiksportfesten unterwegs.*
+',8,'2022-06-06 16:51:53','2022-06-06 16:55:53');
+INSERT INTO "activity" ("activityID","eventID","active","title","description","seats","creationDate","lastChangedDate") VALUES (3,1,1,'Spanisch','3.&4. Klasse  
+Mittwochs, 15.15- 16.00 Uhr, Carl-Ulrich-Schule, Raum 116  
+*Luigia Scuccimarri*
+---
+
+Die AG ist für Kinder der 3. und 4. Klassen bestimmt, die Lust haben, die spanische Sprache kennenzu- lernen. Durch die Verwendung von Lernspielen, Liedern und selbst verfasstem Lehrmaterial werden die Kinder schrittweise lernen, sich auf Spanisch vorzustellen, zu zählen und einfache Sätze in Präsens zu
+sprechen. Diese AG ist ein Angebot für Anfänger und kein Ersatz für muttersprachlichen Unterricht.
+
+Luigia Scuccimarri *ist in Süditalien geboren und in Rom aufgewachsen. Sie hat bis zu ihrem Umzug nach Deutschland an einer italienischen Grundschule unterrichtet. Von 2004 bis 2010 lebte sie mit ihrer Fa-
+milie in Madrid, dort arbeitete sie mit spanischen Grundschulkindern.
+Luigia ist Mutter von zwei Kindern und hat eine mehrjährige Erfahrung im Unterrichten von Sprachen. Ihre Unterrichtsstunden haben immer südländisches Flair und eine entspannte und spielerische Stim-
+mung.*
+',8,'2022-06-06 16:51:53','2022-06-06 16:55:53');
+INSERT INTO "activity" ("activityID","eventID","active","title","description","seats","creationDate","lastChangedDate") VALUES (4,1,1,'Basketball','2.-4. Klasse  
+Donnerstags, 13.30 - 15.00 Uhr, Dr.-Horst-Schmidt Halle  
+*Matthias Dönges*
+
+> Achtung: Diese AG findet parallel zu einer Lernzeit statt.
+
+> Die Kinder werden zu Fuß an der CUS abgeholt.
+Bitte beachten Sie, dass die Kinder nach der AG NICHT an die CUS zurückbegleitet werden können!
+---
+
+Mit einer Menge Spaß gehen wir spielerisch alle Grundlagen der Sportart Basketball durch.
+Wir werden uns größtenteils mit Dribbeln, Passen und Werfen beschäftigen, aber auch kleine Wett- kämpfe sowie das Spielabzeichen Basketball stehen während der Schul-AG auf dem Programm.
+Auch Besuche unserer 2. Bundesliga Damen oder unserer 1. Herrenmannschaft werden Teil des Ange- bots sein. Geleitet wird diese AG von erfahrenen und qualifizierten Trainern unseres Nachwuchspro- gramms.
+
+Matthias Dönges *ist hauptamtlicher Trainer der SG Weiterstadt. Er studierte Sportwissenschaften in Darmstadt und ist seit 10 Jahren als sportlicher Leiter bei der SG Weiterstadt tätig. Aktuell leitet er das Teilzeitinternat, das sich mit der individuellen Betreuung von Jugendleistungssportlern auszeichnet. Darüber hinaus trainiert er das Bundesligaprogramm der U19-Jungen, als Co-Trainer die weibliche U12 und die ersten Herren in der Regionalliga.  
+Er ist Inhaber der DBB B-Lizenz und der Lizenz DOSB-Trainer B Leistungssport.*
+',8,'2022-06-06 16:51:53','2022-06-06 16:55:53');
+INSERT INTO "activity" ("activityID","eventID","active","title","description","seats","creationDate","lastChangedDate") VALUES (5,1,1,'Französisch','3.&4. Klasse  
+Montags, 07.45- 08.30 Uhr, Carl-Ulrich-Schule, Raum 117  
+*Carmen Purder*
+
+> Diese AG kann nur gewählt werden, wenn Ihr Kind an diesem Tag zur 2. Stunde Unterricht hat
+
+---
+
+Der Schwerpunkt dieser AG liegt auf dem Erwerb erster Sprach- und Kulturkenntnisse.
+Mit Hilfe altersbezogener Themen erlernen die Kinder spielerisch erste französische Wörter und kurze Sätze. In diesem Alter erfassen Kinder besonders schnell fremde Sprachkulturen und haben wenig Scheu, diese auch anzuwenden. Deshalb stehen im Mittelpunkt des Unterrichts das Sprechen und Verstehen, nicht das Schreiben.
+ 
+In der AG soll ein Grundwortschatz erworben und erste kleine Dialoge eingeübt werden. Wenn möglich, gibt es kleine Austauschaktivitäten mit der Grundschule Jean Jaurès und der Ecole Notre-Dame "les Oiseaux" in der Partnerstadt Verneuil-sur-Seine.
+
+Carmen Purder *bietet seit 13 Jahren die Französisch-AG an der Schloss-Schule Gräfenhausen und seit 10 Jahren an der Carl-Ulrich-Schule an. Sie möchte Ihre Kinder auf unser Nachbarland Frankreich neugierig.*
+ ',8,'2022-06-06 16:51:53','2022-06-06 16:55:53');
+INSERT INTO "activity" ("activityID","eventID","active","title","description","seats","creationDate","lastChangedDate") VALUES (6,1,1,'Handball','2.Klasse  
+Dienstags, 14.35 – 15.30 Uhr, Bürgerzentrum, Halle  
+*Jara Trenado Lopez*
+
+---
+
+Hier können alle Schülerinnen und Schüler teilnehmen, die Freude an Bewegung und im Umgang mit Bällen haben. Ihr habt die Möglichkeit, eine neue Sportart auszuprobieren und kennenzulernen. Im Vordergrund steht, gemeinsam Spaß zu haben, Erfolge zu teilen und natürlich der Umgang mit dem Ball. Dabei lernen wir spielerisch neue und bekannte Wurf-, Prell- und Fangtechniken.  
+Ich freue mich auf alle motivierten Schüler und Schülerinnen, die Lust auf Ballspiele und Bewegung haben.
+
+Jara Trenado Lopez *ist 21 Jahre alt, Spielerin und Trainerin bei der HSG WBW. Seit ihrem 3. Lebensjahr ist sie mit dem Handballsport verbunden und hat große Freude daran, ihr Wissen und ihre Begeisterung an Kinder weiterzugeben. Sie studiert Grundschullehramt Deutsch, Mathe und Sachunterricht an der Goethe Universität in Frankfurt am Main.*',8,'2022-06-06 16:51:53','2022-06-06 16:55:53');
 DROP VIEW IF EXISTS "dsgvoView";
 CREATE VIEW dsgvoView AS
 SELECT user.firstName , user.familyName , user.mail, user.mailVerificationToken , user.gdprToken, 
@@ -114,9 +162,9 @@ JOIN attendee ON user.userID = attendee.userID
 LEFT OUTER JOIN activity a1 ON attendee.primaryActivityChoice = a1.activityID
 LEFT OUTER JOIN activity a2 ON attendee.secondaryActivityChoice = a2.activityID;
 DROP VIEW IF EXISTS "eventAttendees";
-CREATE VIEW "eventAttendees" AS SELECT e.title, a.title, u.firstName, u.familyName
+CREATE VIEW "eventAttendees" AS SELECT e.eventID, a.title, u.firstName, u.familyName, u.mail, at.klasse
 FROM event as e
-JOIN activity a ON a.eventID = e.eventID
-LEFT OUTER JOIN attendee ae ON a.activityID = ae.primaryActivityChoice OR a.activityID = ae.secondaryActivityChoice
-LEFT OUTER JOIN user u ON ae.userID = u.userID;
+INNER JOIN activity a ON a.eventID = e.eventID
+INNER JOIN attendee at ON a.activityID = at.primaryActivityChoice OR a.activityID = at.secondaryActivityChoice
+INNER JOIN user u ON at.userID = u.userID;
 COMMIT;
