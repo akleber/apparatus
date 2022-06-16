@@ -6,11 +6,14 @@ from flask import (
     make_response,
     abort,
     request,
+    g,
+    current_app,
 )
 import markdown
 import uuid
 from threading import Thread
 from flask_mail import Message
+import time
 
 
 def send_async_email(app, msg):
@@ -26,6 +29,25 @@ def send_email(subject, sender, recipients, text_body, html_body):
     msg.body = text_body
     msg.html = html_body
     Thread(target=send_async_email, args=(app, msg)).start()
+
+
+# Request time logging. Uncomment the decorators
+# @app.before_request
+def logging_before():
+    # Store the start time for the request
+    g.start_time = time.perf_counter()
+
+
+# @app.after_request
+def logging_after(response):
+    # Get total time in milliseconds
+    total_time = time.perf_counter() - g.start_time
+    time_in_ms = int(total_time * 1000)
+    # Log the time taken for the endpoint
+    app.logger.info(
+        "%s ms %s %s %s", time_in_ms, request.method, request.path, dict(request.args)
+    )
+    return response
 
 
 @app.route("/")
