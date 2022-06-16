@@ -1,7 +1,6 @@
 from app import app, get_db, qrcode
 from flask import (
     render_template,
-    send_from_directory,
     abort,
     url_for,
     send_file,
@@ -13,6 +12,7 @@ from collections import OrderedDict
 from docx import Document
 from htmldocx import HtmlToDocx
 import markdown
+from io import BytesIO
 
 
 @app.route("/eventAdmin/<eventID>", methods=["GET"])
@@ -34,18 +34,18 @@ def eventAdmin(eventID):
 
 @app.route("/eventAdmin/<eventID>/attendees/xlsx")
 def eventAdmin_attendees_xlsx(eventID):
-    timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-    tempfolder = app.root_path + "/temp"
-    filename = f"event_export_{timestamp}.xlsx"
-
     data = OrderedDict()
     data.update({"Sheet 1": [[1, 2, 3], [4, 5, 6]]})
     data.update({"Sheet 2": [["row 1", "row 2", "row 3"]]})
-    save_data(tempfolder + "/" + filename, data)
 
-    return send_from_directory(
-        tempfolder, filename, as_attachment=True, cache_timeout=0
-    )
+    io = BytesIO()
+    save_data(io, data)
+    io.seek(0)
+
+    timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+    filename = f"event_export_{timestamp}.xlsx"
+
+    return send_file(io, as_attachment=True, download_name=filename, cache_timeout=0)
 
 
 @app.route("/eventAdmin/<eventID>/qr", methods=["GET"])
@@ -88,12 +88,11 @@ def eventAdmin_activity_docx(eventID):
         new_parser.add_html_to_document(html, document)
         # p = document.add_paragraph(a[1])
 
+    file = BytesIO()
+    document.save(file)
+    file.seek(0)
+
     timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-    tempfolder = app.root_path + "/temp"
     filename = f"activity_export_{timestamp}.docx"
 
-    document.save(tempfolder + "/" + filename)
-
-    return send_from_directory(
-        tempfolder, filename, as_attachment=True, cache_timeout=0
-    )
+    return send_file(file, as_attachment=True, download_name=filename, cache_timeout=0)
