@@ -152,8 +152,8 @@ Hier können alle Schülerinnen und Schüler teilnehmen, die Freude an Bewegung 
 Ich freue mich auf alle motivierten Schüler und Schülerinnen, die Lust auf Ballspiele und Bewegung haben.
 
 Jara Trenado Lopez *ist 21 Jahre alt, Spielerin und Trainerin bei der HSG WBW. Seit ihrem 3. Lebensjahr ist sie mit dem Handballsport verbunden und hat große Freude daran, ihr Wissen und ihre Begeisterung an Kinder weiterzugeben. Sie studiert Grundschullehramt Deutsch, Mathe und Sachunterricht an der Goethe Universität in Frankfurt am Main.*',8,'2022-06-06 16:51:53','2022-06-06 16:55:53');
-DROP VIEW IF EXISTS "dsgvoView";
-CREATE VIEW dsgvoView AS
+DROP VIEW IF EXISTS "gdprView";
+CREATE VIEW gdprView AS
 SELECT user.firstName , user.familyName , user.mail, user.mailVerificationToken , user.gdprToken, 
 attendee.klasse, attendee.ganztag, attendee.telefonnummer, attendee.foevMitgliedsname , attendee.beideAGs,
 a1.title AS title1, a2.title as title2

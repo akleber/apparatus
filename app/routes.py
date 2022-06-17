@@ -1,4 +1,5 @@
-from app import app, get_db, limiter, mail
+from app import app, get_db, limiter, mail, babel
+from app.fieldDescriptions import get_field_description
 from flask import (
     url_for,
     render_template,
@@ -14,6 +15,7 @@ import uuid
 from threading import Thread
 from flask_mail import Message
 import time
+from flask_babel import _
 
 
 def send_async_email(app, msg):
@@ -48,6 +50,12 @@ def logging_after(response):
         "%s ms %s %s %s", time_in_ms, request.method, request.path, dict(request.args)
     )
     return response
+
+
+@babel.localeselector
+def get_locale():
+    # return request.accept_languages.best_match(app.config['LANGUAGES'])
+    return "de"
 
 
 @app.route("/")
@@ -168,9 +176,22 @@ def activityAbout(activityID):
     )
 
 
-@app.route("/gdpr/<gdprData>")
-def gdpr(gdprData):
-    return "GDPR data"
+@app.route("/gdpr/<gdprToken>")
+def gdpr(gdprToken):
+    cur = get_db().execute("SELECT * FROM gdprView WHERE gdprToken = ?", (gdprToken,))
+    rv = cur.fetchone()
+    if not rv:
+        return abort(404)
+    gdpr_data = dict(rv)
+    print(gdpr_data)
+
+    gdpr_data_desc = {}
+    for key, value in gdpr_data.items():
+        gdpr_data_desc[get_field_description(key)] = value
+
+    event_data = {"eventID": 1}
+
+    return render_template("gdpr.html", gdpr_data=gdpr_data_desc, event_data=event_data)
 
 
 @app.route("/t/<tinylink>")

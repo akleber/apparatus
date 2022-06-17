@@ -18,8 +18,7 @@ import sqlite3
 
 @app.route("/eventAdmin/<eventID>", methods=["GET"])
 def eventAdmin(eventID):
-    con = get_db()
-    cur = con.execute(
+    cur = get_db().execute(
         "SELECT eventID, title, tinylink FROM event WHERE eventID = ?", (eventID,)
     )
     rv = cur.fetchone()
@@ -46,8 +45,7 @@ def qr(eventID):
 @app.route("/eventAdmin/<eventID>/attendees/xlsx")
 def eventAdmin_attendees_xlsx(eventID):
     excel_rows = []
-    con = get_db()
-    cur = con.execute("SELECT * FROM eventAttendees WHERE eventID = ?", (eventID,))
+    cur = get_db().execute("SELECT * FROM eventAttendees WHERE eventID = ?", (eventID,))
 
     excel_col_names = []
     for col_name in cur.description:

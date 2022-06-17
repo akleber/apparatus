@@ -1,0 +1,22 @@
+{% extends 'apparatusBase.html' %}
+
+{% block content %}
+
+<H1 class="text-left mt-2">DSGVO Auskunft</H1>
+
+<p>
+    Folgende Daten haben wir zu deinem User gespeichert:
+</p>
+
+<table class="table">
+
+    {% for key, value in gdpr_data.items() %}
+    <tr>
+        <td>{{ key }}</td>
+        <td>{{ value }}</td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+{% endblock %}
