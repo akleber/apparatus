@@ -23,11 +23,11 @@ def send_async_email(app, msg):
         mail.send(msg)
 
 
-def send_email(subject, sender, recipients, text_body, html_body):
+def send_email(subject, recipients, text_body, html_body):
     # todo fix mail
-    return
+    # return
 
-    msg = Message(subject, sender=sender, recipients=recipients)
+    msg = Message(subject, recipients=recipients)
     msg.body = text_body
     msg.html = html_body
     Thread(target=send_async_email, args=(app, msg)).start()
@@ -131,12 +131,13 @@ def register(eventID):
     rv = cur.fetchone()
     if not rv:
         return abort(404)
+    title = rv[0]
 
-    event_data = {"eventID": eventID, "title": rv[0]}
+    event_data = {"eventID": eventID, "title": title}
 
+    subject = f"Anmeldebestätigung für '{title}'"
     send_email(
-        "Anmeldebestätigung",
-        sender="no-reply@drosselweg7a.de",
+        subject,
         recipients=[user_data["mail"]],
         text_body=render_template(
             "email_registered.txt", user_data=user_data, event_data=event_data

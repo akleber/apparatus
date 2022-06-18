@@ -1,7 +1,10 @@
-Hallo {{ user_data.firstname }},
+Hallo {{ user_data.firstName }},
 
-Deine Anmeldung zu '{{ event_data.title }}' haben wir erhalten.
-Dies ist aber noch keine Bestätigung für einen Platz in der AG.
+Deine Anmeldung für '{{ event_data.title }}' haben wir erhalten.
+Dies ist aber noch keine Bestätigung für einen Teilnahme an der AG.
 Darüber wirst Du gesondert informiert.
+
+Unter {{ request.url_root[:-1] }}{{ url_for('gdpr', gdprToken=user_data.gdprToken) }}
+erhälst Du eine DSGVO konforme Auskunft über alle Daten, die wir über Dich gespeichert haben.
 
 Viele Grüße vom AG Organisationsteam
