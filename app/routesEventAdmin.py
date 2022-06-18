@@ -1,11 +1,5 @@
 from app import app, get_db, qrcode
-from flask import (
-    render_template,
-    abort,
-    url_for,
-    send_file,
-    request,
-)
+from flask import render_template, abort, url_for, send_file, request, redirect
 from datetime import datetime
 from pyexcel_xlsx import save_data
 from collections import OrderedDict
@@ -14,6 +8,7 @@ from htmldocx import HtmlToDocx
 import markdown
 from io import BytesIO
 import sqlite3
+import uuid
 
 
 @app.route("/eventAdmin/<eventID>", methods=["GET"])
@@ -40,6 +35,37 @@ def qr(eventID):
     return send_file(
         qrcode(request.url_root[:-1] + url, mode="raw"), mimetype="image/png"
     )
+
+
+@app.route("/eventAdmin/<eventID>/activity/add", methods=["GET"])
+def eventAdmin_activity_add(eventID):
+    event_data = {"eventID": eventID}
+    activity_data = {"activityID": str(uuid.uuid4()), "title": "", "description": ""}
+    return render_template(
+        "activityEdit.html", event_data=event_data, activity_data=activity_data
+    )
+
+
+@app.route("/eventAdmin/<eventID>/activity/edit/<activityID>", methods=["GET"])
+def eventAdmin_activity_edit(eventID, activityID):
+    event_data = {"eventID": eventID}
+
+    cur = get_db().execute("SELECT * FROM activity WHERE activityID = ?", (activityID,))
+    rv = cur.fetchone()
+    if not rv:
+        return abort(404)
+    activity_data = dict(rv)
+
+    print(activity_data)
+
+    return render_template(
+        "activityEdit.html", event_data=event_data, activity_data=activity_data
+    )
+
+
+@app.route("/eventAdmin/<eventID>/activity/save/<activityID>", methods=["POST"])
+def eventAdmin_activity_save(eventID, activityID):
+    return redirect(url_for("eventAdmin", eventID=eventID))
 
 
 @app.route("/eventAdmin/<eventID>/attendees/xlsx")

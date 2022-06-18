@@ -1,0 +1,42 @@
+{% extends 'eventBase.html' %}
+
+{% block content %}
+
+<form class="form-horizontal"
+    action="{{ url_for('eventAdmin_activity_save', eventID=event_data.eventID, activityID=activity_data.activityID) }}"
+    method="POST">
+
+    <div class="form-group">
+        <label class="form-label" for="input-example-1">Titel</label>
+        <input class="form-input" type="text" name="title" placeholder="Titel" value="{{ activity_data.title }}">
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="input-example-3">Beschreibung</label>
+        <textarea class="form-input" name="description" placeholder="Textarea" rows="15">{{ activity_data.description }}
+        </textarea>
+    </div>
+    <p>
+        *<i>Kursiv</i>* &emsp; **<b>Fett</b>** &emsp; --- Horizontale Linie,
+    </p>
+
+    <div class="form-group">
+        <label class="form-label" for="input-example-1">Plätze</label>
+        <input class="form-input" type="text" name="seats" placeholder="Titel" value="{{ activity_data.seats }}"
+            maxlength="4">
+    </div>
+
+    <input type="hidden" name="eventID" value="{{ event_data.eventID }}">
+    <input type="hidden" name="activityID" value="{{ activity_data.activityID }}">
+
+    <div class="p-2"></div>
+
+    <button class="btn btn-primary btn-block">Speichern</button>
+
+    <div class="p-2"></div>
+    <div class="p-2"></div>
+    <div class="p-2"></div>
+
+</form>
+
+{% endblock %}
