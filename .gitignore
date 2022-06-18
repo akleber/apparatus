@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Apparatus
+secrets.sh
+apparatus.db
