@@ -24,9 +24,6 @@ def send_async_email(app, msg):
 
 
 def send_email(subject, recipients, text_body, html_body):
-    # todo fix mail
-    # return
-
     msg = Message(subject, recipients=recipients)
     msg.body = text_body
     msg.html = html_body
@@ -150,7 +147,7 @@ def register(eventID):
     )
 
 
-# todo implement
+# TODO implement
 @app.route("/eventAdd")
 def eventAdd():
     return "event add"
@@ -178,7 +175,7 @@ def activityAbout(activityID):
     )
 
 
-# todo: implement
+# TODO: implement
 @app.route("/verifyMail/<mailVerificationToken>")
 def verifyMail(mailVerificationToken):
     return "not implemented yet"
@@ -213,7 +210,7 @@ def t(tinylink):
     return redirect(url_for("eventView", eventID=rv[0]))
 
 
-# todo: int -> uuid
+# TODO: int -> uuid
 @app.route("/event/<int:eventID>/banner.jpg")
 def eventBanner(eventID):
     cur = get_db().execute(
