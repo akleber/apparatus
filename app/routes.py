@@ -150,6 +150,7 @@ def register(eventID):
     )
 
 
+# todo implement
 @app.route("/eventAdd")
 def eventAdd():
     return "event add"
@@ -175,6 +176,12 @@ def activityAbout(activityID):
     return render_template(
         "activityAbout.html", event_data=event_data, activity_data=activity_data
     )
+
+
+# todo: implement
+@app.route("/verifyMail/<mailVerificationToken>")
+def verifyMail(mailVerificationToken):
+    return "not implemented yet"
 
 
 @app.route("/gdpr/<gdprToken>")
