@@ -9,7 +9,6 @@ ln -s /home/andreas/ags/apparatus.service /etc/systemd/system/apparatus.service
 * Finish eventAdmin
 * eventAdmin add admin token
 * Form validation
-* E-Mail
 * preference for selection, first choice, second choice?
 
 # Brainstorming

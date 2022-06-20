@@ -13,7 +13,10 @@
     <li>
         {% if a['active'] == 0 %}(Inaktiv) {% endif %}{{ a['title'] }} -
         <a
-            href="{{ url_for('eventAdmin_activity_edit', eventID=event_data.eventID, activityID=a['activityID']) }}">Bearbeiten</a>
+            href="{{ url_for('eventAdmin_activity_edit', eventID=event_data.eventID, activityID=a.activityID) }}">Bearbeiten</a>
+        -
+        <a
+            href="{{ url_for('eventAdmin_activity_delete', eventID=event_data.eventID, activityID=a.activityID) }}">Löschen</a>
     </li>
     {% endfor %}
 </ul>

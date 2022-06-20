@@ -12,10 +12,10 @@ import uuid
 from datetime import datetime
 
 
-@app.route("/eventAdmin/<eventID>", methods=["GET"])
+@app.route("/eventAdmin/<uuid:eventID>", methods=["GET"])
 def eventAdmin(eventID):
     cur = get_db().execute(
-        "SELECT eventID, title, tinylink FROM event WHERE eventID = ?", (eventID,)
+        "SELECT eventID, title, tinylink FROM event WHERE eventID = ?", (str(eventID),)
     )
     rv = cur.fetchone()
     if not rv:
@@ -23,7 +23,7 @@ def eventAdmin(eventID):
     event_data = dict(rv)
 
     activity_data = []
-    cur = get_db().execute("SELECT * FROM activity WHERE eventID = ?", (eventID,))
+    cur = get_db().execute("SELECT * FROM activity WHERE eventID = ?", (str(eventID),))
     for row in cur:
         activity_data.append(dict(row))
 
@@ -32,9 +32,11 @@ def eventAdmin(eventID):
     )
 
 
-@app.route("/eventAdmin/<eventID>/qr", methods=["GET"])
+@app.route("/eventAdmin/<uuid:eventID>/qr", methods=["GET"])
 def qr(eventID):
-    cur = get_db().execute("SELECT tinylink FROM event WHERE eventID = ?", (eventID,))
+    cur = get_db().execute(
+        "SELECT tinylink FROM event WHERE eventID = ?", (str(eventID),)
+    )
     rv = cur.fetchone()
     if not rv:
         return abort(404)
@@ -45,20 +47,28 @@ def qr(eventID):
     )
 
 
-@app.route("/eventAdmin/<eventID>/activity/add", methods=["GET"])
+@app.route("/eventAdmin/<uuid:eventID>/activity/add", methods=["GET"])
 def eventAdmin_activity_add(eventID):
-    event_data = {"eventID": eventID}
+    event_data = {"eventID": str(eventID)}
     activity_data = {"activityID": str(uuid.uuid4()), "title": "", "description": ""}
     return render_template(
         "activityEdit.html", event_data=event_data, activity_data=activity_data
     )
 
 
-@app.route("/eventAdmin/<eventID>/activity/edit/<activityID>", methods=["GET"])
+@app.route(
+    "/eventAdmin/<uuid:eventID>/activity/edit/<uuid:activityID>", methods=["GET"]
+)
 def eventAdmin_activity_edit(eventID, activityID):
-    event_data = {"eventID": eventID}
+    event_data = {"eventID": str(eventID)}
 
-    cur = get_db().execute("SELECT * FROM activity WHERE activityID = ?", (activityID,))
+    cur = get_db().execute(
+        "SELECT * FROM activity WHERE eventID = ? AND activityID = ?",
+        (
+            str(eventID),
+            str(activityID),
+        ),
+    )
     rv = cur.fetchone()
     if not rv:
         return abort(404)
@@ -71,41 +81,69 @@ def eventAdmin_activity_edit(eventID, activityID):
     )
 
 
-@app.route("/eventAdmin/<eventID>/activity/save/<activityID>", methods=["POST"])
+@app.route(
+    "/eventAdmin/<uuid:eventID>/activity/save/<uuid:activityID>", methods=["POST"]
+)
 def eventAdmin_activity_save(eventID, activityID):
+    now = datetime.utcnow()
+
     cur = get_db().execute(
         "SELECT * FROM activity WHERE activityID = ? and eventID = ?",
-        (activityID, eventID),
+        (str(activityID), str(eventID)),
     )
     rv = cur.fetchone()
     if rv:
-        print("update event")
-    else:
-        print("add event")
-        now = datetime.utcnow()
-
         user_data = {
-            "activityID": request.form.get("activityID"),
-            "eventID": request.form.get("eventID"),
-            "active": request.form.get("active"),
+            "activityID": str(activityID),
+            "eventID": str(eventID),
+            "active": request.form.get("active", "0"),
             "title": request.form.get("title"),
-            "descriptions": request.form.get("descriptions"),
-            "seats": request.form.get("seats"),
+            "description": request.form.get("description"),
+            "seats": request.form.get("seats", ""),
+            "lastChangedDate": now.isoformat(" "),
+        }
+        sql = """UPDATE activity SET active = :active, title = :title, description = :description, seats = :seats, lastChangedDate = :lastChangedDate 
+                 WHERE eventID = :eventID AND activityID = :activityID;"""
+
+    else:
+        user_data = {
+            "activityID": str(activityID),
+            "eventID": str(eventID),
+            "active": request.form.get("active", "0"),
+            "title": request.form.get("title"),
+            "description": request.form.get("description"),
+            "seats": request.form.get("seats", ""),
             "creationDate": now.isoformat(" "),
             "lastChangedDate": now.isoformat(" "),
         }
         sql = """INSERT INTO activity (activityID, eventID, active, title, description, seats, creationDate, lastChangedDate) 
-                 VALUES (:activityID, :eventID, :active, :title, :descriptions, :seats, :creationDate, :lastChangedDate);"""
+                 VALUES (:activityID, :eventID, :active, :title, :description, :seats, :creationDate, :lastChangedDate);"""
 
-    cur = get_db().execute(sql, user_data)
+    get_db().execute(sql, user_data)
+    get_db().commit()
 
     return redirect(url_for("eventAdmin", eventID=eventID))
 
 
-@app.route("/eventAdmin/<eventID>/attendees/xlsx")
+@app.route(
+    "/eventAdmin/<uuid:eventID>/activity/delete/<uuid:activityID>", methods=["GET"]
+)
+def eventAdmin_activity_delete(eventID, activityID):
+    get_db().execute(
+        "DELETE FROM activity WHERE activityID = ? and eventID = ?",
+        (str(activityID), str(eventID)),
+    )
+    get_db().commit()
+
+    return redirect(url_for("eventAdmin", eventID=eventID))
+
+
+@app.route("/eventAdmin/<uuid:eventID>/attendees/xlsx")
 def eventAdmin_attendees_xlsx(eventID):
     excel_rows = []
-    cur = get_db().execute("SELECT * FROM eventAttendees WHERE eventID = ?", (eventID,))
+    cur = get_db().execute(
+        "SELECT * FROM eventAttendees WHERE eventID = ?", (str(eventID),)
+    )
 
     excel_col_names = []
     for col_name in cur.description:
@@ -129,16 +167,16 @@ def eventAdmin_attendees_xlsx(eventID):
     return send_file(io, as_attachment=True, download_name=filename, cache_timeout=0)
 
 
-@app.route("/eventAdmin/<eventID>/activity/docx", methods=["GET"])
+@app.route("/eventAdmin/<uuid:eventID>/activity/docx", methods=["GET"])
 def eventAdmin_activity_docx(eventID):
-    cur = get_db().execute("SELECT title FROM event WHERE eventID = ?", (eventID,))
+    cur = get_db().execute("SELECT title FROM event WHERE eventID = ?", (str(eventID),))
     rv = cur.fetchone()
     if not rv:
         return abort(404)
     eventTitle = rv["title"]
 
     cur = get_db().execute(
-        "SELECT title, description FROM activity WHERE eventID = ?", (eventID,)
+        "SELECT title, description FROM activity WHERE eventID = ?", (str(eventID),)
     )
 
     document = Document()

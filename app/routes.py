@@ -61,24 +61,24 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/event/<eventID>/view", methods=["GET"])
+@app.route("/event/<uuid:eventID>/view", methods=["GET"])
 def eventView(eventID):
     cur = get_db().execute(
-        "SELECT title, description FROM event WHERE eventID = ?", (eventID,)
+        "SELECT title, description FROM event WHERE eventID = ?", (str(eventID),)
     )
     rv = cur.fetchone()
     if not rv:
         return abort(404)
 
     event_data = {}
-    event_data["eventID"] = eventID
+    event_data["eventID"] = str(eventID)
     event_data["title"] = rv[0]
     event_data["description"] = markdown.markdown(rv[1])
 
     activity_data = []
     cur = get_db().execute(
         "SELECT activityID, title FROM activity WHERE eventID = ? and active = 1",
-        (eventID,),
+        (str(eventID),),
     )
     for data in cur:
         a = {"activityID": data[0], "title": data[1]}
@@ -89,7 +89,7 @@ def eventView(eventID):
     )
 
 
-@app.route("/event/<eventID>/register", methods=["POST"])
+@app.route("/event/<uuid:eventID>/register", methods=["POST"])
 def register(eventID):
     user_data = {
         "firstName": request.form.get("firstName"),
@@ -105,6 +105,7 @@ def register(eventID):
 
     activities = request.form.getlist("activity")
     attendee_data = {
+        "attendeeID": str(uuid.uuid4()),
         "userID": userID,
         "klasse": request.form.get("klasse", ""),
         "ganztag": request.form.get("ganztag", ""),
@@ -114,24 +115,24 @@ def register(eventID):
         "primaryActivityChoice": activities[0] if len(activities) >= 1 else "",
         "secondaryActivityChoice": activities[1] if len(activities) == 2 else "",
     }
-    sql = """INSERT INTO attendee (userID, klasse, ganztag, telefonnummer, 
+    sql = """INSERT INTO attendee (attendeeID, userID, klasse, ganztag, telefonnummer, 
              foevMitgliedsname, beideAGs, primaryActivityChoice, secondaryActivityChoice) 
-             VALUES (:userID, :klasse, :ganztag, :telefonnummer, :foevMitgliedsname,
+             VALUES (:attendeeID, :userID, :klasse, :ganztag, :telefonnummer, :foevMitgliedsname,
              :beideAGs, :primaryActivityChoice, :secondaryActivityChoice);"""
-    cur = get_db().execute(sql, attendee_data)
+    get_db().execute(sql, attendee_data)
     get_db().commit()
 
     # get event title
     cur = get_db().execute(
         "SELECT title FROM event WHERE eventID = ?",
-        (eventID,),
+        (str(eventID),),
     )
     rv = cur.fetchone()
     if not rv:
         return abort(404)
     title = rv[0]
 
-    event_data = {"eventID": eventID, "title": title}
+    event_data = {"eventID": str(eventID), "title": title}
 
     subject = f"Anmeldebestätigung für '{title}'"
     send_email(
@@ -195,7 +196,8 @@ def gdpr(gdprToken):
     for key, value in gdpr_data.items():
         gdpr_data_desc[get_field_description(key)] = value
 
-    event_data = {"eventID": 1}
+    # TODO fix eventID
+    event_data = {"eventID": "a526e980-a014-41cc-b03d-33d09c09a16a"}
 
     return render_template("gdpr.html", gdpr_data=gdpr_data_desc, event_data=event_data)
 
@@ -211,11 +213,10 @@ def t(tinylink):
     return redirect(url_for("eventView", eventID=rv[0]))
 
 
-# TODO: int -> uuid
-@app.route("/event/<int:eventID>/banner.jpg")
+@app.route("/event/<uuid:eventID>/banner.jpg")
 def eventBanner(eventID):
     cur = get_db().execute(
-        "SELECT bannerImage FROM event WHERE eventID = ?", (eventID,)
+        "SELECT bannerImage FROM event WHERE eventID = ?", (str(eventID),)
     )
     rv = cur.fetchone()
     if not rv:
