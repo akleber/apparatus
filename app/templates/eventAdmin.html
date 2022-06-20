@@ -6,12 +6,24 @@
 <H2 class="text-left mt-2">{{ event_data.title }}</H2>
 
 <p>
-    <a href="{{ url_for('eventAdmin_activity_add', eventID=event_data.eventID) }}">AG hinzufügen</a>
+    Liste der AGs:
 </p>
+<ul>
+    {% for a in activity_data %}
+    <li>
+        {% if a['active'] == 0 %}(Inaktiv) {% endif %}{{ a['title'] }} -
+        <a
+            href="{{ url_for('eventAdmin_activity_edit', eventID=event_data.eventID, activityID=a['activityID']) }}">Bearbeiten</a>
+    </li>
+    {% endfor %}
+</ul>
 
 <p>
-    <a href="{{ url_for('eventAdmin_activity_edit', eventID=event_data.eventID, activityID=6) }}">AG bearbeiten</a>
+    <a href="{{ url_for('eventAdmin_activity_add', eventID=event_data.eventID) }}"><i class="icon icon-plus"></i> + AG
+        hinzufügen</a>
 </p>
+
+<div class="divider"></div>
 
 <p>
     <a href="{{ url_for('eventAdmin_attendees_xlsx', eventID=event_data.eventID) }}">Download Microsoft Excel

@@ -21,7 +21,14 @@ def eventAdmin(eventID):
         return abort(404)
     event_data = dict(rv)
 
-    return render_template("eventAdmin.html", event_data=event_data)
+    activity_data = []
+    cur = get_db().execute("SELECT * FROM activity WHERE eventID = ?", (eventID,))
+    for row in cur:
+        activity_data.append(dict(row))
+
+    return render_template(
+        "eventAdmin.html", event_data=event_data, activity_data=activity_data
+    )
 
 
 @app.route("/eventAdmin/<eventID>/qr", methods=["GET"])
@@ -65,6 +72,16 @@ def eventAdmin_activity_edit(eventID, activityID):
 
 @app.route("/eventAdmin/<eventID>/activity/save/<activityID>", methods=["POST"])
 def eventAdmin_activity_save(eventID, activityID):
+    cur = get_db().execute(
+        "SELECT * FROM activity WHERE activityID = ? and eventID = ?",
+        (activityID, eventID),
+    )
+    rv = cur.fetchone()
+    if not rv:
+        print("add event")
+    else:
+        print("update event")
+
     return redirect(url_for("eventAdmin", eventID=eventID))
 
 

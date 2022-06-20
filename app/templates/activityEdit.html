@@ -13,7 +13,7 @@
 
     <div class="form-group">
         <label class="form-label" for="input-example-3">Beschreibung</label>
-        <textarea class="form-input" name="description" placeholder="Textarea" rows="15">{{ activity_data.description }}
+        <textarea class="form-input" name="description" rows="15">{{ activity_data.description }}
         </textarea>
     </div>
     <p>
@@ -24,6 +24,13 @@
         <label class="form-label" for="input-example-1">Plätze</label>
         <input class="form-input" type="text" name="seats" placeholder="Titel" value="{{ activity_data.seats }}"
             maxlength="4">
+    </div>
+
+    <div class="form-group">
+        <label class="form-switch">
+            <input type="checkbox" name="active" value="1" checked>
+            <i class="form-icon"></i> Aktiv
+        </label>
     </div>
 
     <input type="hidden" name="eventID" value="{{ event_data.eventID }}">

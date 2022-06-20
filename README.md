@@ -9,6 +9,8 @@ ln -s /home/andreas/ags/apparatus.service /etc/systemd/system/apparatus.service
 * Finish eventAdmin
 * eventAdmin add admin token
 * Form validation
+* E-Mail
+* preference for selection, first choice, second choice?
 
 # Brainstorming
 
@@ -27,7 +29,7 @@ ln -s /home/andreas/ags/apparatus.service /etc/systemd/system/apparatus.service
 /eventAdmin/<eventID>/activity/docx
 * docx export https://python-docx.readthedocs.io/en/latest/
 /eventAdmin/<eventID>/activity/add
-/eventAdmin/<eventID>/activity/<activityID>/edit
+/eventAdmin/<eventID>/activity/edit/<activityID>
 /eventAdmin/<eventID>/qr
 
 /event/<eventID>/view

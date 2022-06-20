@@ -77,7 +77,8 @@ def eventView(eventID):
 
     activity_data = []
     cur = get_db().execute(
-        "SELECT activityID, title FROM activity WHERE eventID = ?", (eventID,)
+        "SELECT activityID, title FROM activity WHERE eventID = ? and active = 1",
+        (eventID,),
     )
     for data in cur:
         a = {"activityID": data[0], "title": data[1]}
