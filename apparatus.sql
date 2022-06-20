@@ -49,10 +49,10 @@ CREATE TABLE IF NOT EXISTS "activity" (
 	"lastChangedDate"	TEXT NOT NULL,
 	PRIMARY KEY("activityID")
 );
-INSERT INTO "attendee" ("attendeeID","userID","klasse","ganztag","telefonnummer","foevMitgliedsname","beideAGs","primaryActivityChoice","secondaryActivityChoice") VALUES ('3366e3b7-01a0-4ca8-b223-c83a57053c02',2,'3c',1,'+491771234567','Molly Weasley',1,1,'');
-INSERT INTO "attendee" ("attendeeID","userID","klasse","ganztag","telefonnummer","foevMitgliedsname","beideAGs","primaryActivityChoice","secondaryActivityChoice") VALUES ('454b00ab-4fd1-4b24-b7e9-490171a88587',26,'4a',1,'','Aberforth','',2,'');
-INSERT INTO "attendee" ("attendeeID","userID","klasse","ganztag","telefonnummer","foevMitgliedsname","beideAGs","primaryActivityChoice","secondaryActivityChoice") VALUES ('520b27e2-cdcf-44ff-a333-d16acaff722d',27,'1a',2,'','','beide AGs',1,4);
-INSERT INTO "attendee" ("attendeeID","userID","klasse","ganztag","telefonnummer","foevMitgliedsname","beideAGs","primaryActivityChoice","secondaryActivityChoice") VALUES ('028c28f3-803a-4d41-b068-a3f1afba996e',28,'1a',2,'','Arthur Weasley','',2,5);
+INSERT INTO "attendee" ("attendeeID","userID","klasse","ganztag","telefonnummer","foevMitgliedsname","beideAGs","primaryActivityChoice","secondaryActivityChoice") VALUES ('3366e3b7-01a0-4ca8-b223-c83a57053c02',2,'3c',1,'+491771234567','Molly Weasley',1,'c8b0715b-17ab-4b96-9ade-be2bb1eee9d6','');
+INSERT INTO "attendee" ("attendeeID","userID","klasse","ganztag","telefonnummer","foevMitgliedsname","beideAGs","primaryActivityChoice","secondaryActivityChoice") VALUES ('454b00ab-4fd1-4b24-b7e9-490171a88587',26,'4a',1,'','Aberforth','','5d723200-01c1-4a2a-bb24-4f0ac3bcc3a5','');
+INSERT INTO "attendee" ("attendeeID","userID","klasse","ganztag","telefonnummer","foevMitgliedsname","beideAGs","primaryActivityChoice","secondaryActivityChoice") VALUES ('520b27e2-cdcf-44ff-a333-d16acaff722d',27,'1a',2,'','','beide AGs','c8b0715b-17ab-4b96-9ade-be2bb1eee9d6','f49c6e1e-ac64-4dc6-b1db-b4cd0f2d349c');
+INSERT INTO "attendee" ("attendeeID","userID","klasse","ganztag","telefonnummer","foevMitgliedsname","beideAGs","primaryActivityChoice","secondaryActivityChoice") VALUES ('028c28f3-803a-4d41-b068-a3f1afba996e',28,'1a',2,'','Arthur Weasley','','5d723200-01c1-4a2a-bb24-4f0ac3bcc3a5','206008b4-d85d-4b9f-8dc6-c9cb22d0dcc3');
 INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (1,'Andreas','Kleber','andreas@drosselweg7a.de','3876a788-0f34-4f54-90ed-43695e626c42','0e818cff-1f45-4af2-8e10-31c36cdfdfa0');
 INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (2,'Hermione','Granger','hermione@example.com','785042b3-0fab-486e-9e0b-9be1e25e3358','b4d09810-8f6e-495a-bd88-06ab5c62d1b1');
 INSERT INTO "user" ("userID","firstName","familyName","mail","mailVerificationToken","gdprToken") VALUES (26,'Albus','Dumbledore','albus@hogwarts.edu','df975939-9b63-4d14-a29c-e10205827a2b','dcbd1286-d8fb-4c9b-8e8d-70bcbf52a816');
@@ -151,7 +151,7 @@ Dienstags, 14.35 – 15.30 Uhr, Bürgerzentrum, Halle
 Hier können alle Schülerinnen und Schüler teilnehmen, die Freude an Bewegung und im Umgang mit Bällen haben. Ihr habt die Möglichkeit, eine neue Sportart auszuprobieren und kennenzulernen. Im Vordergrund steht, gemeinsam Spaß zu haben, Erfolge zu teilen und natürlich der Umgang mit dem Ball. Dabei lernen wir spielerisch neue und bekannte Wurf-, Prell- und Fangtechniken.  
 Ich freue mich auf alle motivierten Schüler und Schülerinnen, die Lust auf Ballspiele und Bewegung haben.
 
-Jara Trenado Lopez *ist 21 Jahre alt, Spielerin und Trainerin bei der HSG WBW. Seit ihrem 3. Lebensjahr ist sie mit dem Handballsport verbunden und hat große Freude daran, ihr Wissen und ihre Begeisterung an Kinder weiterzugeben. Sie studiert Grundschullehramt Deutsch, Mathe und Sachunterricht an der Goethe Universität in Frankfurt am Main.*',8,'2022-06-06 16:51:53','2022-06-06 16:55:53');
+Jara Trenado Lopez *ist 21 Jahre alt, Spielerin und Trainerin bei der HSG WBW. Seit ihrem 3. Lebensjahr ist sie mit dem Handballsport verbunden und hat große Freude daran, ihr Wissen und ihre Begeisterung an Kinder weiterzugeben. Sie studiert Grundschullehramt Deutsch, Mathe und Sachunterricht an der Goethe Universität in Frankfurt am Main.*',8,'2022-06-06 16:51:53','2022-06-20 18:24:05.614997');
 DROP VIEW IF EXISTS "gdprView";
 CREATE VIEW gdprView AS
 SELECT user.firstName , user.familyName , user.mail, user.mailVerificationToken , user.gdprToken, 
