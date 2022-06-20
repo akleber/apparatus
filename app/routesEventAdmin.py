@@ -9,6 +9,7 @@ import markdown
 from io import BytesIO
 import sqlite3
 import uuid
+from datetime import datetime
 
 
 @app.route("/eventAdmin/<eventID>", methods=["GET"])
@@ -77,10 +78,26 @@ def eventAdmin_activity_save(eventID, activityID):
         (activityID, eventID),
     )
     rv = cur.fetchone()
-    if not rv:
-        print("add event")
-    else:
+    if rv:
         print("update event")
+    else:
+        print("add event")
+        now = datetime.utcnow()
+
+        user_data = {
+            "activityID": request.form.get("activityID"),
+            "eventID": request.form.get("eventID"),
+            "active": request.form.get("active"),
+            "title": request.form.get("title"),
+            "descriptions": request.form.get("descriptions"),
+            "seats": request.form.get("seats"),
+            "creationDate": now.isoformat(" "),
+            "lastChangedDate": now.isoformat(" "),
+        }
+        sql = """INSERT INTO activity (activityID, eventID, active, title, description, seats, creationDate, lastChangedDate) 
+                 VALUES (:activityID, :eventID, :active, :title, :descriptions, :seats, :creationDate, :lastChangedDate);"""
+
+    cur = get_db().execute(sql, user_data)
 
     return redirect(url_for("eventAdmin", eventID=eventID))
 
