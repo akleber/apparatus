@@ -150,12 +150,6 @@ def register(eventID):
     )
 
 
-# TODO implement
-@app.route("/eventAdd")
-def eventAdd():
-    return "event add"
-
-
 @app.route("/activityAbout/<activityID>", methods=["GET"])
 def activityAbout(activityID):
     cur = get_db().execute(
@@ -197,10 +191,7 @@ def gdpr(gdprToken):
     for key, value in gdpr_data.items():
         gdpr_data_desc[get_field_description(key)] = value
 
-    # TODO fix eventID
-    event_data = {"eventID": "a526e980-a014-41cc-b03d-33d09c09a16a"}
-
-    return render_template("gdpr.html", gdpr_data=gdpr_data_desc, event_data=event_data)
+    return render_template("gdpr.html", gdpr_data=gdpr_data_desc)
 
 
 @app.route("/t/<tinylink>")

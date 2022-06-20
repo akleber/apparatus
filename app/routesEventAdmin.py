@@ -30,6 +30,7 @@ def eventAdmin(eventID):
     )
 
 
+# TODO finish event Add (missing user)
 @app.route("/eventAdmin/add", methods=["GET"])
 def eventAdmin_event_add():
     event_data = {"eventID": str(uuid.uuid4()), "title": "", "description": ""}
