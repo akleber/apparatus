@@ -3,7 +3,20 @@
 {% block content %}
 
 <H1 class="text-left mt-2">Verwaltung</H1>
-<H2 class="text-left mt-2">{{ event_data.title }}</H2>
+<H2 class="text-left mt-2">{% if event_data.active == 0 %}<span class="text-error">(Inaktiv)</span> {% endif %}{{
+    event_data.title }}</H2>
+<p>
+    {{ event_data.description[:300] }}...
+</p>
+<p>
+    <a href="{{ url_for('eventAdmin_event_edit', eventID=event_data.eventID) }}">Veranstaltung bearbeiten</a>
+</p>
+
+<p>
+    <a href="{{ url_for('eventView', eventID=event_data.eventID) }}">Zur Anmeldeseite</a>
+</p>
+
+<div class="divider"></div>
 
 <p>
     Liste der AGs:
@@ -11,7 +24,7 @@
 <ul>
     {% for a in activity_data %}
     <li>
-        {% if a['active'] == 0 %}(Inaktiv) {% endif %}{{ a['title'] }} -
+        {% if a.active == 0 %}<span class="text-error">(Inaktiv)</span> {% endif %}{{ a.title }} -
         <a
             href="{{ url_for('eventAdmin_activity_edit', eventID=event_data.eventID, activityID=a.activityID) }}">Bearbeiten</a>
         -

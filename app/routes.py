@@ -64,7 +64,8 @@ def index():
 @app.route("/event/<uuid:eventID>/view", methods=["GET"])
 def eventView(eventID):
     cur = get_db().execute(
-        "SELECT title, description FROM event WHERE eventID = ?", (str(eventID),)
+        "SELECT title, description FROM event WHERE eventID = ? and active = 1",
+        (str(eventID),),
     )
     rv = cur.fetchone()
     if not rv:

@@ -14,9 +14,7 @@ from datetime import datetime
 
 @app.route("/eventAdmin/<uuid:eventID>", methods=["GET"])
 def eventAdmin(eventID):
-    cur = get_db().execute(
-        "SELECT eventID, title, tinylink FROM event WHERE eventID = ?", (str(eventID),)
-    )
+    cur = get_db().execute("SELECT * FROM event WHERE eventID = ?", (str(eventID),))
     rv = cur.fetchone()
     if not rv:
         return abort(404)
@@ -30,6 +28,68 @@ def eventAdmin(eventID):
     return render_template(
         "eventAdmin.html", event_data=event_data, activity_data=activity_data
     )
+
+
+@app.route("/eventAdmin/add", methods=["GET"])
+def eventAdmin_event_add():
+    event_data = {"eventID": str(uuid.uuid4()), "title": "", "description": ""}
+    return render_template("eventEdit.html", event_data=event_data)
+
+
+@app.route("/eventAdmin/<uuid:eventID>/edit", methods=["GET"])
+def eventAdmin_event_edit(eventID):
+    cur = get_db().execute(
+        "SELECT * FROM event WHERE eventID = ?",
+        (str(eventID),),
+    )
+    rv = cur.fetchone()
+    if not rv:
+        return abort(404)
+    event_data = dict(rv)
+
+    return render_template("eventEdit.html", event_data=event_data)
+
+
+@app.route("/eventAdmin/<uuid:eventID>/save", methods=["POST"])
+def eventAdmin_event_save(eventID):
+    now = datetime.utcnow()
+
+    cur = get_db().execute(
+        "SELECT * FROM event WHERE eventID = ?",
+        (str(eventID),),
+    )
+    rv = cur.fetchone()
+    if rv:
+        user_data = {
+            "eventID": str(eventID),
+            "active": request.form.get("active", "0"),
+            "title": request.form.get("title"),
+            "description": request.form.get("description"),
+            "lastChangedDate": now.isoformat(" "),
+        }
+        sql = """UPDATE event SET active = :active, title = :title, description = :description, lastChangedDate = :lastChangedDate 
+                 WHERE eventID = :eventID;"""
+
+    else:
+        # TODO generate tinylink
+        tinylink = "efg"
+
+        user_data = {
+            "eventID": str(eventID),
+            "tinylink": tinylink,
+            "active": request.form.get("active", "0"),
+            "title": request.form.get("title"),
+            "description": request.form.get("description"),
+            "creationDate": now.isoformat(" "),
+            "lastChangedDate": now.isoformat(" "),
+        }
+        sql = """INSERT INTO event (eventID, tinylink, active, title, description, creationDate, lastChangedDate) 
+                 VALUES (:eventID, :tinylink, :active, :title, :description, :creationDate, :lastChangedDate);"""
+
+    get_db().execute(sql, user_data)
+    get_db().commit()
+
+    return redirect(url_for("eventAdmin", eventID=eventID))
 
 
 @app.route("/eventAdmin/<uuid:eventID>/qr", methods=["GET"])

@@ -4,7 +4,7 @@ Deine Anmeldung für '{{ event_data.title }}' haben wir erhalten.
 Dies ist aber noch keine Bestätigung für einen Teilnahme an der AG.
 Darüber wirst Du gesondert informiert.
 
-Bitte bestätige deine eMail Adresse indem Du diesen Link besuchst:
+Bitte bestätige deine E-Mail Adresse indem Du diesen Link besuchst:
 {{ request.url_root[:-1] }}{{ url_for('verifyMail', mailVerificationToken=user_data.mailVerificationToken) }} 
 
 Unter {{ request.url_root[:-1] }}{{ url_for('gdpr', gdprToken=user_data.gdprToken) }}
