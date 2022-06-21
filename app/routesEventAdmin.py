@@ -33,7 +33,7 @@ def eventAdmin(eventID):
 @app.route("/eventAdmin/add", methods=["GET"])
 def eventAdmin_event_add():
     event_data = {"eventID": str(uuid.uuid4()), "title": "", "description": ""}
-    return render_template("eventEdit.html", event_data=event_data)
+    return render_template("eventEdit.html", event_data=event_data, add=True)
 
 
 @app.route("/eventAdmin/<uuid:eventID>/edit", methods=["GET"])
@@ -47,12 +47,18 @@ def eventAdmin_event_edit(eventID):
         return abort(404)
     event_data = dict(rv)
 
-    return render_template("eventEdit.html", event_data=event_data)
+    return render_template("eventEdit.html", event_data=event_data, add=False)
 
 
 @app.route("/eventAdmin/<uuid:eventID>/save", methods=["POST"])
 def eventAdmin_event_save(eventID):
     now = datetime.utcnow()
+
+    blob = None
+    if "bannerImage" in request.files:
+        file = request.files["bannerImage"]
+        if file.filename != "":
+            blob = file.stream.read()
 
     cur = get_db().execute(
         "SELECT * FROM event WHERE eventID = ?",
@@ -61,7 +67,7 @@ def eventAdmin_event_save(eventID):
     rv = cur.fetchone()
     if rv:
         # update event
-        user_data = {
+        sql_data = {
             "eventID": str(eventID),
             "active": request.form.get("active", "0"),
             "title": request.form.get("title"),
@@ -71,9 +77,12 @@ def eventAdmin_event_save(eventID):
         sql = """UPDATE event SET active = :active, title = :title, description = :description, lastChangedDate = :lastChangedDate 
                  WHERE eventID = :eventID;"""
 
+        if blob:
+            sql_image = """UPDATE event SET bannerImage = ? WHERE eventID = ?;"""
+            get_db().execute(sql_image, (memoryview(blob), str(eventID)))
+
     else:
         # add event
-        # TODO finish event Add (missing user)
         userID, user_data = utils.add_user(
             request.form.get("firstName"),
             request.form.get("familyName"),
@@ -91,10 +100,11 @@ def eventAdmin_event_save(eventID):
             "creator": userID,
             "creationDate": now.isoformat(" "),
             "lastChangedDate": now.isoformat(" "),
-            "adminToken": uuid.uuid4(),
+            "adminToken": str(uuid.uuid4()),
+            "bannerImage": blob,
         }
-        sql = """INSERT INTO event (eventID, tinylink, active, title, description, creator, creationDate, lastChangedDate, adminToken) 
-                 VALUES (:eventID, :tinylink, :active, :title, :description, :creator, :creationDate, :lastChangedDate, :adminToken);"""
+        sql = """INSERT INTO event (eventID, tinylink, active, title, description, creator, creationDate, lastChangedDate, adminToken, bannerImage) 
+                 VALUES (:eventID, :tinylink, :active, :title, :description, :creator, :creationDate, :lastChangedDate, :adminToken, :bannerImage);"""
 
     get_db().execute(sql, sql_data)
     get_db().commit()
@@ -143,8 +153,6 @@ def eventAdmin_activity_edit(eventID, activityID):
     if not rv:
         return abort(404)
     activity_data = dict(rv)
-
-    print(activity_data)
 
     return render_template(
         "activityEdit.html", event_data=event_data, activity_data=activity_data

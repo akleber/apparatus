@@ -195,6 +195,9 @@ def eventBanner(eventID):
         return app.send_static_file("banner-fallback.jpg")
 
     image = rv[0]
+    if not image:
+        return ("", 204)
+
     response = make_response(image)
     response.headers.set("Content-Type", "image/jpeg")
     return response

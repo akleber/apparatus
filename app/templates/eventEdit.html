@@ -2,10 +2,48 @@
 
 {% block content %}
 
-<form class="form-horizontal" action="{{ url_for('eventAdmin_event_save', eventID=event_data.eventID) }}" method="POST">
+<h1>Neue Veranstaltung anlegen</h1>
+
+<form class="form-horizontal" action="{{ url_for('eventAdmin_event_save', eventID=event_data.eventID) }}" method="POST"
+    enctype="multipart/form-data">
+
+    {% if add == True %}
+    <h4>Verwalter der Veranstaltung:</h4>
 
     <div class="form-group">
-        <label class="form-label" for="input-example-1">Titel</label>
+        <div class="col-3 col-sm-12">
+            <label class="form-label" for="input-example-1">Vorname</label>
+        </div>
+        <div class="col-9 col-sm-12">
+            <input class="form-input" type="text" name="firstName" placeholder="Vorname">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-3 col-sm-12">
+            <label class="form-label" for="input-example-1">Nachname</label>
+        </div>
+        <div class="col-9 col-sm-12">
+            <input class="form-input" type="text" name="familyName" placeholder="Nachname">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-3 col-sm-12">
+            <label class="form-label" for="input-example-1">E-Mail</label>
+        </div>
+        <div class="col-9 col-sm-12">
+            <input class="form-input" type="text" name="mail" placeholder="E-Mail">
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="p-2"></div>
+
+    <h4>Veranstaltung</h4>
+
+    <div class="form-group">
+        <label class="form-label" for="input-example-1">Veranstaltungstitel</label>
         <input class="form-input" type="text" name="title" placeholder="Titel" value="{{ event_data.title }}">
     </div>
 
