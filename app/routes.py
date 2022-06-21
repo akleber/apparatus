@@ -1,4 +1,4 @@
-from app import app, get_db, limiter, mail, babel
+from app import app, get_db, limiter, babel, utils
 from app.fieldDescriptions import get_field_description
 from flask import (
     url_for,
@@ -12,22 +12,8 @@ from flask import (
 )
 import markdown
 import uuid
-from threading import Thread
-from flask_mail import Message
 import time
 from flask_babel import _
-
-
-def send_async_email(app, msg):
-    with app.app_context():
-        mail.send(msg)
-
-
-def send_email(subject, recipients, text_body, html_body):
-    msg = Message(subject, recipients=recipients)
-    msg.body = text_body
-    msg.html = html_body
-    Thread(target=send_async_email, args=(app, msg)).start()
 
 
 # Request time logging. Uncomment the decorators
@@ -92,17 +78,11 @@ def eventView(eventID):
 
 @app.route("/event/<uuid:eventID>/register", methods=["POST"])
 def register(eventID):
-    user_data = {
-        "firstName": request.form.get("firstName"),
-        "familyName": request.form.get("familyName"),
-        "mail": request.form.get("mail"),
-        "mailVerificationToken": str(uuid.uuid4()),
-        "gdprToken": str(uuid.uuid4()),
-    }
-    sql = """INSERT INTO user (firstName, familyName, mail, mailVerificationToken, gdprToken) 
-             VALUES (:firstName, :familyName, :mail, :mailVerificationToken, :gdprToken) RETURNING userID;"""
-    cur = get_db().execute(sql, user_data)
-    userID = cur.lastrowid
+    userID, user_data = utils.add_user(
+        request.form.get("firstName"),
+        request.form.get("familyName"),
+        request.form.get("mail"),
+    )
 
     activities = request.form.getlist("activity")
     attendee_data = {
@@ -136,7 +116,7 @@ def register(eventID):
     event_data = {"eventID": str(eventID), "title": title}
 
     subject = f"Anmeldebestätigung für '{title}'"
-    send_email(
+    utils.send_email(
         subject,
         recipients=[user_data["mail"]],
         text_body=render_template(

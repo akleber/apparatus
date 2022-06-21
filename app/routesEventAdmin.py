@@ -1,4 +1,4 @@
-from app import app, get_db, qrcode
+from app import app, get_db, qrcode, utils
 from flask import render_template, abort, url_for, send_file, request, redirect
 from datetime import datetime
 from pyexcel_xlsx import save_data
@@ -7,9 +7,9 @@ from docx import Document
 from htmldocx import HtmlToDocx
 import markdown
 from io import BytesIO
-import sqlite3
 import uuid
 from datetime import datetime
+import shortuuid
 
 
 @app.route("/eventAdmin/<uuid:eventID>", methods=["GET"])
@@ -30,7 +30,6 @@ def eventAdmin(eventID):
     )
 
 
-# TODO finish event Add (missing user)
 @app.route("/eventAdmin/add", methods=["GET"])
 def eventAdmin_event_add():
     event_data = {"eventID": str(uuid.uuid4()), "title": "", "description": ""}
@@ -61,6 +60,7 @@ def eventAdmin_event_save(eventID):
     )
     rv = cur.fetchone()
     if rv:
+        # update event
         user_data = {
             "eventID": str(eventID),
             "active": request.form.get("active", "0"),
@@ -72,22 +72,31 @@ def eventAdmin_event_save(eventID):
                  WHERE eventID = :eventID;"""
 
     else:
-        # TODO generate tinylink
-        tinylink = "efg"
+        # add event
+        # TODO finish event Add (missing user)
+        userID, user_data = utils.add_user(
+            request.form.get("firstName"),
+            request.form.get("familyName"),
+            request.form.get("mail"),
+        )
 
-        user_data = {
+        tinylink = shortuuid.uuid()[:10]
+
+        sql_data = {
             "eventID": str(eventID),
             "tinylink": tinylink,
             "active": request.form.get("active", "0"),
             "title": request.form.get("title"),
             "description": request.form.get("description"),
+            "creator": userID,
             "creationDate": now.isoformat(" "),
             "lastChangedDate": now.isoformat(" "),
+            "adminToken": uuid.uuid4(),
         }
-        sql = """INSERT INTO event (eventID, tinylink, active, title, description, creationDate, lastChangedDate) 
-                 VALUES (:eventID, :tinylink, :active, :title, :description, :creationDate, :lastChangedDate);"""
+        sql = """INSERT INTO event (eventID, tinylink, active, title, description, creator, creationDate, lastChangedDate, adminToken) 
+                 VALUES (:eventID, :tinylink, :active, :title, :description, :creator, :creationDate, :lastChangedDate, :adminToken);"""
 
-    get_db().execute(sql, user_data)
+    get_db().execute(sql, sql_data)
     get_db().commit()
 
     return redirect(url_for("eventAdmin", eventID=eventID))

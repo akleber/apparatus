@@ -34,12 +34,23 @@
 
     <div class="p-2"></div>
 
-    <button class="btn btn-primary btn-block">Speichern</button>
-
-    <div class="p-2"></div>
-    <div class="p-2"></div>
-    <div class="p-2"></div>
+    <div class="col-4 col-sm-12">
+        <button class="btn btn-primary btn-block">Speichern</button>
+    </div>
 
 </form>
+
+<div class="p-2"></div>
+
+<div class="col-4 col-sm-12">
+    <a href="{{ url_for('eventAdmin', eventID=event_data.eventID) }}"><button
+            class="btn btn-block">Abbrechen</button></a>
+</div>
+
+<div class="p-2"></div>
+<div class="p-2"></div>
+<div class="p-2"></div>
+
+
 
 {% endblock %}
