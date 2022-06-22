@@ -152,10 +152,19 @@ def activityAbout(activityID):
     )
 
 
-# TODO: implement
 @app.route("/verifyMail/<mailVerificationToken>")
 def verifyMail(mailVerificationToken):
-    return "not implemented yet"
+    sql = "SELECT firstName FROM user WHERE mailVerificationToken = ?"
+    cur = get_db().execute(sql, (mailVerificationToken,))
+    rv = cur.fetchone()
+    if rv:
+        user_data = dict(rv)
+        sql = "UPDATE user SET mailVerificationToken = '' WHERE mailVerificationToken = ?;"
+        get_db().execute(sql, (mailVerificationToken,))
+        get_db().commit()
+        return render_template("mailVerified.html", user_data=user_data)
+    else:
+        return "E-Mail Verifizierungstoken unbekannt oder E-Mail Adresse bereits verifiziert"
 
 
 @app.route("/gdpr/<gdprToken>")
