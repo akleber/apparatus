@@ -1,10 +1,7 @@
-from flask_babel import _, gettext
-
-
 def get_field_description(field_name: str) -> str:
     if field_name == "userID":
-        return _("Internal ID of a user")
+        return "Interne ID eines benutzers"
     elif field_name == "firstName":
-        return _("First name")
+        return "Vorname"
     else:
         return field_name

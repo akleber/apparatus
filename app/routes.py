@@ -1,4 +1,4 @@
-from app import app, get_db, limiter, babel, utils
+from app import app, get_db, limiter, utils
 from app.fieldDescriptions import get_field_description
 from flask import (
     url_for,
@@ -13,7 +13,6 @@ from flask import (
 import markdown
 import uuid
 import time
-from flask_babel import _
 
 
 # Request time logging. Uncomment the decorators
@@ -33,12 +32,6 @@ def logging_after(response):
         "%s ms %s %s %s", time_in_ms, request.method, request.path, dict(request.args)
     )
     return response
-
-
-@babel.localeselector
-def get_locale():
-    # return request.accept_languages.best_match(app.config['LANGUAGES'])
-    return "de"
 
 
 @app.route("/")

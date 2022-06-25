@@ -67,11 +67,3 @@ http://127.0.0.1:5000/event/2/banner.jpg
 http://127.0.0.1:5000/t/abc
 http://127.0.0.1:5000/event/1/view
 http://127.0.0.1:5000/gdpr/b4d09810-8f6e-495a-bd88-06ab5c62d1b1
-
-
-# Babel
-
-pybabel extract -F babel.cfg -k _l -o messages.pot .
-pybabel init -i messages.pot -d app/translations -l de
-pybabel update -i messages.pot -d app/translations
-pybabel compile -d app/translations
