@@ -7,15 +7,21 @@
 <h1>Apparatus</h1>
 
 <p>
-    Event organisation tool.
+    Organisationstool für Veranstaltungen.
 </p>
+<ul>
+    <li>Kostenlose Nutzung</li>
+    <li><a href="https://github.com/akleber/apparatus">Open Source</a></li>
+    <li>Server in Deutschland</li>
+    <li>DSGVO konform, keine Cookies</li>
+    <li>Built with love using Flask, SQLite, Caddy</li>
+</ul>
+
+<div class="p-2"></div>
 
 <p>
-    <a href="{{ url_for('t', tinylink='abc') }}">Event</a>
-</p>
-
-<p>
-    <a href="{{ url_for('eventAdmin_event_add') }}"><button class="btn">Create event</button></a>
+    <a href="{{ url_for('eventAdmin_event_add') }}"><button class="btn btn-primary">Veranstaltung erstellen</button></a>
+    <a href="{{ url_for('t', tinylink='abc') }}"><button class="btn">Demo</button></a>
 </p>
 
 <div class="p-2"></div>
