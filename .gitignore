@@ -130,4 +130,5 @@ dmypy.json
 
 # Apparatus
 secrets.sh
+apparatus.env
 apparatus.db
