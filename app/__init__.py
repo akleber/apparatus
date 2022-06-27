@@ -3,7 +3,6 @@ from flask_qrcode import QRcode
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_mail import Mail
-from flask_babel import Babel
 import sqlite3
 import os
 
@@ -28,8 +27,6 @@ qrcode = QRcode(app)
 
 # https://flask-limiter.readthedocs.io/en/stable/
 limiter = Limiter(app, key_func=get_remote_address)
-
-babel = Babel(app)
 
 
 def get_db():

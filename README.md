@@ -11,6 +11,7 @@ ln -s /home/andreas/ags/apparatus.service /etc/systemd/system/apparatus.service
 * Max two activity selection, no preferences
 * eMail -> mandatory
 * AGBs info text, link?
+* Girocode
 
 
 # Ideas
