@@ -8,8 +8,6 @@ ln -s /home/andreas/ags/apparatus.service /etc/systemd/system/apparatus.service
 
 * eventAdmin add admin token
 * Form validation
-* Max two activity selection, no preferences
-* eMail -> mandatory
 * AGBs info text, link?
 * Girocode
 
