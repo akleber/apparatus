@@ -2,6 +2,22 @@
 
 {% block content %}
 
+<script type="text/javascript">
+  function chkcontrol(j) {
+    var total = 0;
+    for (var i = 0; i < document.form1.activity.length; i++) {
+      if (document.form1.activity[i].checked) {
+        total = total + 1;
+      }
+      if (total > 2) {
+        //alert("Please Select only three")
+        document.form1.activity[j].checked = false;
+        return false;
+      }
+    }
+  }
+</script>
+
 <H1 class="text-left mt-2">{{ event_data.title }}</H1>
 
 <div>
@@ -11,62 +27,68 @@
 <div class="columns">
   <div class="column col-9 col-xs-12">
 
-    <form class="form-horizontal" action="{{ url_for('register', eventID=event_data.eventID) }}" method="POST">
+    <form name="form1" class="form-horizontal" action="{{ url_for('register', eventID=event_data.eventID) }}"
+      method="POST">
 
       <input type="hidden" name="eventID" value="{{ event_data.eventID }}">
 
       <div class="form-group">
         <div class="col-3 col-sm-12">
-          <label class="form-label" for="input-example-1">Vorname</label>
+          <label class="form-label" for="firstName" style="padding-bottom:0px">Vorname Kind</label>
+          <span class="text-small text-warning">Nötig für die Anmeldung!</span>
         </div>
         <div class="col-9 col-sm-12">
-          <input class="form-input" type="text" name="firstName" placeholder="Vorname">
+          <input class="form-input" type="text" id="firstName" name="firstName" placeholder="Vorname Kind" required>
         </div>
       </div>
 
       <div class="form-group">
         <div class="col-3 col-sm-12">
-          <label class="form-label" for="input-example-1">Nachname</label>
+          <label class="form-label" for="familyName" style="padding-bottom:0px">Nachname Kind</label>
+          <span class="text-small text-warning">Nötig für die Anmeldung!</span>
         </div>
         <div class="col-9 col-sm-12">
-          <input class="form-input" type="text" name="familyName" placeholder="Nachname">
+          <input class="form-input" type="text" id="familyName" name="familyName" placeholder="Nachname Kind" required>
         </div>
       </div>
 
       <div class="form-group">
         <div class="col-3 col-sm-12">
-          <label class="form-label" for="input-example-1">E-Mail</label>
+          <label class="form-label" for="mail" style="padding-bottom:0px">E-Mail Adresse</label>
+          <span class="text-small text-warning">Nötig für die Anmeldung!</span>
         </div>
         <div class="col-9 col-sm-12">
-          <input class="form-input" type="text" name="mail" placeholder="E-Mail">
+          <input class="form-input" type="text" id="mail" name="mail" placeholder="E-Mail Adresse" required>
+
         </div>
       </div>
 
       <div class="form-group">
         <div class="col-3 col-sm-12">
-          <label class="form-label" for="input-example-1">Klasse</label>
+          <label class="form-label" for="klasse">Klasse</label>
         </div>
-        <div class="col-3 col-sm-12">
-          <input class="form-input" type="text" name="klasse" placeholder="Klasse">
+        <div class="col-2 col-sm-12">
+          <input class="form-input" type="text" id="klasse" name="klasse" placeholder="Klasse">
         </div>
       </div>
 
       <div class="form-group">
         <div class="col-3 col-sm-12">
-          <label class="form-label" for="input-example-1">Telefonnummer</label>
+          <label class="form-label" for="telefonnummer">Telefonnummer</label>
         </div>
         <div class="col-9 col-sm-12">
-          <input class="form-input" type="text" name="telefonnummer" placeholder="Telefonnummer">
+          <input class="form-input" type="text" id="telefonnummer" name="telefonnummer" placeholder="Telefonnummer">
         </div>
       </div>
 
       <div class="form-group">
         <div class="col-3 col-sm-12">
-          <label class="form-label" for="input-example-1">Ganztag</label>
+          <label class="form-label" for="ganztag">Ganztag</label>
         </div>
 
         <label class="form-radio form-inline">
-          <input type="radio" name="ganztag" value="0" checked><i class="form-icon"></i> kein Teilnahme&emsp;&emsp;
+          <input type="radio" id="ganztag" name="ganztag" value="0" checked><i class="form-icon"></i> kein
+          Teilnahme&emsp;&emsp;
         </label>
         <label class="form-radio form-inline">
           <input type="radio" name="ganztag" value="1"><i class="form-icon"></i> bis 14:30 Uhr&emsp;&emsp;
@@ -85,10 +107,11 @@
 
       <div class="form-group">
         <div class="col-3 col-sm-12">
-          <label class="form-label" for="input-example-1">Name des Mitglieds</label>
+          <label class="form-label" for="foevMitgliedsname">Name des Mitglieds</label>
         </div>
         <div class="col-9 col-sm-12">
-          <input class="form-input" type="text" name="foevMitgliedsname" placeholder="Name des Mitglieds">
+          <input class="form-input" type="text" id="foevMitgliedsname" name="foevMitgliedsname"
+            placeholder="Name des Mitglieds">
         </div>
       </div>
 
@@ -103,7 +126,7 @@
       {% for a in activity_data %}
       <div class="form-group">
         <label class="form-checkbox">
-          <input type="checkbox" name="activity" value="{{ a['activityID'] }}">
+          <input type="checkbox" name="activity" value="{{ a['activityID'] }}" onclick='chkcontrol({{ loop.index0 }})'>
           <i class="form-icon"></i> {{ a['title'] }} &emsp;<span class="label"><a
               href="{{ url_for('activityAbout', activityID=a['activityID']) }}" target="_blank">Infos</a></span>
         </label>
