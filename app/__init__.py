@@ -28,7 +28,7 @@ qrcode = QRcode(app)
 # https://flask-limiter.readthedocs.io/en/stable/
 limiter = Limiter(app, key_func=get_remote_address)
 
-app.logger.info(f"Python SQLite module version: {sqlite3.version}, SQLite library version: {sqlite3.sqlite_version}")
+app.logger.warning(f"Python SQLite module version: {sqlite3.version}, SQLite library version: {sqlite3.sqlite_version}")
 
 
 def get_db():
