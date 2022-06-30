@@ -290,3 +290,52 @@ def eventAdmin_activity_docx(adminToken, eventID):
     filename = f"activity_export_{timestamp}.docx"
 
     return send_file(file, as_attachment=True, download_name=filename, cache_timeout=0)
+
+
+@app.route("/eventAdmin/<uuid:adminToken>/<uuid:eventID>/duplicate", methods=["GET"])
+def eventAdmin_duplicate(adminToken, eventID):
+    event_data = get_event_data_verify_admin(adminToken, eventID)
+    now = datetime.utcnow()
+
+    new_eventID = str(uuid.uuid4())
+    new_adminToken = str(uuid.uuid4())
+
+    # add duplicated event
+    sql_data = {
+        "eventID": new_eventID,
+        "tinylink": shortuuid.uuid()[:10],
+        "active": event_data['active'],
+        "title": event_data['title'],
+        "description": event_data['description'],
+        "creator": event_data['creator'],
+        "creationDate": now.isoformat(" "),
+        "lastChangedDate": now.isoformat(" "),
+        "adminToken": new_adminToken,
+        "bannerImage": event_data['bannerImage'],
+    }
+    sql = """INSERT INTO event (eventID, tinylink, active, title, description, creator, creationDate, lastChangedDate, adminToken, bannerImage) 
+             VALUES (:eventID, :tinylink, :active, :title, :description, :creator, :creationDate, :lastChangedDate, :adminToken, :bannerImage);"""
+
+    get_db().execute(sql, sql_data)
+    
+    # add duplicated activies
+    activity_data = []
+    cur = get_db().execute("SELECT * FROM activity WHERE eventID = ?", (str(eventID),))
+    for row in cur:
+        activity_data.append(dict(row))
+
+    for activity in activity_data:
+        sql_data = {
+            activityID = str(uuid.uuid4()),
+            eventID = new_eventID,
+            active = activity['active'],
+            title = activity['title'],
+            description = activity['description'],
+            seats = activity['seats'],
+            creationDate = now.isoformat(" "),
+            lastChangedDate = now.isoformat(" "),
+        }
+
+    get_db().commit()
+
+    return redirect(url_for("eventAdmin", adminToken=new_adminToken, eventID=new_eventID))
