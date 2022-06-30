@@ -13,14 +13,14 @@ import shortuuid
 
 
 def get_event_data_verify_admin(adminToken: uuid, eventID: uuid) -> dict:
-    print("get_event_data")
     cur = get_db().execute("SELECT * FROM event WHERE eventID = ?", (str(eventID),))
     rv = cur.fetchone()
     if not rv:
-        print("404")
+        app.logger.error(f"get_event_data_verify_admin: eventID unknown")
         abort(404)
     event_data = dict(rv)
     if event_data['adminToken'] != str(adminToken):
+        app.logger.error(f"get_event_data_verify_admin: adminToke not as expected")
         abort(401)
     
     return event_data
@@ -51,6 +51,7 @@ def eventAdmin_event_edit(adminToken, eventID):
     event_data = get_event_data_verify_admin(adminToken, eventID)
 
     if event_data['adminToken'] != str(adminToken):
+        app.logger.error(f"eventAdmin_event_edit: adminToken not as expected")
         return abort(401)
 
     return render_template("eventEdit.html", event_data=event_data, add=False)
@@ -75,6 +76,7 @@ def eventAdmin_event_save(adminToken, eventID):
         # update event
         event_data = dict(rv)
         if event_data['adminToken'] != str(adminToken):
+            app.logger.error(f"eventAdmin_event_save: adminToken not as expected")        
             abort(401)
 
         sql_data = {
@@ -129,6 +131,7 @@ def qr(eventID):
     )
     rv = cur.fetchone()
     if not rv:
+        app.logger.error(f"qr: eventID unknown")  
         return abort(404)
 
     url = url_for("t", tinylink=rv["tinylink"])
@@ -162,6 +165,7 @@ def eventAdmin_activity_edit(adminToken, eventID, activityID):
     )
     rv = cur.fetchone()
     if not rv:
+        app.logger.error(f"eventAdmin_activity_edit: activity not found")  
         return abort(404)
     activity_data = dict(rv)
 
@@ -295,8 +299,31 @@ def eventAdmin_activity_docx(adminToken, eventID):
 @app.route("/eventAdmin/<uuid:adminToken>/<uuid:eventID>/duplicate", methods=["GET"])
 def eventAdmin_duplicate(adminToken, eventID):
     event_data = get_event_data_verify_admin(adminToken, eventID)
-    now = datetime.utcnow()
 
+    # make sure we have a verified user
+    cur = get_db().execute("SELECT * FROM user WHERE userID = ?", (event_data['creator'],))
+    rv = cur.fetchone()
+    if not rv:
+        app.logger.error(f"eventAdmin_duplicate: creatur user not found")
+        abort(500)
+    user_data = dict(rv)
+    if user_data['mailVerificationToken']:
+        app.logger.error(f"eventAdmin_duplicate: creatur user not verified")
+        abort(500)
+
+    # duplicate user
+    sql_data = {
+        "firstName": user_data['firstName'],
+        "familyName": user_data['familyName'],
+        "mail": user_data['mail'],
+        "mailVerificationToken": "",
+        "gdprToken": str(uuid.uuid4()),
+    }
+    sql = """INSERT INTO user (firstName, familyName, mail, mailVerificationToken, gdprToken) 
+             VALUES (:firstName, :familyName, :mail, :mailVerificationToken, :gdprToken);"""
+    get_db().execute(sql, sql_data)
+
+    now = datetime.utcnow()
     new_eventID = str(uuid.uuid4())
     new_adminToken = str(uuid.uuid4())
 
@@ -304,7 +331,7 @@ def eventAdmin_duplicate(adminToken, eventID):
     sql_data = {
         "eventID": new_eventID,
         "tinylink": shortuuid.uuid()[:10],
-        "active": event_data['active'],
+        "active": "0",
         "title": event_data['title'],
         "description": event_data['description'],
         "creator": event_data['creator'],
@@ -315,7 +342,6 @@ def eventAdmin_duplicate(adminToken, eventID):
     }
     sql = """INSERT INTO event (eventID, tinylink, active, title, description, creator, creationDate, lastChangedDate, adminToken, bannerImage) 
              VALUES (:eventID, :tinylink, :active, :title, :description, :creator, :creationDate, :lastChangedDate, :adminToken, :bannerImage);"""
-
     get_db().execute(sql, sql_data)
     
     # add duplicated activies
@@ -326,15 +352,19 @@ def eventAdmin_duplicate(adminToken, eventID):
 
     for activity in activity_data:
         sql_data = {
-            activityID = str(uuid.uuid4()),
-            eventID = new_eventID,
-            active = activity['active'],
-            title = activity['title'],
-            description = activity['description'],
-            seats = activity['seats'],
-            creationDate = now.isoformat(" "),
-            lastChangedDate = now.isoformat(" "),
+            "activityID" : str(uuid.uuid4()),
+            "eventID" : new_eventID,
+            "active" : activity['active'],
+            "title" : activity['title'],
+            "description" : activity['description'],
+            "seats" : activity['seats'],
+            "creationDate" : now.isoformat(" "),
+            "lastChangedDate" : now.isoformat(" "),
         }
+        sql = """INSERT INTO activity (activityID, eventID, active, title, description, seats, creationDate, lastChangedDate) 
+                 VALUES (:activityID, :eventID, :active, :title, :description, :seats, :creationDate, :lastChangedDate);"""
+
+        get_db().execute(sql, sql_data)
 
     get_db().commit()
 

@@ -48,6 +48,7 @@ def eventView(eventID):
     )
     rv = cur.fetchone()
     if not rv:
+        app.logger.error(f"eventView: eventID unknown")  
         return abort(404)
 
     event_data = {}
@@ -103,6 +104,7 @@ def register(eventID):
     )
     rv = cur.fetchone()
     if not rv:
+        app.logger.error(f"register: eventID unknown")
         return abort(404)
     title = rv[0]
 
@@ -149,6 +151,7 @@ def activityAbout(activityID):
     )
     rv = cur.fetchone()
     if not rv:
+        app.logger.error(f"activityAbout: activityID unknown")
         return abort(404)
 
     event_data = {}
@@ -183,6 +186,7 @@ def gdpr(gdprToken):
     cur = get_db().execute("SELECT * FROM gdprView WHERE gdprToken = ?", (gdprToken,))
     rv = cur.fetchone()
     if not rv:
+        app.logger.error(f"gdpr: gdprToken unknown")
         return abort(404)
     gdpr_data = dict(rv)
     print(gdpr_data)
@@ -200,6 +204,7 @@ def t(tinylink):
     cur = get_db().execute("SELECT eventID FROM event WHERE tinylink = ?", (tinylink,))
     rv = cur.fetchone()
     if not rv:
+        app.logger.error(f"t: tinylink unknown")
         return abort(404)
 
     return redirect(url_for("eventView", eventID=rv[0]))
