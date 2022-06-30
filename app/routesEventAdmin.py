@@ -12,13 +12,23 @@ from datetime import datetime
 import shortuuid
 
 
-@app.route("/eventAdmin/<uuid:eventID>", methods=["GET"])
-def eventAdmin(eventID):
+def get_event_data_verify_admin(adminToken: uuid, eventID: uuid) -> dict:
+    print("get_event_data")
     cur = get_db().execute("SELECT * FROM event WHERE eventID = ?", (str(eventID),))
     rv = cur.fetchone()
     if not rv:
-        return abort(404)
+        print("404")
+        abort(404)
     event_data = dict(rv)
+    if event_data['adminToken'] != str(adminToken):
+        abort(401)
+    
+    return event_data
+
+
+@app.route("/eventAdmin/<uuid:adminToken>/<uuid:eventID>", methods=["GET"])
+def eventAdmin(adminToken, eventID):
+    event_data = get_event_data_verify_admin(adminToken, eventID)
 
     activity_data = []
     cur = get_db().execute("SELECT * FROM activity WHERE eventID = ?", (str(eventID),))
@@ -36,22 +46,18 @@ def eventAdmin_event_add():
     return render_template("eventEdit.html", event_data=event_data, add=True)
 
 
-@app.route("/eventAdmin/<uuid:eventID>/edit", methods=["GET"])
-def eventAdmin_event_edit(eventID):
-    cur = get_db().execute(
-        "SELECT * FROM event WHERE eventID = ?",
-        (str(eventID),),
-    )
-    rv = cur.fetchone()
-    if not rv:
-        return abort(404)
-    event_data = dict(rv)
+@app.route("/eventAdmin/<uuid:adminToken>/<uuid:eventID>/edit", methods=["GET"])
+def eventAdmin_event_edit(adminToken, eventID):
+    event_data = get_event_data_verify_admin(adminToken, eventID)
+
+    if event_data['adminToken'] != str(adminToken):
+        return abort(401)
 
     return render_template("eventEdit.html", event_data=event_data, add=False)
 
 
-@app.route("/eventAdmin/<uuid:eventID>/save", methods=["POST"])
-def eventAdmin_event_save(eventID):
+@app.route("/eventAdmin/<uuid:adminToken>/<uuid:eventID>/save", methods=["POST"])
+def eventAdmin_event_save(adminToken, eventID):
     now = datetime.utcnow()
 
     blob = None
@@ -67,6 +73,10 @@ def eventAdmin_event_save(eventID):
     rv = cur.fetchone()
     if rv:
         # update event
+        event_data = dict(rv)
+        if event_data['adminToken'] != str(adminToken):
+            abort(401)
+
         sql_data = {
             "eventID": str(eventID),
             "active": request.form.get("active", "0"),
@@ -109,7 +119,7 @@ def eventAdmin_event_save(eventID):
     get_db().execute(sql, sql_data)
     get_db().commit()
 
-    return redirect(url_for("eventAdmin", eventID=eventID))
+    return redirect(url_for("eventAdmin", adminToken=adminToken, eventID=eventID))
 
 
 @app.route("/eventAdmin/<uuid:eventID>/qr", methods=["GET"])
@@ -127,9 +137,10 @@ def qr(eventID):
     )
 
 
-@app.route("/eventAdmin/<uuid:eventID>/activity/add", methods=["GET"])
-def eventAdmin_activity_add(eventID):
-    event_data = {"eventID": str(eventID)}
+@app.route("/eventAdmin/<uuid:adminToken>/<uuid:eventID>/activity/add", methods=["GET"])
+def eventAdmin_activity_add(adminToken, eventID):
+    event_data = get_event_data_verify_admin(adminToken, eventID)
+
     activity_data = {"activityID": str(uuid.uuid4()), "title": "", "description": ""}
     return render_template(
         "activityEdit.html", event_data=event_data, activity_data=activity_data
@@ -137,10 +148,10 @@ def eventAdmin_activity_add(eventID):
 
 
 @app.route(
-    "/eventAdmin/<uuid:eventID>/activity/edit/<uuid:activityID>", methods=["GET"]
+    "/eventAdmin/<uuid:adminToken>/<uuid:eventID>/activity/edit/<uuid:activityID>", methods=["GET"]
 )
-def eventAdmin_activity_edit(eventID, activityID):
-    event_data = {"eventID": str(eventID)}
+def eventAdmin_activity_edit(adminToken, eventID, activityID):
+    event_data = get_event_data_verify_admin(adminToken, eventID)
 
     cur = get_db().execute(
         "SELECT * FROM activity WHERE eventID = ? AND activityID = ?",
@@ -160,9 +171,10 @@ def eventAdmin_activity_edit(eventID, activityID):
 
 
 @app.route(
-    "/eventAdmin/<uuid:eventID>/activity/save/<uuid:activityID>", methods=["POST"]
+    "/eventAdmin/<uuid:adminToken>/<uuid:eventID>/activity/save/<uuid:activityID>", methods=["POST"]
 )
-def eventAdmin_activity_save(eventID, activityID):
+def eventAdmin_activity_save(adminToken, eventID, activityID):
+    event_data = get_event_data_verify_admin(adminToken, eventID)
     now = datetime.utcnow()
 
     cur = get_db().execute(
@@ -200,24 +212,28 @@ def eventAdmin_activity_save(eventID, activityID):
     get_db().execute(sql, user_data)
     get_db().commit()
 
-    return redirect(url_for("eventAdmin", eventID=eventID))
+    return redirect(url_for("eventAdmin", adminToken=adminToken, eventID=eventID))
 
 
 @app.route(
-    "/eventAdmin/<uuid:eventID>/activity/delete/<uuid:activityID>", methods=["GET"]
+    "/eventAdmin/<uuid:adminToken>/<uuid:eventID>/activity/delete/<uuid:activityID>", methods=["GET"]
 )
-def eventAdmin_activity_delete(eventID, activityID):
+def eventAdmin_activity_delete(adminToken, eventID, activityID):
+    event_data = get_event_data_verify_admin(adminToken, eventID)
+
     get_db().execute(
         "DELETE FROM activity WHERE activityID = ? and eventID = ?",
         (str(activityID), str(eventID)),
     )
     get_db().commit()
 
-    return redirect(url_for("eventAdmin", eventID=eventID))
+    return redirect(url_for("eventAdmin", adminToken=adminToken, eventID=eventID))
 
 
-@app.route("/eventAdmin/<uuid:eventID>/attendees/xlsx")
-def eventAdmin_attendees_xlsx(eventID):
+@app.route("/eventAdmin/<uuid:adminToken>/<uuid:eventID>/attendees/xlsx")
+def eventAdmin_attendees_xlsx(adminToken, eventID):
+    event_data = get_event_data_verify_admin(adminToken, eventID)
+
     excel_rows = []
     cur = get_db().execute(
         "SELECT * FROM eventAttendees WHERE eventID = ?", (str(eventID),)
@@ -245,20 +261,16 @@ def eventAdmin_attendees_xlsx(eventID):
     return send_file(io, as_attachment=True, download_name=filename, cache_timeout=0)
 
 
-@app.route("/eventAdmin/<uuid:eventID>/activity/docx", methods=["GET"])
-def eventAdmin_activity_docx(eventID):
-    cur = get_db().execute("SELECT title FROM event WHERE eventID = ?", (str(eventID),))
-    rv = cur.fetchone()
-    if not rv:
-        return abort(404)
-    eventTitle = rv["title"]
+@app.route("/eventAdmin/<uuid:adminToken>/<uuid:eventID>/activity/docx", methods=["GET"])
+def eventAdmin_activity_docx(adminToken, eventID):
+    event_data = get_event_data_verify_admin(adminToken, eventID)
 
     cur = get_db().execute(
         "SELECT title, description FROM activity WHERE eventID = ?", (str(eventID),)
     )
 
     document = Document()
-    document.add_heading(eventTitle, 0)
+    document.add_heading(event_data['title'], 0)
 
     new_parser = HtmlToDocx()
 

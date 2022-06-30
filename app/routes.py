@@ -123,6 +123,24 @@ def register(eventID):
     )
 
 
+@app.route("/event/<uuid:eventID>/banner.jpg")
+def eventBanner(eventID):
+    cur = get_db().execute(
+        "SELECT bannerImage FROM event WHERE eventID = ?", (str(eventID),)
+    )
+    rv = cur.fetchone()
+    if not rv:
+        return app.send_static_file("banner-fallback.jpg")
+
+    image = rv[0]
+    if not image:
+        return ("", 204)
+
+    response = make_response(image)
+    response.headers.set("Content-Type", "image/jpeg")
+    return response
+
+
 @app.route("/activityAbout/<activityID>", methods=["GET"])
 def activityAbout(activityID):
     cur = get_db().execute(
@@ -185,21 +203,3 @@ def t(tinylink):
         return abort(404)
 
     return redirect(url_for("eventView", eventID=rv[0]))
-
-
-@app.route("/event/<uuid:eventID>/banner.jpg")
-def eventBanner(eventID):
-    cur = get_db().execute(
-        "SELECT bannerImage FROM event WHERE eventID = ?", (str(eventID),)
-    )
-    rv = cur.fetchone()
-    if not rv:
-        return app.send_static_file("banner-fallback.jpg")
-
-    image = rv[0]
-    if not image:
-        return ("", 204)
-
-    response = make_response(image)
-    response.headers.set("Content-Type", "image/jpeg")
-    return response

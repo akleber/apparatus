@@ -4,8 +4,9 @@
 
 <h1>Neue Veranstaltung anlegen</h1>
 
-<form class="form-horizontal" action="{{ url_for('eventAdmin_event_save', eventID=event_data.eventID) }}" method="POST"
-    enctype="multipart/form-data">
+<form class="form-horizontal"
+    action="{{ url_for('eventAdmin_event_save', adminToken=event_data.adminToken, eventID=event_data.eventID) }}"
+    method="POST" enctype="multipart/form-data">
 
     {% if add == True %}
     <h4>Verwalter der Veranstaltung:</h4>
@@ -78,7 +79,7 @@
 <div class="p-2"></div>
 
 <div class="col-4 col-sm-12">
-    <a href="{{ url_for('eventAdmin', eventID=event_data.eventID) }}"><button
+    <a href="{{ url_for('eventAdmin', adminToken=event_data.adminToken, eventID=event_data.eventID) }}"><button
             class="btn btn-block">Abbrechen</button></a>
 </div>
 

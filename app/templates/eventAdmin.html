@@ -9,7 +9,8 @@
     {{ event_data.description[:300] }}...
 </p>
 <p>
-    <a href="{{ url_for('eventAdmin_event_edit', eventID=event_data.eventID) }}">Veranstaltung bearbeiten</a>
+    <a href="{{ url_for('eventAdmin_event_edit', adminToken=event_data.adminToken, eventID=event_data.eventID) }}">Veranstaltung
+        bearbeiten</a>
 </p>
 
 <p>
@@ -26,28 +27,31 @@
     <li>
         {% if a.active == 0 %}<span class="text-error">(Inaktiv)</span> {% endif %}{{ a.title }} -
         <a
-            href="{{ url_for('eventAdmin_activity_edit', eventID=event_data.eventID, activityID=a.activityID) }}">Bearbeiten</a>
+            href="{{ url_for('eventAdmin_activity_edit', adminToken=event_data.adminToken, eventID=event_data.eventID, activityID=a.activityID) }}">Bearbeiten</a>
         -
         <a
-            href="{{ url_for('eventAdmin_activity_delete', eventID=event_data.eventID, activityID=a.activityID) }}">Löschen</a>
+            href="{{ url_for('eventAdmin_activity_delete', adminToken=event_data.adminToken, eventID=event_data.eventID, activityID=a.activityID) }}">Löschen</a>
     </li>
     {% endfor %}
 </ul>
 
 <p>
-    <a href="{{ url_for('eventAdmin_activity_add', eventID=event_data.eventID) }}"><i class="icon icon-plus"></i> + AG
+    <a href="{{ url_for('eventAdmin_activity_add', adminToken=event_data.adminToken, eventID=event_data.eventID) }}"><i
+            class="icon icon-plus"></i> + AG
         hinzufügen</a>
 </p>
 
 <div class="divider"></div>
 
 <p>
-    <a href="{{ url_for('eventAdmin_attendees_xlsx', eventID=event_data.eventID) }}">Download Microsoft Excel
+    <a href="{{ url_for('eventAdmin_attendees_xlsx', adminToken=event_data.adminToken, eventID=event_data.eventID) }}">Download
+        Microsoft Excel
         Teilnehmerliste</a>
 </p>
 
 <p>
-    <a href="{{ url_for('eventAdmin_activity_docx', eventID=event_data.eventID) }}">Download Microsoft Word AG
+    <a href="{{ url_for('eventAdmin_activity_docx', adminToken=event_data.adminToken, eventID=event_data.eventID) }}">Download
+        Microsoft Word AG
         Übersicht</a>
 </p>
 
