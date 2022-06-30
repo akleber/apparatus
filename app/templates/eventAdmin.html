@@ -10,11 +10,12 @@
 </p>
 <p>
     <a href="{{ url_for('eventAdmin_event_edit', adminToken=event_data.adminToken, eventID=event_data.eventID) }}">Veranstaltung
-        bearbeiten</a>
+        bearbeiten <i class="icon icon-edit"></i></a>
 </p>
 
 <p>
-    <a href="{{ url_for('eventView', eventID=event_data.eventID) }}">Zur Anmeldeseite</a>
+    <a href="{{ url_for('eventView', eventID=event_data.eventID) }}">Zur Anmeldeseite <i
+            class="icon icon-arrow-left"></i></a>
 </p>
 
 <div class="divider"></div>
@@ -27,32 +28,31 @@
     <li>
         {% if a.active == 0 %}<span class="text-error">(Inaktiv)</span> {% endif %}{{ a.title }} -
         <a
-            href="{{ url_for('eventAdmin_activity_edit', adminToken=event_data.adminToken, eventID=event_data.eventID, activityID=a.activityID) }}">Bearbeiten</a>
+            href="{{ url_for('eventAdmin_activity_edit', adminToken=event_data.adminToken, eventID=event_data.eventID, activityID=a.activityID) }}">Bearbeiten
+            <i class="icon icon-edit"></i></a>
         -
         <a
-            href="{{ url_for('eventAdmin_activity_delete', adminToken=event_data.adminToken, eventID=event_data.eventID, activityID=a.activityID) }}">Löschen</a>
+            href="{{ url_for('eventAdmin_activity_delete', adminToken=event_data.adminToken, eventID=event_data.eventID, activityID=a.activityID) }}">Löschen
+            <i class="icon icon-delete"></i></a>
     </li>
     {% endfor %}
 </ul>
 
 <p>
-    <a href="{{ url_for('eventAdmin_activity_add', adminToken=event_data.adminToken, eventID=event_data.eventID) }}"><i
-            class="icon icon-plus"></i> + AG
-        hinzufügen</a>
+    <a href="{{ url_for('eventAdmin_activity_add', adminToken=event_data.adminToken, eventID=event_data.eventID) }}">
+        AG hinzufügen +</a>
 </p>
 
 <div class="divider"></div>
 
 <p>
     <a href="{{ url_for('eventAdmin_attendees_xlsx', adminToken=event_data.adminToken, eventID=event_data.eventID) }}">Download
-        Microsoft Excel
-        Teilnehmerliste</a>
+        Microsoft Excel: Teilnehmerliste <i class="icon icon-download"></i></a>
 </p>
 
 <p>
     <a href="{{ url_for('eventAdmin_activity_docx', adminToken=event_data.adminToken, eventID=event_data.eventID) }}">Download
-        Microsoft Word AG
-        Übersicht</a>
+        Microsoft Word: AG Übersicht <i class="icon icon-download"></i></a>
 </p>
 
 <p>
