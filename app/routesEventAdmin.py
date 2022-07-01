@@ -256,7 +256,19 @@ def eventAdmin_attendees_list(adminToken, eventID):
 def eventAdmin_attendees_delete(adminToken, eventID, attendeeID):
     event_data = get_event_data_verify_admin(adminToken, eventID)
 
-    return "not implemented"
+    cur = get_db().execute("SELECT * FROM attendee WHERE attendeeID = ?", (str(attendeeID),))
+    rv = cur.fetchone()
+    if not rv:
+        app.logger.error(f"eventAdmin_attendees_delete: attendeeID invalid")
+        abort(403)
+    
+    attendee_data = dict(rv)
+
+    get_db().execute("DELETE FROM user WHERE userID = ?", (attendee_data['userID'], ))
+    get_db().execute("DELETE FROM attendee WHERE attendeeID = ?", (str(attendeeID), ))
+    get_db().commit()
+
+    return redirect(url_for("eventAdmin", adminToken=str(adminToken), eventID=str(eventID)))
 
 
 @app.route("/eventAdmin/<uuid:adminToken>/<uuid:eventID>/attendees/xlsx")

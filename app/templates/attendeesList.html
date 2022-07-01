@@ -9,18 +9,14 @@
         Verwaltung <i class="icon icon-arrow-left"></i></a>
 </p>
 
-<div class="divider"></div>
 
-<p>
-    Liste der Teilnehmer:
-</p>
 <table class="table">
     <tr>
         <th>Vorname</th>
         <th>Nachname</th>
         <th>Klasse</th>
         <th>E-Mail Adresse</th>
-        <th>verifiziert?</th>
+        <th></th>
         <th>AG</th>
         <th></th>
     </tr>
@@ -30,13 +26,13 @@
         <td>{{ a.firstName }}</td>
         <td>{{ a.familyName }}</td>
         <td>{{ a.klasse }}</td>
-        <td>{{ a.mail }}</td>
         <td>
             {% if a.mailVerificationToken %}
-            <i class="icon icon-cross"></i>
+            <i class="icon icon-cross text-error"></i>
             {% else %}
-            <i class="icon icon-check"></i>
+            <i class="icon icon-check text-success"></i>
             {% endif %}
+            {{ a.mail }}
         </td>
         <td>{{ a.title }}</td>
 

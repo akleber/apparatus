@@ -8,20 +8,18 @@
 <p>
     {{ event_data.description[:300] }}...
 </p>
-<p>
-    <a href="{{ url_for('eventAdmin_event_edit', adminToken=event_data.adminToken, eventID=event_data.eventID) }}">Veranstaltung
-        bearbeiten <i class="icon icon-edit"></i></a>
-</p>
-
-<p>
-    <a href="{{ url_for('eventAdmin_duplicate', adminToken=event_data.adminToken, eventID=event_data.eventID) }}">Veranstaltung
-        duplizieren <i class="icon icon-copy"></i></a>
-</p>
 
 <p>
     <a href="{{ url_for('eventView', eventID=event_data.eventID) }}">Zur Anmeldeseite <i
             class="icon icon-arrow-left"></i></a>
+    &emsp;&emsp;
+    <a href="{{ url_for('eventAdmin_event_edit', adminToken=event_data.adminToken, eventID=event_data.eventID) }}">Veranstaltung
+        bearbeiten <i class="icon icon-edit"></i></a>
+    &emsp;&emsp;
+    <a href="{{ url_for('eventAdmin_duplicate', adminToken=event_data.adminToken, eventID=event_data.eventID) }}">Veranstaltung
+        duplizieren <i class="icon icon-copy"></i></a>
 </p>
+
 
 <div class="divider"></div>
 
@@ -48,24 +46,26 @@
         AG hinzufügen +</a>
 </p>
 
+<p>
+    Download als Microsoft Word Datei:
+    <a href="{{ url_for('eventAdmin_activity_docx', adminToken=event_data.adminToken, eventID=event_data.eventID) }}">AG
+        Übersicht <i class="icon icon-download"></i></a>
+</p>
+
 <div class="divider"></div>
 
 <p>
     <a href="{{ url_for('eventAdmin_attendees_list', adminToken=event_data.adminToken, eventID=event_data.eventID) }}">
-        Teilnehmerliste</a>
+        Teilnehmerliste <i class="icon icon-people"></i></a>
 </p>
 
 <p>
-    <a href="{{ url_for('eventAdmin_attendees_xlsx', adminToken=event_data.adminToken, eventID=event_data.eventID) }}">Download
-        Microsoft Excel: Teilnehmerliste <i class="icon icon-download"></i></a>
+    Download als Microsoft Excel Datei:
+    <a href="{{ url_for('eventAdmin_attendees_xlsx', adminToken=event_data.adminToken, eventID=event_data.eventID) }}">
+        Teilnehmerliste <i class="icon icon-download"></i></a>
 </p>
 
 <div class="divider"></div>
-
-<p>
-    <a href="{{ url_for('eventAdmin_activity_docx', adminToken=event_data.adminToken, eventID=event_data.eventID) }}">Download
-        Microsoft Word: AG Übersicht <i class="icon icon-download"></i></a>
-</p>
 
 <p>
     QR Code mit der URL zur Anmeldung: {{ request.url_root[:-1] }}{{ url_for("t",
