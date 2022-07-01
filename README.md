@@ -6,7 +6,6 @@ ln -s /home/andreas/ags/apparatus.service /etc/systemd/system/apparatus.service
 
 # ToDos
 
-* eventAdmin add admin token
 * Form validation
 * AGBs info text, link?
 * Girocode
