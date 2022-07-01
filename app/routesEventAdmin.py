@@ -245,8 +245,6 @@ def eventAdmin_attendees_list(adminToken, eventID):
     for row in cur:
         attendee_data.append(dict(row))
 
-    print(attendee_data)
-
     return render_template(
         "attendeesList.html", event_data=event_data, attendee_data=attendee_data
     )

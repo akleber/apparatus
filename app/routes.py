@@ -189,7 +189,6 @@ def gdpr(gdprToken):
         app.logger.error(f"gdpr: gdprToken unknown")
         return abort(404)
     gdpr_data = dict(rv)
-    print(gdpr_data)
 
     gdpr_data_desc = {}
     for key, value in gdpr_data.items():
