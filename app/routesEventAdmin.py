@@ -234,6 +234,31 @@ def eventAdmin_activity_delete(adminToken, eventID, activityID):
     return redirect(url_for("eventAdmin", adminToken=adminToken, eventID=eventID))
 
 
+@app.route("/eventAdmin/<uuid:adminToken>/<uuid:eventID>/attendees/list")
+def eventAdmin_attendees_list(adminToken, eventID):
+    event_data = get_event_data_verify_admin(adminToken, eventID)
+
+    attendee_data = []
+    cur = get_db().execute(
+        "SELECT * FROM eventAttendees WHERE eventID = ? ORDER BY familyName", (str(eventID),)
+    )
+    for row in cur:
+        attendee_data.append(dict(row))
+
+    print(attendee_data)
+
+    return render_template(
+        "attendeesList.html", event_data=event_data, attendee_data=attendee_data
+    )
+
+
+@app.route("/eventAdmin/<uuid:adminToken>/<uuid:eventID>/attendees/delete/<uuid:attendeeID>")
+def eventAdmin_attendees_delete(adminToken, eventID, attendeeID):
+    event_data = get_event_data_verify_admin(adminToken, eventID)
+
+    return "not implemented"
+
+
 @app.route("/eventAdmin/<uuid:adminToken>/<uuid:eventID>/attendees/xlsx")
 def eventAdmin_attendees_xlsx(adminToken, eventID):
     event_data = get_event_data_verify_admin(adminToken, eventID)

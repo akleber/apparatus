@@ -1,0 +1,54 @@
+{% extends 'eventBase.html' %}
+
+{% block content %}
+
+<H1 class="text-left mt-2">Teilnehmer</H1>
+
+<p>
+    <a href="{{ url_for('eventAdmin', adminToken=event_data.adminToken, eventID=event_data.eventID) }}">Zurück zur
+        Verwaltung <i class="icon icon-arrow-left"></i></a>
+</p>
+
+<div class="divider"></div>
+
+<p>
+    Liste der Teilnehmer:
+</p>
+<table class="table">
+    <tr>
+        <th>Vorname</th>
+        <th>Nachname</th>
+        <th>Klasse</th>
+        <th>E-Mail Adresse</th>
+        <th>verifiziert?</th>
+        <th>AG</th>
+        <th></th>
+    </tr>
+
+    {% for a in attendee_data %}
+    <tr>
+        <td>{{ a.firstName }}</td>
+        <td>{{ a.familyName }}</td>
+        <td>{{ a.klasse }}</td>
+        <td>{{ a.mail }}</td>
+        <td>
+            {% if a.mailVerificationToken %}
+            <i class="icon icon-cross"></i>
+            {% else %}
+            <i class="icon icon-check"></i>
+            {% endif %}
+        </td>
+        <td>{{ a.title }}</td>
+
+        <td>
+            <a
+                href="{{ url_for('eventAdmin_attendees_delete', adminToken=event_data.adminToken, eventID=event_data.eventID, attendeeID=a.attendeeID) }}">Löschen
+                <i class="icon icon-delete"></i></a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<div class="p-2"></div>
+
+{% endblock %}
