@@ -4,6 +4,7 @@
 
 * Form validation
 * AGBs info text, link?
+* favicon
 
 
 # Ideas

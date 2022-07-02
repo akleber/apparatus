@@ -266,7 +266,7 @@ def eventAdmin_attendees_delete(adminToken, eventID, attendeeID):
     get_db().execute("DELETE FROM attendee WHERE attendeeID = ?", (str(attendeeID), ))
     get_db().commit()
 
-    return redirect(url_for("eventAdmin", adminToken=str(adminToken), eventID=str(eventID)))
+    return redirect(url_for("eventAdmin_attendees_list", adminToken=str(adminToken), eventID=str(eventID)))
 
 
 @app.route("/eventAdmin/<uuid:adminToken>/<uuid:eventID>/attendees/xlsx")

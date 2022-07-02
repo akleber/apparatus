@@ -37,7 +37,7 @@
         <td>{{ a.title }}</td>
 
         <td>
-            <a
+            <a class="confirmation"
                 href="{{ url_for('eventAdmin_attendees_delete', adminToken=event_data.adminToken, eventID=event_data.eventID, attendeeID=a.attendeeID) }}">Löschen
                 <i class="icon icon-delete"></i></a>
         </td>
@@ -46,5 +46,15 @@
 </table>
 
 <div class="p-2"></div>
+
+<script type="text/javascript">
+    var elems = document.getElementsByClassName('confirmation');
+    var confirmIt = function (e) {
+        if (!confirm('Teilnehmer wirklich löschen?')) e.preventDefault();
+    };
+    for (var i = 0, l = elems.length; i < l; i++) {
+        elems[i].addEventListener('click', confirmIt, false);
+    }
+</script>
 
 {% endblock %}
