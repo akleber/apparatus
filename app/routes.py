@@ -8,13 +8,12 @@ from flask import (
     abort,
     request,
     g,
-    current_app,
 )
 import markdown
 import uuid
 import time
 from flask_wtf import FlaskForm
-from wtforms import (StringField, TextAreaField, IntegerField, BooleanField, RadioField, EmailField, TelField)
+from wtforms import (StringField, BooleanField, RadioField, EmailField, TelField)
 from wtforms.validators import InputRequired, Length, Email
 
 

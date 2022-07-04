@@ -22,7 +22,7 @@
     </tr>
 
     {% for a in attendee_data %}
-    <tr>
+    <tr style="vertical-align: top; ">
         <td>{{ a.firstName }}</td>
         <td>{{ a.familyName }}</td>
         <td>{{ a.klasse }}</td>
@@ -34,7 +34,7 @@
             {% endif %}
             {{ a.mail }}
         </td>
-        <td>{{ a.title }}</td>
+        <td>{{ a.title.replace(", ", "<br />") | safe }}</td>
 
         <td>
             <a class="confirmation"
