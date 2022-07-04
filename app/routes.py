@@ -13,6 +13,20 @@ from flask import (
 import markdown
 import uuid
 import time
+from flask_wtf import FlaskForm
+from wtforms import (StringField, TextAreaField, IntegerField, BooleanField, RadioField, EmailField, TelField)
+from wtforms.validators import InputRequired, Length, Email
+
+
+class RegisterForm(FlaskForm):
+    firstName = StringField('Vorname Kind', validators=[InputRequired(), Length(max=50)])
+    familyName = StringField('Nachname Kind', validators=[InputRequired(), Length(max=50)])
+    mail = EmailField('E-Mail Adresse', validators=[InputRequired(), Email()])
+    klasse = StringField('Klasse', validators=[InputRequired(), Length(max=3)])
+    telefonnummer = TelField('Telefonnummer', validators=[])
+    ganztag = RadioField('Ganztag', default=0, choices=[(0, "kein Teilnahme"), (1, "bis 14:30 Uhr"), (2, "bis 17:00 Uhr")], validators=[InputRequired()])
+    foevMitgliedsname = StringField('Name des Mitglieds', validators=[Length(max=50)])
+    beideAGs = BooleanField('beideAGs')
 
 
 # Request time logging. Uncomment the decorators
@@ -65,28 +79,35 @@ def eventView(eventID):
         a = {"activityID": data[0], "title": data[1]}
         activity_data.append(a)
 
+    form = RegisterForm()
+
     return render_template(
-        "register.html", event_data=event_data, activity_data=activity_data
+        "register.html", event_data=event_data, activity_data=activity_data, form=form
     )
 
 
 @app.route("/event/<uuid:eventID>/register", methods=["POST"])
 def register(eventID):
+    form = RegisterForm()
+    if not form.validate_on_submit():
+        app.logger.error(f"register: form validation failed")
+        abort(400)
+
     userID, user_data = utils.add_user(
-        request.form.get("firstName"),
-        request.form.get("familyName"),
-        request.form.get("mail"),
+        form.firstName.data,
+        form.familyName.data,
+        form.mail.data,
     )
 
     activities = request.form.getlist("activity")
     attendee_data = {
         "attendeeID": str(uuid.uuid4()),
         "userID": userID,
-        "klasse": request.form.get("klasse", ""),
-        "ganztag": request.form.get("ganztag", ""),
-        "telefonnummer": request.form.get("telefonnummer", ""),
-        "foevMitgliedsname": request.form.get("foevMitgliedsname", ""),
-        "beideAGs": request.form.get("beideAGs", ""),
+        "klasse": form.klasse.data,
+        "ganztag": form.ganztag.data,
+        "telefonnummer": form.telefonnummer.data,
+        "foevMitgliedsname": form.foevMitgliedsname.data,
+        "beideAGs": form.beideAGs.data,
         "primaryActivityChoice": activities[0] if len(activities) >= 1 else "",
         "secondaryActivityChoice": activities[1] if len(activities) == 2 else "",
     }

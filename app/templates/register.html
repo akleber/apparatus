@@ -30,54 +30,53 @@
     <form name="form1" class="form-horizontal" action="{{ url_for('register', eventID=event_data.eventID) }}"
       method="POST">
 
-      <input type="hidden" name="eventID" value="{{ event_data.eventID }}">
+      {{ form.csrf_token }}
 
       <div class="form-group">
         <div class="col-3 col-sm-12">
-          <label class="form-label" for="firstName" style="padding-bottom:0px">Vorname Kind</label>
+          {{ form.firstName.label(class="form-label", style="padding-bottom:0px") }}
           <span class="text-small text-warning">Nötig für die Anmeldung!</span>
         </div>
         <div class="col-9 col-sm-12">
-          <input class="form-input" type="text" id="firstName" name="firstName" placeholder="Vorname Kind" required>
+          {{ form.firstName(class="form-input", placeholder=form.firstName.label.text) }}
         </div>
       </div>
 
       <div class="form-group">
         <div class="col-3 col-sm-12">
-          <label class="form-label" for="familyName" style="padding-bottom:0px">Nachname Kind</label>
+          {{ form.familyName.label(class="form-label", style="padding-bottom:0px") }}
           <span class="text-small text-warning">Nötig für die Anmeldung!</span>
         </div>
         <div class="col-9 col-sm-12">
-          <input class="form-input" type="text" id="familyName" name="familyName" placeholder="Nachname Kind" required>
+          {{ form.familyName(class="form-input", placeholder=form.familyName.label.text) }}
         </div>
       </div>
 
       <div class="form-group">
         <div class="col-3 col-sm-12">
-          <label class="form-label" for="mail" style="padding-bottom:0px">E-Mail Adresse</label>
+          {{ form.mail.label(class="form-label", style="padding-bottom:0px") }}
           <span class="text-small text-warning">Nötig für die Anmeldung!</span>
         </div>
         <div class="col-9 col-sm-12">
-          <input class="form-input" type="text" id="mail" name="mail" placeholder="E-Mail Adresse" required>
-
+          {{ form.mail(class="form-input", placeholder=form.mail.label.text) }}
         </div>
       </div>
 
       <div class="form-group">
         <div class="col-3 col-sm-12">
-          <label class="form-label" for="klasse">Klasse</label>
+          {{ form.klasse.label(class="form-label") }}
         </div>
         <div class="col-2 col-sm-12">
-          <input class="form-input" type="text" id="klasse" name="klasse" placeholder="Klasse">
+          {{ form.klasse(class="form-input", placeholder=form.klasse.label.text) }}
         </div>
       </div>
 
       <div class="form-group">
         <div class="col-3 col-sm-12">
-          <label class="form-label" for="telefonnummer">Telefonnummer</label>
+          {{ form.telefonnummer.label(class="form-label") }}
         </div>
         <div class="col-9 col-sm-12">
-          <input class="form-input" type="text" id="telefonnummer" name="telefonnummer" placeholder="Telefonnummer">
+          {{ form.telefonnummer(class="form-input", placeholder=form.telefonnummer.label.text) }}
         </div>
       </div>
 
@@ -86,16 +85,11 @@
           <label class="form-label" for="ganztag">Ganztag</label>
         </div>
 
+        {% for subfield in form.ganztag %}
         <label class="form-radio form-inline">
-          <input type="radio" id="ganztag" name="ganztag" value="0" checked><i class="form-icon"></i> kein
-          Teilnahme&emsp;&emsp;
+          {{ subfield }}<i class="form-icon"></i> {{ subfield.label.text }}&emsp;&emsp;
         </label>
-        <label class="form-radio form-inline">
-          <input type="radio" name="ganztag" value="1"><i class="form-icon"></i> bis 14:30 Uhr&emsp;&emsp;
-        </label>
-        <label class="form-radio form-inline">
-          <input type="radio" name="ganztag" value="2"><i class="form-icon"></i> bis 17:00 Uhr
-        </label>
+        {% endfor %}
       </div>
 
       <div class="form-group">
@@ -107,11 +101,10 @@
 
       <div class="form-group">
         <div class="col-3 col-sm-12">
-          <label class="form-label" for="foevMitgliedsname">Name des Mitglieds</label>
+          {{ form.foevMitgliedsname.label(class="form-label") }}
         </div>
         <div class="col-9 col-sm-12">
-          <input class="form-input" type="text" id="foevMitgliedsname" name="foevMitgliedsname"
-            placeholder="Name des Mitglieds">
+          {{ form.foevMitgliedsname(class="form-input", placeholder=form.foevMitgliedsname.label.text) }}
         </div>
       </div>
 
@@ -137,7 +130,7 @@
 
       <div class="form-group">
         <label class="form-switch">
-          <input type="checkbox" name="beideAGs" value="beide AGs">
+          {{ form.beideAGs }}
           <i class="form-icon"></i> Bei ausreichender Verfügbarkeit der Plätze möchte mein Kind an beiden Wunsch-AGs
           teilnehmen.
         </label>

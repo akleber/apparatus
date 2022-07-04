@@ -19,6 +19,7 @@ app.config["MAIL_DEFAULT_SENDER"] = os.getenv("MAIL_DEFAULT_SENDER")
 app.config["MAIL_USE_TLS"] = True
 app.config["MAIL_SUPPRESS_SEND"] = False
 app.config["MAIL_DEBUG"] = False
+app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 
 mail = Mail(app)
 
