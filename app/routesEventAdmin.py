@@ -84,9 +84,10 @@ def eventAdmin_event_save(adminToken, eventID):
             "active": request.form.get("active", "0"),
             "title": request.form.get("title"),
             "description": request.form.get("description"),
+            "legal": request.form.get("legal"),
             "lastChangedDate": now.isoformat(" "),
         }
-        sql = """UPDATE event SET active = :active, title = :title, description = :description, lastChangedDate = :lastChangedDate 
+        sql = """UPDATE event SET active = :active, title = :title, description = :description, legal = :legal, lastChangedDate = :lastChangedDate 
                  WHERE eventID = :eventID;"""
 
         if blob:
@@ -109,14 +110,15 @@ def eventAdmin_event_save(adminToken, eventID):
             "active": request.form.get("active", "0"),
             "title": request.form.get("title"),
             "description": request.form.get("description"),
+            "legal": request.form.get("legal"),
             "creator": userID,
             "creationDate": now.isoformat(" "),
             "lastChangedDate": now.isoformat(" "),
             "adminToken": str(uuid.uuid4()),
             "bannerImage": blob,
         }
-        sql = """INSERT INTO event (eventID, tinylink, active, title, description, creator, creationDate, lastChangedDate, adminToken, bannerImage) 
-                 VALUES (:eventID, :tinylink, :active, :title, :description, :creator, :creationDate, :lastChangedDate, :adminToken, :bannerImage);"""
+        sql = """INSERT INTO event (eventID, tinylink, active, title, description, legal, creator, creationDate, lastChangedDate, adminToken, bannerImage) 
+                 VALUES (:eventID, :tinylink, :active, :title, :description, :legal, :creator, :creationDate, :lastChangedDate, :adminToken, :bannerImage);"""
 
     get_db().execute(sql, sql_data)
     get_db().commit()

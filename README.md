@@ -2,10 +2,9 @@
 
 # ToDos
 
-* Form validation
 * AGBs info text, link?
 * favicon
-
+* investigate https://docs.python.org/3/library/secrets.html#secrets.token_urlsafe
 
 # Ideas
 

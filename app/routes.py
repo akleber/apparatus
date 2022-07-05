@@ -145,6 +145,26 @@ def register(eventID):
     )
 
 
+
+@app.route("/event/<uuid:eventID>/legal")
+def legal(eventID):
+    cur = get_db().execute(
+        "SELECT * FROM event WHERE eventID = ?", (str(eventID),)
+    )
+    rv = cur.fetchone()
+    if not rv:
+        app.logger.error(f"legal: eventID unknown")
+        return abort(404)
+
+    event_data = dict(rv)
+    if event_data['legal']:
+        event_data['legal'] = markdown.markdown(event_data['legal'])
+
+    return render_template(
+        "legal.html", event_data=event_data
+    )
+
+
 @app.route("/event/<uuid:eventID>/banner.jpg")
 def eventBanner(eventID):
     cur = get_db().execute(

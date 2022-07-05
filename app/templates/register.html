@@ -139,8 +139,8 @@
       <div class="form-group">
         <label class="form-switch">
           <input type="checkbox" required>
-          <i class="form-icon"></i> <b>Mit der Weitergabe meiner Kontaktdaten an die AG-Leitung bin ich
-            einverstanden.</b><br />
+          <i class="form-icon"></i> Mit der Weitergabe meiner Kontaktdaten an die AG-Leitung bin ich
+          einverstanden.<br />
           <span class="text-small text-warning">Nötig für die Anmeldung!</span>
         </label>
       </div>
@@ -148,7 +148,9 @@
       <div class="form-group">
         <label class="form-switch">
           <input type="checkbox" required>
-          <i class="form-icon"></i> <b>Ich habe die beiliegenden AGB gelesen und akzeptiert.</b><br />
+          <i class="form-icon"></i> Ich habe die <span class="label"><a
+              href="{{ url_for('legal', eventID=event_data.eventID) }}" target="_blank">AGB</a></span> gelesen und
+          akzeptiert.<br />
           <span class="text-small text-warning">Nötig für die Anmeldung!</span>
         </label>
       </div>
@@ -156,9 +158,9 @@
       <div class="form-group">
         <label class="form-switch">
           <input type="checkbox" required>
-          <i class="form-icon"></i> <b>Ich habe verstanden, das die AG Kosten in Höhe von 60€ pro AG nach Zusage des
-            Platzes / der Plätze fällig
-            sind.</b><br />
+          <i class="form-icon"></i> Ich habe verstanden, das die AG Kosten in Höhe von 60€ pro AG nach Zusage des
+          Platzes / der Plätze fällig
+          sind.<br />
           <span class="text-small text-warning">Nötig für die Anmeldung!</span>
         </label>
       </div>
