@@ -150,7 +150,9 @@
           <input type="checkbox" required>
           <i class="form-icon"></i> Ich habe die <span class="label"><a
               href="{{ url_for('legal', eventID=event_data.eventID) }}" target="_blank">AGB</a></span> gelesen und
-          akzeptiert.<br />
+          akzeptiert.&emsp;<span class="label"><a
+              href="{{ url_for('legal_download', eventID=event_data.eventID) }}">Download AGB <i
+                class="icon icon-download"></i></a></span><br />
           <span class="text-small text-warning">Nötig für die Anmeldung!</span>
         </label>
       </div>

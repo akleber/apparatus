@@ -2,7 +2,7 @@
 
 # ToDos
 
-* AGBs info text, link?
+* finish footer, version!
 * favicon
 * investigate https://docs.python.org/3/library/secrets.html#secrets.token_urlsafe
 

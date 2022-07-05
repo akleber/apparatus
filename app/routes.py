@@ -8,10 +8,13 @@ from flask import (
     abort,
     request,
     g,
+    send_file
 )
 import markdown
 import uuid
 import time
+import io
+from datetime import datetime
 from flask_wtf import FlaskForm
 from wtforms import (StringField, BooleanField, RadioField, EmailField, TelField)
 from wtforms.validators import InputRequired, Length, Email
@@ -163,6 +166,28 @@ def legal(eventID):
     return render_template(
         "legal.html", event_data=event_data
     )
+
+@app.route("/event/<uuid:eventID>/legal/download")
+def legal_download(eventID):
+    cur = get_db().execute(
+        "SELECT title, legal FROM event WHERE eventID = ?", (str(eventID),)
+    )
+    rv = cur.fetchone()
+    if not rv:
+        app.logger.error(f"legal_download: eventID unknown")
+        return abort(404)
+
+    event_data = dict(rv)
+    timestamp = datetime.utcnow().strftime("%d.%m.%Y")
+
+    legal_plain = event_data['legal'].replace("#### ", "").replace("### ", "").replace("## ", "").replace("\.", ".").replace("_", "")
+
+    legal_txt = f"{legal_plain}\n\nHeruntergeladen am {timestamp}\n"
+    legal_filename = f"AGB_{ event_data['title'].replace(' ', '_') }.txt"
+
+    f = io.BytesIO(legal_txt.encode('utf-8'))
+
+    return send_file(f, as_attachment=True, download_name=legal_filename, cache_timeout=0)
 
 
 @app.route("/event/<uuid:eventID>/banner.jpg")
