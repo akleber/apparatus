@@ -132,3 +132,4 @@ dmypy.json
 secrets.sh
 apparatus.env
 apparatus.db
+VERSION

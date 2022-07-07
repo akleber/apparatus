@@ -5,6 +5,9 @@ from flask_limiter.util import get_remote_address
 from flask_mail import Mail
 import sqlite3
 import os
+from pathlib import Path
+
+from importlib_metadata import version
 
 
 DATABASE = "apparatus.db"
@@ -20,6 +23,14 @@ app.config["MAIL_USE_TLS"] = True
 app.config["MAIL_SUPPRESS_SEND"] = False
 app.config["MAIL_DEBUG"] = False
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
+
+version = "dev"
+version_file = Path("VERSION")
+if version_file.is_file():
+    with open(version_file, "r") as f:
+        version = f.read().strip()
+app.logger.info(f"Found version {version}")
+app.config["VERSION"] = version
 
 mail = Mail(app)
 
