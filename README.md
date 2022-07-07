@@ -4,7 +4,6 @@ Visit the site at https://event-apparatus.de/
 
 # ToDos
 
-* agb with email
 * favicon
 * investigate https://docs.python.org/3/library/secrets.html#secrets.token_urlsafe
 

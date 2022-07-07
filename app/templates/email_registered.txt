@@ -11,3 +11,4 @@ Unter {{ request.url_root[:-1] }}{{ url_for('gdpr', gdprToken=user_data.gdprToke
 erhälst Du eine DSGVO konforme Auskunft über alle Daten, die wir über Dich gespeichert haben.
 
 Viele Grüße vom AG Organisationsteam
+

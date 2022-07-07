@@ -122,18 +122,19 @@ def register(eventID):
 
     # get event title
     cur = get_db().execute(
-        "SELECT title FROM event WHERE eventID = ?",
+        "SELECT eventID, title, legal FROM event WHERE eventID = ?",
         (str(eventID),),
     )
     rv = cur.fetchone()
     if not rv:
         app.logger.error(f"register: eventID unknown")
         return abort(404)
-    title = rv[0]
+    event_data = dict(rv)
 
-    event_data = {"eventID": str(eventID), "title": title}
+    legal_plain = utils.strip_markdown(event_data['legal'])
+    legal_filename = f"AGB_{ event_data['title'].replace(' ', '_') }.txt"
 
-    subject = f"Anmeldebestätigung für '{title}'"
+    subject = f"Anmeldebestätigung für '{event_data['title']}'"
     utils.send_email(
         subject,
         recipients=[user_data["mail"]],
@@ -141,6 +142,9 @@ def register(eventID):
             "email_registered.txt", user_data=user_data, event_data=event_data
         ),
         html_body=None,
+        att_filename=legal_filename,
+        att_mime="text/plain",
+        att_content=legal_plain
     )
 
     return render_template(
@@ -180,8 +184,7 @@ def legal_download(eventID):
     event_data = dict(rv)
     timestamp = datetime.utcnow().strftime("%d.%m.%Y")
 
-    legal_plain = event_data['legal'].replace("#### ", "").replace("### ", "").replace("## ", "").replace("\.", ".").replace("_", "")
-
+    legal_plain = utils.strip_markdown(event_data['legal'])
     legal_txt = f"{legal_plain}\n\nHeruntergeladen am {timestamp}\n"
     legal_filename = f"AGB_{ event_data['title'].replace(' ', '_') }.txt"
 

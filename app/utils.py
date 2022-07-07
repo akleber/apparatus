@@ -9,10 +9,12 @@ def send_async_email(app, msg):
         mail.send(msg)
 
 
-def send_email(subject, recipients, text_body, html_body):
+def send_email(subject, recipients, text_body, html_body, att_filename, att_mime, att_content):
     msg = Message(subject, recipients=recipients)
     msg.body = text_body
     msg.html = html_body
+    if att_filename:
+        msg.attach(att_filename, att_mime, att_content.encode('utf-8'))
     Thread(target=send_async_email, args=(app, msg)).start()
 
 
@@ -33,3 +35,6 @@ def add_user(firstName: str, familyName: str, mail: str) -> int:
     cur = get_db().execute(sql, user_data)
     userID = cur.lastrowid
     return userID, user_data
+
+def strip_markdown(md):
+    return md.replace("#### ", "").replace("### ", "").replace("## ", "").replace("\.", ".").replace("_", "").replace("**", "")
