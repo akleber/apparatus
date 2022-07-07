@@ -18,10 +18,10 @@ def get_event_data_verify_admin(adminToken: uuid, eventID: uuid) -> dict:
         app.logger.error(f"get_event_data_verify_admin: eventID unknown")
         abort(404)
     event_data = dict(rv)
-    if event_data['adminToken'] != str(adminToken):
+    if event_data["adminToken"] != str(adminToken):
         app.logger.error(f"get_event_data_verify_admin: adminToke not as expected")
         abort(401)
-    
+
     return event_data
 
 
@@ -49,7 +49,7 @@ def eventAdmin_event_add():
 def eventAdmin_event_edit(adminToken, eventID):
     event_data = get_event_data_verify_admin(adminToken, eventID)
 
-    if event_data['adminToken'] != str(adminToken):
+    if event_data["adminToken"] != str(adminToken):
         app.logger.error(f"eventAdmin_event_edit: adminToken not as expected")
         return abort(401)
 
@@ -74,8 +74,8 @@ def eventAdmin_event_save(adminToken, eventID):
     if rv:
         # update event
         event_data = dict(rv)
-        if event_data['adminToken'] != str(adminToken):
-            app.logger.error(f"eventAdmin_event_save: adminToken not as expected")        
+        if event_data["adminToken"] != str(adminToken):
+            app.logger.error(f"eventAdmin_event_save: adminToken not as expected")
             abort(401)
 
         sql_data = {
@@ -132,7 +132,7 @@ def qr(eventID):
     )
     rv = cur.fetchone()
     if not rv:
-        app.logger.error(f"qr: eventID unknown")  
+        app.logger.error(f"qr: eventID unknown")
         return abort(404)
 
     url = url_for("t", tinylink=rv["tinylink"])
@@ -152,7 +152,8 @@ def eventAdmin_activity_add(adminToken, eventID):
 
 
 @app.route(
-    "/eventAdmin/<uuid:adminToken>/<uuid:eventID>/activity/edit/<uuid:activityID>", methods=["GET"]
+    "/eventAdmin/<uuid:adminToken>/<uuid:eventID>/activity/edit/<uuid:activityID>",
+    methods=["GET"],
 )
 def eventAdmin_activity_edit(adminToken, eventID, activityID):
     event_data = get_event_data_verify_admin(adminToken, eventID)
@@ -166,7 +167,7 @@ def eventAdmin_activity_edit(adminToken, eventID, activityID):
     )
     rv = cur.fetchone()
     if not rv:
-        app.logger.error(f"eventAdmin_activity_edit: activity not found")  
+        app.logger.error(f"eventAdmin_activity_edit: activity not found")
         return abort(404)
     activity_data = dict(rv)
 
@@ -176,7 +177,8 @@ def eventAdmin_activity_edit(adminToken, eventID, activityID):
 
 
 @app.route(
-    "/eventAdmin/<uuid:adminToken>/<uuid:eventID>/activity/save/<uuid:activityID>", methods=["POST"]
+    "/eventAdmin/<uuid:adminToken>/<uuid:eventID>/activity/save/<uuid:activityID>",
+    methods=["POST"],
 )
 def eventAdmin_activity_save(adminToken, eventID, activityID):
     event_data = get_event_data_verify_admin(adminToken, eventID)
@@ -221,7 +223,8 @@ def eventAdmin_activity_save(adminToken, eventID, activityID):
 
 
 @app.route(
-    "/eventAdmin/<uuid:adminToken>/<uuid:eventID>/activity/delete/<uuid:activityID>", methods=["GET"]
+    "/eventAdmin/<uuid:adminToken>/<uuid:eventID>/activity/delete/<uuid:activityID>",
+    methods=["GET"],
 )
 def eventAdmin_activity_delete(adminToken, eventID, activityID):
     event_data = get_event_data_verify_admin(adminToken, eventID)
@@ -241,7 +244,8 @@ def eventAdmin_attendees_list(adminToken, eventID):
 
     attendee_data = []
     cur = get_db().execute(
-        "SELECT * FROM eventAttendees WHERE eventID = ? ORDER BY familyName", (str(eventID),)
+        "SELECT * FROM eventAttendees WHERE eventID = ? ORDER BY familyName",
+        (str(eventID),),
     )
     for row in cur:
         attendee_data.append(dict(row))
@@ -251,23 +255,33 @@ def eventAdmin_attendees_list(adminToken, eventID):
     )
 
 
-@app.route("/eventAdmin/<uuid:adminToken>/<uuid:eventID>/attendees/delete/<uuid:attendeeID>")
+@app.route(
+    "/eventAdmin/<uuid:adminToken>/<uuid:eventID>/attendees/delete/<uuid:attendeeID>"
+)
 def eventAdmin_attendees_delete(adminToken, eventID, attendeeID):
     event_data = get_event_data_verify_admin(adminToken, eventID)
 
-    cur = get_db().execute("SELECT * FROM attendee WHERE attendeeID = ?", (str(attendeeID),))
+    cur = get_db().execute(
+        "SELECT * FROM attendee WHERE attendeeID = ?", (str(attendeeID),)
+    )
     rv = cur.fetchone()
     if not rv:
         app.logger.error(f"eventAdmin_attendees_delete: attendeeID invalid")
         abort(403)
-    
+
     attendee_data = dict(rv)
 
-    get_db().execute("DELETE FROM user WHERE userID = ?", (attendee_data['userID'], ))
-    get_db().execute("DELETE FROM attendee WHERE attendeeID = ?", (str(attendeeID), ))
+    get_db().execute("DELETE FROM user WHERE userID = ?", (attendee_data["userID"],))
+    get_db().execute("DELETE FROM attendee WHERE attendeeID = ?", (str(attendeeID),))
     get_db().commit()
 
-    return redirect(url_for("eventAdmin_attendees_list", adminToken=str(adminToken), eventID=str(eventID)))
+    return redirect(
+        url_for(
+            "eventAdmin_attendees_list",
+            adminToken=str(adminToken),
+            eventID=str(eventID),
+        )
+    )
 
 
 @app.route("/eventAdmin/<uuid:adminToken>/<uuid:eventID>/attendees/xlsx")
@@ -301,7 +315,9 @@ def eventAdmin_attendees_xlsx(adminToken, eventID):
     return send_file(io, as_attachment=True, download_name=filename, cache_timeout=0)
 
 
-@app.route("/eventAdmin/<uuid:adminToken>/<uuid:eventID>/activity/docx", methods=["GET"])
+@app.route(
+    "/eventAdmin/<uuid:adminToken>/<uuid:eventID>/activity/docx", methods=["GET"]
+)
 def eventAdmin_activity_docx(adminToken, eventID):
     event_data = get_event_data_verify_admin(adminToken, eventID)
 
@@ -310,7 +326,7 @@ def eventAdmin_activity_docx(adminToken, eventID):
     )
 
     document = Document()
-    document.add_heading(event_data['title'], 0)
+    document.add_heading(event_data["title"], 0)
 
     new_parser = HtmlToDocx()
 
@@ -337,21 +353,23 @@ def eventAdmin_duplicate(adminToken, eventID):
     event_data = get_event_data_verify_admin(adminToken, eventID)
 
     # make sure we have a verified user
-    cur = get_db().execute("SELECT * FROM user WHERE userID = ?", (event_data['creator'],))
+    cur = get_db().execute(
+        "SELECT * FROM user WHERE userID = ?", (event_data["creator"],)
+    )
     rv = cur.fetchone()
     if not rv:
-        app.logger.error(f"eventAdmin_duplicate: creatur user not found")
+        app.logger.error(f"eventAdmin_duplicate: creator user not found")
         abort(500)
     user_data = dict(rv)
-    if user_data['mailVerificationToken']:
-        app.logger.error(f"eventAdmin_duplicate: creatur user not verified")
+    if user_data["mailVerificationToken"]:
+        app.logger.error(f"eventAdmin_duplicate: creator user not verified")
         abort(500)
 
     # duplicate user
     sql_data = {
-        "firstName": user_data['firstName'],
-        "familyName": user_data['familyName'],
-        "mail": user_data['mail'],
+        "firstName": user_data["firstName"],
+        "familyName": user_data["familyName"],
+        "mail": user_data["mail"],
         "mailVerificationToken": "",
         "gdprToken": str(uuid.uuid4()),
     }
@@ -368,18 +386,19 @@ def eventAdmin_duplicate(adminToken, eventID):
         "eventID": new_eventID,
         "tinylink": shortuuid.uuid()[:10],
         "active": "0",
-        "title": event_data['title'],
-        "description": event_data['description'],
-        "creator": event_data['creator'],
+        "title": event_data["title"],
+        "description": event_data["description"],
+        "legal": event_data["legal"],
+        "creator": event_data["creator"],
         "creationDate": now.isoformat(" "),
         "lastChangedDate": now.isoformat(" "),
         "adminToken": new_adminToken,
-        "bannerImage": event_data['bannerImage'],
+        "bannerImage": event_data["bannerImage"],
     }
-    sql = """INSERT INTO event (eventID, tinylink, active, title, description, creator, creationDate, lastChangedDate, adminToken, bannerImage) 
-             VALUES (:eventID, :tinylink, :active, :title, :description, :creator, :creationDate, :lastChangedDate, :adminToken, :bannerImage);"""
+    sql = """INSERT INTO event (eventID, tinylink, active, title, description, legal, creator, creationDate, lastChangedDate, adminToken, bannerImage) 
+             VALUES (:eventID, :tinylink, :active, :title, :description, :legal, :creator, :creationDate, :lastChangedDate, :adminToken, :bannerImage);"""
     get_db().execute(sql, sql_data)
-    
+
     # add duplicated activies
     activity_data = []
     cur = get_db().execute("SELECT * FROM activity WHERE eventID = ?", (str(eventID),))
@@ -388,14 +407,14 @@ def eventAdmin_duplicate(adminToken, eventID):
 
     for activity in activity_data:
         sql_data = {
-            "activityID" : str(uuid.uuid4()),
-            "eventID" : new_eventID,
-            "active" : activity['active'],
-            "title" : activity['title'],
-            "description" : activity['description'],
-            "seats" : activity['seats'],
-            "creationDate" : now.isoformat(" "),
-            "lastChangedDate" : now.isoformat(" "),
+            "activityID": str(uuid.uuid4()),
+            "eventID": new_eventID,
+            "active": activity["active"],
+            "title": activity["title"],
+            "description": activity["description"],
+            "seats": activity["seats"],
+            "creationDate": now.isoformat(" "),
+            "lastChangedDate": now.isoformat(" "),
         }
         sql = """INSERT INTO activity (activityID, eventID, active, title, description, seats, creationDate, lastChangedDate) 
                  VALUES (:activityID, :eventID, :active, :title, :description, :seats, :creationDate, :lastChangedDate);"""
@@ -404,4 +423,6 @@ def eventAdmin_duplicate(adminToken, eventID):
 
     get_db().commit()
 
-    return redirect(url_for("eventAdmin", adminToken=new_adminToken, eventID=new_eventID))
+    return redirect(
+        url_for("eventAdmin", adminToken=new_adminToken, eventID=new_eventID)
+    )
