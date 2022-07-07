@@ -129,7 +129,5 @@ dmypy.json
 .pyre/
 
 # Apparatus
-secrets.sh
-apparatus.env
 apparatus.db
 VERSION
