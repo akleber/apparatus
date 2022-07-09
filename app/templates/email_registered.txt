@@ -7,6 +7,9 @@ Darüber wirst Du gesondert informiert.
 Bitte bestätige deine E-Mail Adresse indem Du diesen Link besuchst:
 {{ request.url_root[:-1] }}{{ url_for('verifyMail', mailVerificationToken=user_data.mailVerificationToken) }} 
 
+Verwende folgenden Link um deine Anmeldung wieder zu löschen, solange die AG Anmeldung noch möglich ist:
+{{ request.url_root[:-1] }}{{ url_for('deregister', eventID=event_data.eventID, attendeeID=attendee_data.attendeeID) }} 
+
 Unter {{ request.url_root[:-1] }}{{ url_for('gdpr', gdprToken=user_data.gdprToken) }}
 erhälst Du eine DSGVO konforme Auskunft über alle Daten, die wir über Dich gespeichert haben.
 

@@ -8,7 +8,7 @@ from flask import (
     abort,
     request,
     g,
-    send_file
+    send_file,
 )
 import markdown
 import uuid
@@ -16,19 +16,28 @@ import time
 import io
 from datetime import datetime
 from flask_wtf import FlaskForm
-from wtforms import (StringField, BooleanField, RadioField, EmailField, TelField)
+from wtforms import StringField, BooleanField, RadioField, EmailField, TelField
 from wtforms.validators import InputRequired, Length, Email
 
 
 class RegisterForm(FlaskForm):
-    firstName = StringField('Vorname Kind', validators=[InputRequired(), Length(max=50)])
-    familyName = StringField('Nachname Kind', validators=[InputRequired(), Length(max=50)])
-    mail = EmailField('E-Mail Adresse', validators=[InputRequired(), Email()])
-    klasse = StringField('Klasse', validators=[InputRequired(), Length(max=3)])
-    telefonnummer = TelField('Telefonnummer', validators=[])
-    ganztag = RadioField('Ganztag', default=0, choices=[(0, "kein Teilnahme"), (1, "bis 14:30 Uhr"), (2, "bis 17:00 Uhr")], validators=[InputRequired()])
-    foevMitgliedsname = StringField('Name des Mitglieds', validators=[Length(max=50)])
-    beideAGs = BooleanField('beideAGs')
+    firstName = StringField(
+        "Vorname Kind", validators=[InputRequired(), Length(max=50)]
+    )
+    familyName = StringField(
+        "Nachname Kind", validators=[InputRequired(), Length(max=50)]
+    )
+    mail = EmailField("E-Mail Adresse", validators=[InputRequired(), Email()])
+    klasse = StringField("Klasse", validators=[InputRequired(), Length(max=3)])
+    telefonnummer = TelField("Telefonnummer", validators=[])
+    ganztag = RadioField(
+        "Ganztag",
+        default=0,
+        choices=[(0, "kein Teilnahme"), (1, "bis 14:30 Uhr"), (2, "bis 17:00 Uhr")],
+        validators=[InputRequired()],
+    )
+    foevMitgliedsname = StringField("Name des Mitglieds", validators=[Length(max=50)])
+    beideAGs = BooleanField("beideAGs")
 
 
 # Request time logging. Uncomment the decorators
@@ -64,7 +73,7 @@ def eventView(eventID):
     )
     rv = cur.fetchone()
     if not rv:
-        app.logger.error(f"eventView: eventID unknown")  
+        app.logger.error(f"eventView: eventID unknown")
         return abort(404)
 
     event_data = {}
@@ -131,7 +140,7 @@ def register(eventID):
         return abort(404)
     event_data = dict(rv)
 
-    legal_plain = utils.strip_markdown(event_data['legal'])
+    legal_plain = utils.strip_markdown(event_data["legal"])
     legal_filename = f"AGB_{ event_data['title'].replace(' ', '_') }.txt"
 
     subject = f"Anmeldebestätigung für '{event_data['title']}'"
@@ -139,12 +148,15 @@ def register(eventID):
         subject,
         recipients=[user_data["mail"]],
         text_body=render_template(
-            "email_registered.txt", user_data=user_data, event_data=event_data
+            "email_registered.txt",
+            user_data=user_data,
+            event_data=event_data,
+            attendee_data=attendee_data,
         ),
         html_body=None,
         att_filename=legal_filename,
         att_mime="text/plain",
-        att_content=legal_plain
+        att_content=legal_plain,
     )
 
     return render_template(
@@ -152,24 +164,53 @@ def register(eventID):
     )
 
 
+@app.route("/event/<uuid:eventID>/deregister/<uuid:attendeeID>")
+def deregister(eventID, attendeeID):
+    cur = get_db().execute(
+        "SELECT * FROM event WHERE eventID = ? and active = 1",
+        (str(eventID),),
+    )
+    rv = cur.fetchone()
+    if not rv:
+        app.logger.error(f"deregister: eventID unknown or inactive")
+        return abort(404)
+    event_data = dict(rv)
+
+    cur = get_db().execute(
+        "SELECT userID FROM attendee WHERE attendeeID = ?", (str(attendeeID),)
+    )
+    rv = cur.fetchone()
+    if not rv:
+        app.logger.error(f"deregister: attendeeID unknown")
+        return abort(404)
+
+    get_db().execute(
+        "DELETE FROM user WHERE userID = ?",
+        (str(rv[0]),),
+    )
+    get_db().execute(
+        "DELETE FROM attendee WHERE attendeeID = ?",
+        (str(attendeeID),),
+    )
+    get_db().commit()
+
+    return render_template("deregistered.html", event_data=event_data)
+
 
 @app.route("/event/<uuid:eventID>/legal")
 def legal(eventID):
-    cur = get_db().execute(
-        "SELECT * FROM event WHERE eventID = ?", (str(eventID),)
-    )
+    cur = get_db().execute("SELECT * FROM event WHERE eventID = ?", (str(eventID),))
     rv = cur.fetchone()
     if not rv:
         app.logger.error(f"legal: eventID unknown")
         return abort(404)
 
     event_data = dict(rv)
-    if event_data['legal']:
-        event_data['legal'] = markdown.markdown(event_data['legal'])
+    if event_data["legal"]:
+        event_data["legal"] = markdown.markdown(event_data["legal"])
 
-    return render_template(
-        "legal.html", event_data=event_data
-    )
+    return render_template("legal.html", event_data=event_data)
+
 
 @app.route("/event/<uuid:eventID>/legal/download")
 def legal_download(eventID):
@@ -184,13 +225,15 @@ def legal_download(eventID):
     event_data = dict(rv)
     timestamp = datetime.utcnow().strftime("%d.%m.%Y")
 
-    legal_plain = utils.strip_markdown(event_data['legal'])
+    legal_plain = utils.strip_markdown(event_data["legal"])
     legal_txt = f"{legal_plain}\n\nHeruntergeladen am {timestamp}\n"
     legal_filename = f"AGB_{ event_data['title'].replace(' ', '_') }.txt"
 
-    f = io.BytesIO(legal_txt.encode('utf-8'))
+    f = io.BytesIO(legal_txt.encode("utf-8"))
 
-    return send_file(f, as_attachment=True, download_name=legal_filename, cache_timeout=0)
+    return send_file(
+        f, as_attachment=True, download_name=legal_filename, cache_timeout=0
+    )
 
 
 @app.route("/event/<uuid:eventID>/banner.jpg")
