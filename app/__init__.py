@@ -7,8 +7,6 @@ import sqlite3
 import os
 from pathlib import Path
 
-from importlib_metadata import version
-
 
 DATABASE = "apparatus.db"
 
@@ -22,7 +20,7 @@ app.config["MAIL_DEFAULT_SENDER"] = os.getenv("MAIL_DEFAULT_SENDER")
 app.config["MAIL_USE_TLS"] = True
 app.config["MAIL_SUPPRESS_SEND"] = False
 app.config["MAIL_DEBUG"] = False
-app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 
 version = "dev"
 version_file = Path("VERSION")
@@ -40,7 +38,9 @@ qrcode = QRcode(app)
 # https://flask-limiter.readthedocs.io/en/stable/
 limiter = Limiter(app, key_func=get_remote_address)
 
-app.logger.warning(f"Python SQLite module version: {sqlite3.version}, SQLite library version: {sqlite3.sqlite_version}")
+app.logger.warning(
+    f"Python SQLite module version: {sqlite3.version}, SQLite library version: {sqlite3.sqlite_version}"
+)
 
 
 def get_db():
@@ -57,6 +57,11 @@ def close_connection(exception):
     db = getattr(g, "_database", None)
     if db is not None:
         db.close()
+
+
+from app.election import bp as election_bp
+
+app.register_blueprint(election_bp, url_prefix="/election")
 
 
 from app import routes
