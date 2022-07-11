@@ -4,7 +4,7 @@ Visit the site at https://event-apparatus.de/
 
 # ToDos
 
-* backup endpoint
+* finish field description
 * separate db file for election
 * registration deadline
 * favicon

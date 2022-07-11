@@ -8,7 +8,7 @@ import os
 from pathlib import Path
 
 
-DATABASE = "apparatus.db"
+EVENT_DB = "event.db"
 
 app = Flask(__name__)
 
@@ -21,6 +21,8 @@ app.config["MAIL_USE_TLS"] = True
 app.config["MAIL_SUPPRESS_SEND"] = False
 app.config["MAIL_DEBUG"] = False
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
+app.config["BACKUP_SECRET"] = os.getenv("BACKUP_SECRET")
+
 
 version = "dev"
 version_file = Path("VERSION")
@@ -46,8 +48,7 @@ app.logger.warning(
 def get_db():
     db = getattr(g, "_database", None)
     if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
-
+        db = g._database = sqlite3.connect(EVENT_DB)
     db.row_factory = sqlite3.Row
     return db
 

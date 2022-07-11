@@ -129,5 +129,7 @@ dmypy.json
 .pyre/
 
 # Apparatus
-apparatus.db
+event.db
+election.db
+backup_*.db
 VERSION

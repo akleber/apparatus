@@ -1,4 +1,4 @@
-from app import app, get_db, limiter, utils
+from app import app, get_db, limiter, utils, EVENT_DB
 from app.fieldDescriptions import get_field_description
 from flask import (
     url_for,
@@ -14,6 +14,8 @@ import markdown
 import uuid
 import time
 import io
+import sqlite3
+import tempfile
 from datetime import datetime
 from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, RadioField, EmailField, TelField
@@ -318,3 +320,29 @@ def t(tinylink):
         return abort(404)
 
     return redirect(url_for("eventView", eventID=rv[0]))
+
+
+@app.route("/backup/<backup_secret>")
+def backup(backup_secret):
+    if backup_secret != app.config["BACKUP_SECRET"]:
+        app.logger.error(f"backup: secret wrong")
+        abort(404)
+
+    backup_filename = "backup_event.db"
+
+    con = sqlite3.connect(EVENT_DB)
+    bck = sqlite3.connect(backup_filename)
+    with bck:
+        con.backup(bck)
+    bck.close()
+    con.close()
+
+    timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+    download_name = f"event_{timestamp}.db"
+
+    return send_file(
+        path_or_file=f"../{backup_filename}",
+        mimetype="application/octet-stream",
+        as_attachment=True,
+        download_name=download_name,
+    )
