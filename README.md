@@ -4,8 +4,6 @@ Visit the site at https://event-apparatus.de/
 
 # ToDos
 
-* finish field description
-* separate db file for election
 * registration deadline
 * favicon
 * investigate https://docs.python.org/3/library/secrets.html#secrets.token_urlsafe
