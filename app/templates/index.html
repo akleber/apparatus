@@ -27,9 +27,11 @@
             class="btn">Demo Admin</button></a>
 </p>
 
+{% if config['ENV'] == 'development' %}
 <p>
     <a href="{{ url_for('election.index') }}"><button class="btn">Abstimmung Demo</button></a>
 </p>
+{% endif %}
 
 <div class="p-2"></div>
 
