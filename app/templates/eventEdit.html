@@ -2,7 +2,11 @@
 
 {% block content %}
 
+{% if add == True %}
 <h1>Neue Veranstaltung anlegen</h1>
+{% else %}
+<h1>Veranstaltung bearbeiten</h1>
+{% endif %}
 
 <form class="form-horizontal"
     action="{{ url_for('eventAdmin_event_save', adminToken=event_data.adminToken, eventID=event_data.eventID) }}"
@@ -40,8 +44,6 @@
     {% endif %}
 
     <div class="p-2"></div>
-
-    <h4>Veranstaltung</h4>
 
     <div class="form-group">
         <label class="form-label" for="input-example-1">Veranstaltungstitel</label>
