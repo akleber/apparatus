@@ -86,11 +86,17 @@ FROM user
 JOIN attendee ON user.userID = attendee.userID 
 LEFT OUTER JOIN activity a1 ON attendee.primaryActivityChoice = a1.activityID
 LEFT OUTER JOIN activity a2 ON attendee.secondaryActivityChoice = a2.activityID;
-DROP VIEW IF EXISTS "eventAttendees";
-CREATE VIEW "eventAttendees" AS SELECT e.eventID, group_concat(a.title, ", ") as title, u.firstName, u.familyName, u.mail, u.mailVerificationToken,at.attendeeID,at.klasse
+DROP VIEW "main"."eventAttendees";
+CREATE VIEW "eventAttendees" AS SELECT e.eventID, u.firstName, u.familyName, u.mail, u.mailVerificationToken,at.klasse,group_concat(a.title, ", ") as AGs,at.attendeeID
 FROM event as e
 INNER JOIN activity a ON a.eventID = e.eventID
 INNER JOIN attendee at ON a.activityID = at.primaryActivityChoice OR a.activityID = at.secondaryActivityChoice
 INNER JOIN user u ON at.userID = u.userID
 GROUP BY u.firstName, u.familyName;
+DROP VIEW "main"."eventAttendeesXlsx";
+CREATE VIEW "eventAttendeesXlsx" AS SELECT e.eventID, u.firstName, u.familyName, u.mail, u.mailVerificationToken,at.klasse,at.ganztag,at.telefonnummer,at.foevMitgliedsname,at.beideAGs,a.title as AG
+FROM event as e
+INNER JOIN activity a ON a.eventID = e.eventID
+INNER JOIN attendee at ON a.activityID = at.primaryActivityChoice OR a.activityID = at.secondaryActivityChoice
+INNER JOIN user u ON at.userID = u.userID;
 COMMIT;

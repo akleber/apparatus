@@ -290,7 +290,7 @@ def eventAdmin_attendees_xlsx(adminToken, eventID):
 
     excel_rows = []
     cur = get_db().execute(
-        "SELECT * FROM eventAttendees WHERE eventID = ?", (str(eventID),)
+        "SELECT * FROM eventAttendeesXlsx WHERE eventID = ?", (str(eventID),)
     )
 
     excel_col_names = []
