@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Apparatus - Election</title>
+    <meta charset="utf-8">
+    <meta name="robots" content="none">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="Apparatus event registration.">
+    <!--<link rel="shortcut icon" href="../img/favicons/favicon.ico">
+    <link rel="icon" href="../img/favicons/favicon.png">-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='spectre.min.css') }}">
+    <!--<link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css">-->
+</head>
+
+<body class="bg-gray">
+    <div class="p-2"></div>
+
+    <!-- 100% width container with max-width set to grid-lg (960px) -->
+    <div class="container grid-lg" style="background: #ffffff">
+        <h2>
+            Abstimmung
+        </h2>
+
+        <div class="columns">
+            <div class="column col-3 col-xs-12" style="margin-top: 0.2rem">
+                <p>
+                    {{ election_data.description }}
+                </p>
+                <p>Stimmen von:<br />
+                    {{ ", ".join(names) }}
+                </p>
+            </div>
+
+            <div class="column col-9 col-xs-12">
+                {% if election_data.mode == 0 %}
+                {% for o in election_options %}
+                <div class="form-group">
+                    <label class="form-checkbox">
+                        <input type="checkbox" name="option" value="{{ o['optionID'] }}">
+                        <i class="form-icon"></i> {{ o['name'] }} ({{ o['count'] }} Stimmen)
+                    </label>
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                <div class="columns form-group">
+                    <div class="column col-6 col-sm-12 form-inline">
+                        <input class="form-input" type="text" name="name" placeholder="Name">
+                    </div>
+
+                    <div class="column col-6 col-sm-12 form-inline">
+                        <button class="btn btn-primary btn-block">Speichern</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="p-2"></div>
+
+
+
+
+        <div class="divider"></div>
+
+        <div class="text-right text-small text-muted">
+            <a href="{{ url_for('index') }}">Apparatus - Election</a> by Andreas Kleber, Version <a
+                href="https://github.com/akleber/apparatus">{{ config['VERSION'] }}</a>
+        </div>
+
+        <div class="p-2"></div>
+    </div>
+
+</body>
+
+</html>
