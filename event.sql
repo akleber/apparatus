@@ -92,7 +92,7 @@ FROM event as e
 INNER JOIN activity a ON a.eventID = e.eventID
 INNER JOIN attendee at ON a.activityID = at.primaryActivityChoice OR a.activityID = at.secondaryActivityChoice
 INNER JOIN user u ON at.userID = u.userID
-GROUP BY u.firstName, u.familyName;
+GROUP BY u.userID;
 DROP VIEW "main"."eventAttendeesXlsx";
 CREATE VIEW "eventAttendeesXlsx" AS SELECT e.eventID, u.firstName, u.familyName, u.mail, u.mailVerificationToken,at.klasse,at.ganztag,at.telefonnummer,at.foevMitgliedsname,at.beideAGs,a.title as AG
 FROM event as e
