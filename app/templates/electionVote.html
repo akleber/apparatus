@@ -1,84 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'electionBase.html' %}
 
-<head>
-    <title>Apparatus - Election</title>
-    <meta charset="utf-8">
-    <meta name="robots" content="none">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="description" content="Apparatus event registration.">
-    <!--<link rel="shortcut icon" href="../img/favicons/favicon.ico">
-    <link rel="icon" href="../img/favicons/favicon.png">-->
-    <link rel="stylesheet" href="{{ url_for('static', filename='spectre.min.css') }}">
-    <!--<link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css">-->
-</head>
+{% block content %}
 
-<body class="bg-gray">
-    <div class="p-2"></div>
+<h2>
+    Abstimmung
+</h2>
 
-    <!-- 100% width container with max-width set to grid-lg (960px) -->
-    <div class="container grid-lg" style="background: #ffffff">
-        <h2>
-            Abstimmung
-        </h2>
-
-        <div class="columns">
-            <div class="column col-3 col-xs-12" style="margin-top: 0.2rem">
-                <p>
-                    {{ election_data.description }}
-                </p>
-                <p>Stimmen von:<br />
-                    {{ ", ".join(names) }}
-                </p>
-            </div>
-
-            <div class="column col-9 col-xs-12">
-                <form name="form1" class="" action="{{ url_for('election.vote', electionID=election_data.electionID) }}"
-                    method="POST">
-
-                    {{ form.csrf_token }}
-
-                    {% if election_data.mode == 0 %}
-                    {% for o in election_options %}
-                    <div class="form-group">
-                        <label class="form-checkbox">
-                            <input type="checkbox" name="option" value="{{ o['optionID'] }}">
-                            <i class="form-icon"></i> {{ o['name'] }} ({{ o['count'] }} Stimmen)
-                        </label>
-                    </div>
-                    {% endfor %}
-                    {% endif %}
-
-                    <div class="columns form-group">
-                        <div class="column col-6 col-sm-12 form-inline">
-                            {{ form.name(class="form-input", placeholder=form.name.label.text) }}
-                        </div>
-
-                        <div class="column col-6 col-sm-12 form-inline">
-                            <button class="btn btn-primary btn-block">Abstimmen</button>
-                        </div>
-                    </div>
-                </form>
-
-            </div>
-        </div>
-
-        <div class="p-2"></div>
-
-
-
-
-        <div class="divider"></div>
-
-        <div class="text-right text-small text-muted">
-            <a href="{{ url_for('index') }}">Apparatus - Election</a> by Andreas Kleber, Version <a
-                href="https://github.com/akleber/apparatus">{{ config['VERSION'] }}</a>
-        </div>
-
-        <div class="p-2"></div>
+<div class="columns">
+    <div class="column col-3 col-xs-12" style="margin-top: 0.2rem">
+        <p>
+            {{ election_data.description }}
+        </p>
+        <p>Insg. {{ election_data.count_total }} Stimmen von:<br />
+            {{ ", ".join(names) }}
+        </p>
     </div>
 
-</body>
+    <div class="column col-9 col-xs-12">
+        <form name="form1" class="" action="{{ url_for('election.vote', electionID=election_data.electionID) }}"
+            method="POST">
 
-</html>
+            {{ form.csrf_token }}
+
+            {% if request.cookies.get('voted') == election_data.electionID %}
+            <div class="toast toast-success">
+                Danke für deine Stimme.
+            </div>
+            {% endif %}
+
+            {% if election_data.mode == 0 %}
+            {% for o in election_options %}
+            <div class="form-group">
+                <label class="form-checkbox">
+                    <input type="checkbox" name="option" value="{{ o['optionID'] }}" {% if
+                        request.cookies.get('voted')==election_data.electionID %}disabled{% endif %}>
+                    <i class="form-icon"></i> {{ o['name'] }} ({{ o['count'] }} Stimmen)
+                </label>
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            <div class="columns form-group">
+                <div class="column col-6 col-sm-12 form-inline">
+                    <input class="form-input" id="name" maxlength="50" name="name"
+                        placeholder="{{form.name.label.text}}" required="" type="text" value="" {% if
+                        request.cookies.get('voted')==election_data.electionID %}disabled{% endif%}>
+                </div>
+
+                <div class="column col-6 col-sm-12 form-inline">
+                    <button class="btn btn-primary btn-block" {% if
+                        request.cookies.get('voted')==election_data.electionID %}disabled{% endif %}>Abstimmen</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

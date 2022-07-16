@@ -1,5 +1,14 @@
 from app.election import bp, get_db
-from flask import render_template, current_app, abort, request
+from flask import (
+    render_template,
+    current_app,
+    abort,
+    request,
+    redirect,
+    session,
+    url_for,
+    make_response,
+)
 from flask_wtf import FlaskForm
 from wtforms import StringField
 from wtforms.validators import InputRequired, Length
@@ -31,6 +40,7 @@ def election(electionID):
         "SELECT * FROM election_options WHERE electionID = ? ORDER BY rank",
         (str(electionID),),
     )
+    count_total = 0
     names = set()
     election_options = []
     for row in cur:
@@ -45,6 +55,7 @@ def election(electionID):
         if rv2:
             count = rv2[1]
 
+        count_total = count_total + count
         a["count"] = count
         election_options.append(a)
 
@@ -55,6 +66,10 @@ def election(electionID):
         for row2 in cur2:
             names.add(row2[0])
 
+    election_data["count_total"] = count_total
+
+    names = list(names)
+    names.sort()
     form = VoteForm()
 
     return render_template(
@@ -83,4 +98,10 @@ def vote(electionID):
         get_db().execute(sql, vote_data)
 
     get_db().commit()
-    return "voted"
+
+    response = make_response(
+        redirect(url_for("election.election", electionID=electionID))
+    )
+    # TODO add "expires=datetime-object"
+    response.set_cookie("voted", str(electionID))
+    return response
