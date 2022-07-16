@@ -34,26 +34,32 @@
             </div>
 
             <div class="column col-9 col-xs-12">
-                {% if election_data.mode == 0 %}
-                {% for o in election_options %}
-                <div class="form-group">
-                    <label class="form-checkbox">
-                        <input type="checkbox" name="option" value="{{ o['optionID'] }}">
-                        <i class="form-icon"></i> {{ o['name'] }} ({{ o['count'] }} Stimmen)
-                    </label>
-                </div>
-                {% endfor %}
-                {% endif %}
+                <form name="form1" class="" action="{{ url_for('election.vote', electionID=election_data.electionID) }}"
+                    method="POST">
 
-                <div class="columns form-group">
-                    <div class="column col-6 col-sm-12 form-inline">
-                        <input class="form-input" type="text" name="name" placeholder="Name">
-                    </div>
+                    {{ form.csrf_token }}
 
-                    <div class="column col-6 col-sm-12 form-inline">
-                        <button class="btn btn-primary btn-block">Speichern</button>
+                    {% if election_data.mode == 0 %}
+                    {% for o in election_options %}
+                    <div class="form-group">
+                        <label class="form-checkbox">
+                            <input type="checkbox" name="option" value="{{ o['optionID'] }}">
+                            <i class="form-icon"></i> {{ o['name'] }} ({{ o['count'] }} Stimmen)
+                        </label>
                     </div>
-                </div>
+                    {% endfor %}
+                    {% endif %}
+
+                    <div class="columns form-group">
+                        <div class="column col-6 col-sm-12 form-inline">
+                            {{ form.name(class="form-input", placeholder=form.name.label.text) }}
+                        </div>
+
+                        <div class="column col-6 col-sm-12 form-inline">
+                            <button class="btn btn-primary btn-block">Abstimmen</button>
+                        </div>
+                    </div>
+                </form>
 
             </div>
         </div>
