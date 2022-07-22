@@ -7,7 +7,7 @@
 </h2>
 
 <div class="columns">
-    <div class="column col-3 col-xs-12" style="margin-top: 0.2rem">
+    <div class="column col-3 col-xs-12">
         <p>
             {{ election_data.description }}
         </p>
@@ -26,19 +26,20 @@
             <div class="toast toast-success">
                 Danke für deine Stimme.
             </div>
+            {% else %}
+            Bitte eine {% if election_data.mode==0 %}oder mehrere {% endif %}Möglichkeiten auswählen:
             {% endif %}
 
-            {% if election_data.mode == 0 %}
             {% for o in election_options %}
             <div class="form-group">
-                <label class="form-checkbox">
-                    <input type="checkbox" name="option" value="{{ o['optionID'] }}" {% if
-                        request.cookies.get('voted')==election_data.electionID %}disabled{% endif %}>
-                    <i class="form-icon"></i> {{ o['name'] }} ({{ o['count'] }} Stimmen)
+                <label class="form-{{ election_data.widget }}">
+                    <input type="{{ election_data.widget }}" name="option" value="{{ o['optionID'] }}" {% if
+                        request.cookies.get('voted')==election_data.electionID %}disabled{% endif %} {% if o.rank==99
+                        and election_data.mode==1 and not request.cookies.get('voted') %}checked{% endif %}>
+                    <i class="form-icon"></i> {{ o.name }} ({{ o.count }} Stimmen)
                 </label>
             </div>
             {% endfor %}
-            {% endif %}
 
             <div class="columns form-group">
                 <div class="column col-6 col-sm-12 form-inline">

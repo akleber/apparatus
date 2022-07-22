@@ -36,6 +36,11 @@ def election(electionID):
         return abort(404)
     election_data = dict(rv)
 
+    if election_data["mode"] == 0:
+        election_data["widget"] = "checkbox"
+    else:
+        election_data["widget"] = "radio"
+
     cur = get_db().execute(
         "SELECT * FROM election_options WHERE electionID = ? ORDER BY rank",
         (str(electionID),),
