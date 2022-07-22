@@ -1,0 +1,74 @@
+{% extends 'electionBase.html' %}
+
+{% block content %}
+
+<h2>
+    Abstimmung bearbeiten
+</h2>
+
+<div class="columns">
+    <div class="column col-12">
+
+        <form name="form1" class="" action="{{ url_for('election.vote', electionID=election_data.electionID) }}"
+            method="POST">
+            <textarea class="editor form-input" name="description" rows="15">{{ election_data.description }}</textarea>
+            <script src="/static/ckeditor.js"></script>
+            <script>ClassicEditor
+                    .create(document.querySelector('.editor'), {
+                        licenseKey: '',
+                    })
+                    .then(editor => {
+                        window.editor = editor;
+                    })
+                    .catch(error => {
+                        console.error('Oops, something went wrong!');
+                        console.error('Please, report the following error on https://github.com/ckeditor/ckeditor5/issues with the build id and the error stack trace:');
+                        console.warn('Build id: lhsa3bvxspkt-ya513se3c5et');
+                        console.error(error);
+                    });
+            </script>
+
+            <div class="p-2"></div>
+
+            <div class="form-group form-inline">
+                <label class="form-label form-inline">Ende der Abstimmung: </label>
+                <input type="datetime-local" name="deadline" value="{{ election_data.deadline_str }}">
+            </div>
+            <p>
+                Nach dem Ende der Abstimmung steht sie zur Ansicht des Ergebnis noch zwei Wochen zur Verfügung,
+                ohne das man noch abstimmen kann.
+                Danach werden alle Daten automatisch gelöscht.
+            </p>
+
+            <p>
+                Abstimmungsauswahl:
+            </p>
+
+            <ul>
+                {% for o in election_options %}
+                <li>
+                    {{ o.name }}
+                    -
+                    <a href="#">Löschen
+                        <i class="icon icon-delete"></i></a>
+                </li>
+                {% endfor %}
+            </ul>
+
+
+            <div class="columns form-group">
+                <div class="column col-6 col-sm-12 form-inline">
+                    <input class="form-input" id="name" maxlength="50" name="name" placeholder="name" required=""
+                        type="text" value="">
+                </div>
+
+                <div class="column col-6 col-sm-12 form-inline">
+                    <button class="btn btn-primary btn-block">Abstimmen</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

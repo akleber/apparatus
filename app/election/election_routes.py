@@ -12,6 +12,7 @@ from flask import (
 from flask_wtf import FlaskForm
 from wtforms import StringField
 from wtforms.validators import InputRequired, Length
+from datetime import datetime, timedelta
 
 
 class VoteForm(FlaskForm):
@@ -110,3 +111,36 @@ def vote(electionID):
     # TODO add "expires=datetime-object"
     response.set_cookie("voted", str(electionID))
     return response
+
+
+@bp.route("/<uuid:electionID>/edit")
+def edit(electionID):
+    cur = get_db().execute(
+        "SELECT * FROM election WHERE electionID = ? ",
+        (str(electionID),),
+    )
+    rv = cur.fetchone()
+    if not rv:
+        current_app.logger.error(f"edit: electionID unknown")
+        return abort(404)
+    election_data = dict(rv)
+
+    election_options = []
+    cur = get_db().execute(
+        "SELECT * FROM election_options WHERE electionID = ? ORDER BY rank",
+        (str(electionID),),
+    )
+    for row in cur:
+        a = dict(row)
+        election_options.append(a)
+
+    in_a_weeks = datetime.now() + timedelta(weeks=1)
+    in_a_weeks = in_a_weeks.replace(hour=23, minute=59)
+    deadline_str = in_a_weeks.strftime("%Y-%m-%dT%H:%M")
+    election_data["deadline_str"] = deadline_str
+
+    return render_template(
+        "electionEdit.html",
+        election_data=election_data,
+        election_options=election_options,
+    )
