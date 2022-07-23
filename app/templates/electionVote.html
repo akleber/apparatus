@@ -11,9 +11,13 @@
         <p>
             {{ election_data.description }}
         </p>
-        <p>Insg. {{ election_data.count_total }} Stimmen von:<br />
+        <p class="text-small">Insg. {{ election_data.count_total }} Stimmen von:<br />
             {{ ", ".join(names) }}
         </p>
+        <div>
+            Link zur Abstimmung:
+        </div>
+        <img src="{{ url_for('election.qr', electionID=election_data.electionID) }}" width="80%" />
     </div>
 
     <div class="column col-9 col-xs-12">

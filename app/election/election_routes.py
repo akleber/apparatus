@@ -1,4 +1,5 @@
 from app.election import bp, get_db
+from app import qrcode
 from flask import (
     render_template,
     current_app,
@@ -8,6 +9,7 @@ from flask import (
     session,
     url_for,
     make_response,
+    send_file,
 )
 from flask_wtf import FlaskForm
 from wtforms import StringField
@@ -143,4 +145,12 @@ def edit(electionID):
         "electionEdit.html",
         election_data=election_data,
         election_options=election_options,
+    )
+
+
+@bp.route("/<uuid:electionID>/qr", methods=["GET"])
+def qr(electionID):
+    url = url_for("election.election", electionID=electionID)
+    return send_file(
+        qrcode(request.url_root[:-1] + url, mode="raw"), mimetype="image/png"
     )
