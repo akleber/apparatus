@@ -137,7 +137,7 @@ def qr(eventID):
         app.logger.error(f"qr: eventID unknown")
         return abort(404)
 
-    url = url_for("t", tinylink=rv["tinylink"])
+    url = url_for("q", tinylink=rv["tinylink"])
     return send_file(
         qrcode(request.url_root[:-1] + url, mode="raw"), mimetype="image/png"
     )
