@@ -30,7 +30,9 @@ def eventAdmin(adminToken, eventID):
     event_data = get_event_data_verify_admin(adminToken, eventID)
 
     activity_data = []
-    cur = get_db().execute("SELECT * FROM activity WHERE eventID = ?", (str(eventID),))
+    cur = get_db().execute(
+        "SELECT * FROM activity WHERE eventID = ? ORDER BY title", (str(eventID),)
+    )
     for row in cur:
         activity_data.append(dict(row))
 

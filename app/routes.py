@@ -31,15 +31,21 @@ class RegisterForm(FlaskForm):
     )
     mail = EmailField("E-Mail Adresse", validators=[InputRequired(), Email()])
     klasse = StringField("Klasse", validators=[InputRequired(), Length(max=3)])
-    telefonnummer = TelField("Telefonnummer", validators=[])
+    telefonnummer = TelField("Telefonnummer", validators=[InputRequired()])
     ganztag = RadioField(
         "Ganztag",
         default=0,
-        choices=[(0, "kein Teilnahme"), (1, "bis 14:30 Uhr"), (2, "bis 17:00 Uhr")],
+        choices=[(0, "keine Teilnahme"), (1, "bis 14:30 Uhr"), (2, "bis 17:00 Uhr")],
         validators=[InputRequired()],
     )
     foevMitgliedsname = StringField("Name des Mitglieds", validators=[Length(max=50)])
     beideAGs = BooleanField("beideAGs")
+    geschlecht = RadioField(
+        "Geschlecht",
+        default=None,
+        choices=[(0, "Männlich"), (1, "Weiblich"), (2, "Divers")],
+        validators=[InputRequired()],
+    )
 
 
 # Request time logging. Uncomment the decorators
@@ -85,7 +91,7 @@ def eventView(eventID):
 
     activity_data = []
     cur = get_db().execute(
-        "SELECT activityID, title FROM activity WHERE eventID = ? and active = 1",
+        "SELECT activityID, title FROM activity WHERE eventID = ? and active = 1 ORDER BY title",
         (str(eventID),),
     )
     for data in cur:
@@ -118,15 +124,16 @@ def register(eventID):
         "userID": userID,
         "klasse": form.klasse.data,
         "ganztag": form.ganztag.data,
+        "geschlecht": form.geschlecht.data,
         "telefonnummer": form.telefonnummer.data,
         "foevMitgliedsname": form.foevMitgliedsname.data,
         "beideAGs": form.beideAGs.data,
         "primaryActivityChoice": activities[0] if len(activities) >= 1 else "",
         "secondaryActivityChoice": activities[1] if len(activities) == 2 else "",
     }
-    sql = """INSERT INTO attendee (attendeeID, userID, klasse, ganztag, telefonnummer, 
+    sql = """INSERT INTO attendee (attendeeID, userID, klasse, ganztag, geschlecht, telefonnummer, 
              foevMitgliedsname, beideAGs, primaryActivityChoice, secondaryActivityChoice) 
-             VALUES (:attendeeID, :userID, :klasse, :ganztag, :telefonnummer, :foevMitgliedsname,
+             VALUES (:attendeeID, :userID, :klasse, :ganztag, :geschlecht, :telefonnummer, :foevMitgliedsname,
              :beideAGs, :primaryActivityChoice, :secondaryActivityChoice);"""
     get_db().execute(sql, attendee_data)
     get_db().commit()
