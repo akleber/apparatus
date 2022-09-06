@@ -100,6 +100,8 @@ def eventView(eventID):
 
     form = RegisterForm()
 
+    utils.stats_event(f"view-{str(eventID)}")
+
     return render_template(
         "register.html", event_data=event_data, activity_data=activity_data, form=form
     )
@@ -317,6 +319,7 @@ def gdpr(gdprToken):
     return render_template("gdpr.html", gdpr_data=gdpr_data_desc)
 
 
+# for statistics purposes we distinguish between q qr code link and a tinylink
 @app.route("/t/<tinylink>")
 @limiter.limit("10/minute")
 def t(tinylink):
@@ -326,6 +329,21 @@ def t(tinylink):
         app.logger.error(f"t: tinylink unknown")
         return abort(404)
 
+    utils.stats_event(f"t-{tinylink}")
+    return redirect(url_for("eventView", eventID=rv[0]))
+
+
+# see above
+@app.route("/q/<tinylink>")
+@limiter.limit("10/minute")
+def q(tinylink):
+    cur = get_db().execute("SELECT eventID FROM event WHERE tinylink = ?", (tinylink,))
+    rv = cur.fetchone()
+    if not rv:
+        app.logger.error(f"q: tinylink unknown")
+        return abort(404)
+
+    utils.stats_event(f"q-{tinylink}")
     return redirect(url_for("eventView", eventID=rv[0]))
 
 
