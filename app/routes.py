@@ -124,7 +124,7 @@ def register(eventID):
     attendee_data = {
         "attendeeID": str(uuid.uuid4()),
         "userID": userID,
-        "klasse": form.klasse.data,
+        "klasse": (form.klasse.data).replace(" ", "").lower(),
         "ganztag": form.ganztag.data,
         "geschlecht": form.geschlecht.data,
         "telefonnummer": form.telefonnummer.data,
