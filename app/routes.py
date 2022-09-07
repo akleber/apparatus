@@ -111,8 +111,8 @@ def eventView(eventID):
 def register(eventID):
     form = RegisterForm()
     if not form.validate_on_submit():
-        app.logger.error(f"register: form validation failed")
-        abort(400)
+        app.logger.error(f"register: form validation failed: { form.errors }")
+        abort(400, f"Form validation failed: { form.errors }")
 
     userID, user_data = utils.add_user(
         form.firstName.data,

@@ -93,8 +93,8 @@ def election(electionID):
 def vote(electionID):
     form = VoteForm()
     if not form.validate_on_submit():
-        current_app.logger.error(f"vote: form validation failed")
-        abort(400)
+        current_app.logger.error(f"vote: form validation failed: { form.errors }")
+        abort(400, f"Form validation failed: { form.errors }")
 
     votes = request.form.getlist("option")
     print(votes)
