@@ -70,7 +70,7 @@ FROM event as e
 INNER JOIN activity a ON a.eventID = e.eventID
 INNER JOIN attendee at ON a.activityID = at.primaryActivityChoice OR a.activityID = at.secondaryActivityChoice
 INNER JOIN user u ON at.userID = u.userID
-GROUP BY u.firstName, u.familyName
+GROUP BY u.userID
 """
 
 eventAttendeesXlsx_view = """
