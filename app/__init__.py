@@ -61,6 +61,44 @@ def close_connection(exception):
         db.close()
 
 
+eventAttendees_view = """
+DROP VIEW IF EXISTS "main"."eventAttendees";
+CREATE VIEW "eventAttendees" AS SELECT e.eventID, u.firstName, u.familyName, u.mail, u.mailVerificationToken,at.klasse,group_concat(a.title, "|") as AGs,at.attendeeID
+FROM event as e
+INNER JOIN activity a ON a.eventID = e.eventID
+INNER JOIN attendee at ON a.activityID = at.primaryActivityChoice OR a.activityID = at.secondaryActivityChoice
+INNER JOIN user u ON at.userID = u.userID
+GROUP BY u.firstName, u.familyName
+"""
+
+eventAttendeesXlsx_view = """
+DROP VIEW IF EXISTS "main"."eventAttendeesXlsx";
+CREATE VIEW "eventAttendeesXlsx" AS SELECT e.eventID, u.firstName, u.familyName, u.mail, u.mailVerificationToken,at.klasse,at.geschlecht,at.ganztag,at.telefonnummer,at.foevMitgliedsname,at.beideAGs,a.title as AG
+FROM event as e
+INNER JOIN activity a ON a.eventID = e.eventID
+INNER JOIN attendee at ON a.activityID = at.primaryActivityChoice OR a.activityID = at.secondaryActivityChoice
+INNER JOIN user u ON at.userID = u.userID
+"""
+
+gdprView = """
+DROP VIEW IF EXISTS "main"."gdprView";
+CREATE VIEW gdprView AS
+SELECT user.firstName , user.familyName , user.mail, user.mailVerificationToken , user.gdprToken, 
+attendee.klasse, attendee.geschlecht, attendee.ganztag, attendee.telefonnummer, attendee.foevMitgliedsname , attendee.beideAGs,
+a1.title AS title1, a2.title as title2
+FROM user 
+JOIN attendee ON user.userID = attendee.userID 
+LEFT OUTER JOIN activity a1 ON attendee.primaryActivityChoice = a1.activityID
+LEFT OUTER JOIN activity a2 ON attendee.secondaryActivityChoice = a2.activityID
+"""
+
+with app.app_context():
+    get_db().executescript(eventAttendees_view)
+    get_db().executescript(eventAttendeesXlsx_view)
+    get_db().executescript(gdprView)
+    get_db().commit()
+app.logger.info(f"updated sql views")
+
 from app.election import bp as election_bp
 
 app.register_blueprint(election_bp, url_prefix="/election")
