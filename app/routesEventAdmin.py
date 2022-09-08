@@ -15,7 +15,7 @@ def get_event_data_verify_admin(adminToken: uuid, eventID: uuid) -> dict:
     cur = get_db().execute("SELECT * FROM event WHERE eventID = ?", (str(eventID),))
     rv = cur.fetchone()
     if not rv:
-        app.logger.error(f"get_event_data_verify_admin: eventID unknown")
+        app.logger.error(f"get_event_data_verify_admin: eventID {eventID} unknown")
         abort(404)
     event_data = dict(rv)
     if event_data["adminToken"] != str(adminToken):
@@ -134,7 +134,7 @@ def qr(eventID):
     )
     rv = cur.fetchone()
     if not rv:
-        app.logger.error(f"qr: eventID unknown")
+        app.logger.error(f"qr: eventID {eventID} unknown")
         return abort(404)
 
     url = url_for("q", tinylink=rv["tinylink"])

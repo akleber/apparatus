@@ -81,7 +81,7 @@ def eventView(eventID):
     )
     rv = cur.fetchone()
     if not rv:
-        app.logger.error(f"eventView: eventID unknown")
+        app.logger.error(f"eventView: eventID {eventID} unknown")
         return abort(404)
 
     event_data = {}
@@ -147,7 +147,7 @@ def register(eventID):
     )
     rv = cur.fetchone()
     if not rv:
-        app.logger.error(f"register: eventID unknown")
+        app.logger.error(f"register: eventID {eventID} unknown")
         return abort(404)
     event_data = dict(rv)
 
@@ -183,7 +183,7 @@ def deregister(eventID, attendeeID):
     )
     rv = cur.fetchone()
     if not rv:
-        app.logger.error(f"deregister: eventID unknown or inactive")
+        app.logger.error(f"deregister: eventID {eventID} unknown or inactive")
         return abort(404)
     event_data = dict(rv)
 
@@ -192,7 +192,7 @@ def deregister(eventID, attendeeID):
     )
     rv = cur.fetchone()
     if not rv:
-        app.logger.error(f"deregister: attendeeID unknown")
+        app.logger.error(f"deregister: attendeeID {attendeeID} unknown")
         return abort(404)
 
     get_db().execute(
@@ -213,7 +213,7 @@ def legal(eventID):
     cur = get_db().execute("SELECT * FROM event WHERE eventID = ?", (str(eventID),))
     rv = cur.fetchone()
     if not rv:
-        app.logger.error(f"legal: eventID unknown")
+        app.logger.error(f"legal: eventID {eventID} unknown")
         return abort(404)
 
     event_data = dict(rv)
@@ -273,7 +273,7 @@ def activityAbout(activityID):
     )
     rv = cur.fetchone()
     if not rv:
-        app.logger.error(f"activityAbout: activityID unknown")
+        app.logger.error(f"activityAbout: activityID {activityID} unknown")
         return abort(404)
 
     event_data = {}
@@ -300,6 +300,9 @@ def verifyMail(mailVerificationToken):
         get_db().commit()
         return render_template("mailVerified.html", user_data=user_data)
     else:
+        app.logger.error(
+            f"verifyMail: mailVerificationToken {mailVerificationToken} unknown"
+        )
         return "E-Mail Verifizierungstoken unbekannt oder E-Mail Adresse bereits verifiziert"
 
 
@@ -308,7 +311,7 @@ def gdpr(gdprToken):
     cur = get_db().execute("SELECT * FROM gdprView WHERE gdprToken = ?", (gdprToken,))
     rv = cur.fetchone()
     if not rv:
-        app.logger.error(f"gdpr: gdprToken unknown")
+        app.logger.error(f"gdpr: gdprToken {gdprToken} unknown")
         return abort(404)
     gdpr_data = dict(rv)
 
@@ -326,7 +329,7 @@ def t(tinylink):
     cur = get_db().execute("SELECT eventID FROM event WHERE tinylink = ?", (tinylink,))
     rv = cur.fetchone()
     if not rv:
-        app.logger.error(f"t: tinylink unknown")
+        app.logger.error(f"t: tinylink {tinylink} unknown")
         return abort(404)
 
     utils.stats_event(f"t-{tinylink}")
@@ -340,7 +343,7 @@ def q(tinylink):
     cur = get_db().execute("SELECT eventID FROM event WHERE tinylink = ?", (tinylink,))
     rv = cur.fetchone()
     if not rv:
-        app.logger.error(f"q: tinylink unknown")
+        app.logger.error(f"q: tinylink {tinylink} unknown")
         return abort(404)
 
     utils.stats_event(f"q-{tinylink}")

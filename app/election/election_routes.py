@@ -35,7 +35,7 @@ def election(electionID):
     )
     rv = cur.fetchone()
     if not rv:
-        current_app.logger.error(f"election: electionID unknown")
+        current_app.logger.error(f"election: electionID {electionID} unknown")
         return abort(404)
     election_data = dict(rv)
 
@@ -123,7 +123,7 @@ def edit(electionID):
     )
     rv = cur.fetchone()
     if not rv:
-        current_app.logger.error(f"edit: electionID unknown")
+        current_app.logger.error(f"edit: electionID {electionID} unknown")
         return abort(404)
     election_data = dict(rv)
 

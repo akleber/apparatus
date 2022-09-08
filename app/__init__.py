@@ -24,6 +24,8 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 app.config["BACKUP_SECRET"] = os.getenv("BACKUP_SECRET")
 app.config["STATS_SECRET"] = os.getenv("STATS_SECRET")
 
+app.config["WTF_CSRF_TIME_LIMIT"] = 21600  # 6h
+
 
 version = "dev"
 version_file = Path("VERSION")
