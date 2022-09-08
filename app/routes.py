@@ -371,3 +371,26 @@ def backup(backup_secret):
         as_attachment=True,
         download_name=download_name,
     )
+
+
+@app.route("/stats/<stats_secret>")
+def stats(stats_secret):
+    if stats_secret != app.config["STATS_SECRET"]:
+        app.logger.error(f"stats: secret wrong")
+        abort(404)
+
+    cur = get_db().execute("SELECT * FROM stats")
+
+    stats_filename = "stat.csv"
+    with open(stats_filename, "w") as f:
+        f.write("timestamp,event\n")
+
+        for row in cur:
+            f.write(f"{row[0]},{row[1]}\n")
+
+    return send_file(
+        path_or_file=f"../{stats_filename}",
+        mimetype="text/plain",
+        as_attachment=True,
+        download_name=stats_filename,
+    )

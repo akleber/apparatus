@@ -22,6 +22,7 @@ app.config["MAIL_SUPPRESS_SEND"] = False
 app.config["MAIL_DEBUG"] = False
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 app.config["BACKUP_SECRET"] = os.getenv("BACKUP_SECRET")
+app.config["STATS_SECRET"] = os.getenv("STATS_SECRET")
 
 
 version = "dev"
