@@ -246,7 +246,7 @@ def eventAdmin_attendees_list(adminToken, eventID):
 
     attendee_data = []
     cur = get_db().execute(
-        "SELECT * FROM eventAttendees WHERE eventID = ? ORDER BY familyName",
+        "SELECT * FROM eventAttendees WHERE eventID = ? ORDER BY familyName COLLATE NOCASE ASC",
         (str(eventID),),
     )
     for row in cur:
