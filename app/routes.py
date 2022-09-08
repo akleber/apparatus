@@ -383,10 +383,10 @@ def stats(stats_secret):
 
     stats_filename = "stat.csv"
     with open(stats_filename, "w") as f:
-        f.write("timestamp,event\n")
+        f.write("timestamp,event,value\n")
 
         for row in cur:
-            f.write(f"{row[0]},{row[1]}\n")
+            f.write(f"{row[0]},{row[1]},1\n")
 
     return send_file(
         path_or_file=f"../{stats_filename}",
