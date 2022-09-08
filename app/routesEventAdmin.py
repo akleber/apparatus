@@ -250,7 +250,27 @@ def eventAdmin_attendees_list(adminToken, eventID):
         (str(eventID),),
     )
     for row in cur:
-        attendee_data.append(dict(row))
+        r = dict(row)
+        ags = r["AGs"]
+
+        # TODO workaround as log as we do not have subtitles (for date, class)
+        # We use the existing emojies as separator for the title and the subtitle
+        cleanedAgs = ""
+        skipping = False
+        for i in ags:
+            if i == "|":
+                skipping = False
+                cleanedAgs += i
+            elif i >= "\U00001000":
+                skipping = True
+            elif skipping:
+                continue
+            else:
+                cleanedAgs += i
+
+        r["AGs"] = cleanedAgs
+
+        attendee_data.append(r)
 
     return render_template(
         "attendeesList.html", event_data=event_data, attendee_data=attendee_data
@@ -301,7 +321,18 @@ def eventAdmin_attendees_xlsx(adminToken, eventID):
     excel_rows.append(excel_col_names)
 
     for row in cur:
-        excel_rows.append(list(row))
+        # TODO workaround remove everything after the emoji
+        r = list(row)
+        ag = r[11]
+        cleanedAg = ""
+        for i in ag:
+            if i >= "\U00001000":
+                break
+            else:
+                cleanedAg += i
+        r[11] = cleanedAg
+
+        excel_rows.append(r)
 
     data = OrderedDict()
     data.update({"Sheet 1": excel_rows})

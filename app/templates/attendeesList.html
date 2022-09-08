@@ -38,7 +38,7 @@
             {% endif %}
             {{ a.mail }}
         </td>
-        <td>{{ a.AGs.replace(", ", "<br />") | safe }}</td>
+        <td>{{ a.AGs.replace("|", "<br />") | safe }}</td>
 
         <td>
             <a class="confirmation"
