@@ -205,6 +205,8 @@ def deregister(eventID, attendeeID):
     )
     get_db().commit()
 
+    app.logger.info(f"attendeeID {attendeeID} deleted")
+
     return render_template("deregistered.html", event_data=event_data)
 
 
@@ -322,7 +324,7 @@ def gdpr(gdprToken):
     return render_template("gdpr.html", gdpr_data=gdpr_data_desc)
 
 
-# for statistics purposes we distinguish between q qr code link and a tinylink
+# for statistics purposes we distinguish between a qr code link and a tinylink
 @app.route("/t/<tinylink>")
 @limiter.limit("10/minute")
 def t(tinylink):
