@@ -272,8 +272,28 @@ def eventAdmin_attendees_list(adminToken, eventID):
 
         attendee_data.append(r)
 
+    activity_data = []
+    sql = """
+SELECT a.title, count(a.activityID) as count
+FROM event as e
+INNER JOIN activity a ON a.eventID = e.eventID
+INNER JOIN attendee at ON a.activityID = at.primaryActivityChoice OR a.activityID = at.secondaryActivityChoice
+WHERE a.eventID = ?
+GROUP BY a.activityID
+ORDER BY count DESC   
+"""
+    cur = get_db().execute(
+        sql,
+        (str(eventID),),
+    )
+    for row in cur:
+        activity_data.append(dict(row))
+
     return render_template(
-        "attendeesList.html", event_data=event_data, attendee_data=attendee_data
+        "attendeesList.html",
+        event_data=event_data,
+        attendee_data=attendee_data,
+        activity_data=activity_data,
     )
 
 

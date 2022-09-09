@@ -13,7 +13,6 @@
     Anzahl Teilnehmer: {{ attendee_data|length }}
 </p>
 
-
 <table class="table">
     <tr>
         <th>Vorname</th>
@@ -45,6 +44,24 @@
                 href="{{ url_for('eventAdmin_attendees_delete', adminToken=event_data.adminToken, eventID=event_data.eventID, attendeeID=a.attendeeID) }}">Löschen
                 <i class="icon icon-delete"></i></a>
         </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<h3>Übersicht AG Belegung</h3>
+
+<table class="table">
+    <tr>
+        <th>AG</th>
+        <th>Anzahl</th>
+    </tr>
+    {% for a in activity_data %}
+    <tr style="vertical-align: top; ">
+        <td>{{ a.title }}</td>
+        <td>{{ a.count }}</td>
     </tr>
     {% endfor %}
 </table>
