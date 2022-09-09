@@ -326,6 +326,25 @@ def eventAdmin_attendees_delete(adminToken, eventID, attendeeID):
     )
 
 
+@app.route(
+    "/eventAdmin/<uuid:adminToken>/<uuid:eventID>/verifyMail/<mailVerificationToken>"
+)
+def eventAdmin_verifyMail(adminToken, eventID, mailVerificationToken):
+    event_data = get_event_data_verify_admin(adminToken, eventID)
+
+    sql = "UPDATE user SET mailVerificationToken = '' WHERE mailVerificationToken = ?;"
+    get_db().execute(sql, (mailVerificationToken,))
+    get_db().commit()
+
+    return redirect(
+        url_for(
+            "eventAdmin_attendees_list",
+            adminToken=str(adminToken),
+            eventID=str(eventID),
+        )
+    )
+
+
 @app.route("/eventAdmin/<uuid:adminToken>/<uuid:eventID>/attendees/xlsx")
 def eventAdmin_attendees_xlsx(adminToken, eventID):
     event_data = get_event_data_verify_admin(adminToken, eventID)

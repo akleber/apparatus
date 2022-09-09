@@ -31,7 +31,9 @@
         <td>{{ a.klasse }}</td>
         <td>
             {% if a.mailVerificationToken %}
-            <i class="icon icon-cross text-error"></i>
+            <a
+                href="{{ url_for('eventAdmin_verifyMail', adminToken=event_data.adminToken, eventID=event_data.eventID, mailVerificationToken=a.mailVerificationToken) }}"><i
+                    class="icon icon-cross text-error"></i></a>
             {% else %}
             <i class="icon icon-check text-success"></i>
             {% endif %}
