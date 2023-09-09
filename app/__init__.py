@@ -35,6 +35,8 @@ if version_file.is_file():
 app.logger.info(f"Found version {version}")
 app.config["VERSION"] = version
 
+app.jinja_options["keep_trailing_newline"] = True
+
 mail = Mail(app)
 
 # https://marcoagner.github.io/Flask-QRcode/

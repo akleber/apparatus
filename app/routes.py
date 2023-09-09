@@ -154,6 +154,18 @@ def register(eventID):
     legal_plain = utils.strip_markdown(event_data["legal"])
     legal_filename = f"AGB_{ event_data['title'].replace(' ', '_') }.txt"
 
+    # get activities
+    activity_titles = []
+
+    for a in activities:
+        cur = get_db().execute(
+            "SELECT title FROM activity WHERE activityID = ?",
+            (str(a),),
+        )
+        rv = cur.fetchone()
+        if rv:
+            activity_titles.append(rv["title"])
+
     subject = f"Anmeldebestätigung für '{event_data['title']}'"
     utils.send_email(
         subject,
@@ -163,6 +175,7 @@ def register(eventID):
             user_data=user_data,
             event_data=event_data,
             attendee_data=attendee_data,
+            activity_titles=activity_titles,
         ),
         html_body=None,
         att_filename=legal_filename,

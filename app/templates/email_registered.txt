@@ -4,6 +4,14 @@ Deine Anmeldung für '{{ event_data.title }}' haben wir erhalten.
 Dies ist aber noch keine Bestätigung für einen Teilnahme an der AG.
 Darüber wirst Du gesondert informiert.
 
+{% if activity_titles|length > 0 -%}
+Deine AG Wünsche:
+{% for at in activity_titles -%}
+{{ at }}
+{% endfor -%}
+{% else -%}
+Du hast dich für kein AGs eingetragen!
+{% endif %}
 Bitte bestätige deine E-Mail Adresse indem Du diesen Link besuchst:
 {{ request.url_root[:-1] }}{{ url_for('verifyMail', mailVerificationToken=user_data.mailVerificationToken) }} 
 
