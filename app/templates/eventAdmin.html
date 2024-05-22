@@ -16,8 +16,10 @@
     <a href="{{ url_for('eventAdmin_event_edit', adminToken=event_data.adminToken, eventID=event_data.eventID) }}">Veranstaltung
         bearbeiten <i class="icon icon-edit"></i></a>
     &emsp;&emsp;
+    {% if event_data.title != "AG Angebot Hogwarts Schuljahr 2010" %}
     <a href="{{ url_for('eventAdmin_duplicate', adminToken=event_data.adminToken, eventID=event_data.eventID) }}">Veranstaltung
         duplizieren <i class="icon icon-copy"></i></a>
+    {% endif %}
 </p>
 
 
