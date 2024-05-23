@@ -1,61 +1,4 @@
 BEGIN TRANSACTION;
-DROP TABLE IF EXISTS "attendee";
-CREATE TABLE IF NOT EXISTS "attendee" (
-	"attendeeID"	TEXT NOT NULL,
-	"userID"	INTEGER NOT NULL,
-	"klasse"	TEXT,
-	"ganztag"	INTEGER,
-	"geschlecht"	INTEGER,
-	"telefonnummer"	TEXT,
-	"foevMitgliedsname"	TEXT,
-	"beideAGs"	INTEGER,
-	"primaryActivityChoice"	INTEGER,
-	"secondaryActivityChoice"	INTEGER,
-	PRIMARY KEY("attendeeID")
-);
-DROP TABLE IF EXISTS "user";
-CREATE TABLE IF NOT EXISTS "user" (
-	"userID"	INTEGER NOT NULL,
-	"firstName"	TEXT,
-	"familyName"	TEXT,
-	"mail"	TEXT,
-	"mailVerificationToken"	TEXT,
-	"gdprToken"	TEXT,
-	PRIMARY KEY("userID" AUTOINCREMENT)
-);
-DROP TABLE IF EXISTS "event";
-CREATE TABLE IF NOT EXISTS "event" (
-	"eventID"	TEXT NOT NULL,
-	"tinylink"	TEXT NOT NULL,
-	"active"	INTEGER NOT NULL,
-	"title"	TEXT NOT NULL,
-	"description"	TEXT,
-	"legal"	TEXT,
-	"creator"	INTEGER NOT NULL,
-	"creationDate"	TEXT NOT NULL,
-	"lastChangedDate"	TEXT NOT NULL,
-	"registrationDeadline"	TEXT,
-	"adminToken"	TEXT NOT NULL,
-	"bannerImage"	BLOB,
-	PRIMARY KEY("eventID")
-);
-DROP TABLE IF EXISTS "activity";
-CREATE TABLE IF NOT EXISTS "activity" (
-	"activityID"	TEXT NOT NULL,
-	"eventID"	TEXT NOT NULL,
-	"active"	INTEGER NOT NULL,
-	"title"	TEXT NOT NULL,
-	"description"	TEXT,
-	"seats"	INTEGER,
-	"creationDate"	TEXT NOT NULL,
-	"lastChangedDate"	TEXT NOT NULL,
-	PRIMARY KEY("activityID")
-);
-DROP TABLE IF EXISTS "stats";
-CREATE TABLE IF NOT EXISTS "stats" (
-	"timestamp"	TEXT,
-	"event"	TEXT
-);
 INSERT INTO "attendee" VALUES ('d8add898-aaad-4c4f-9957-d09da40812d8',35,'G2',2,NULL,'+123456789','Arthur Weasley',0,'fde90f01-99a7-4651-9fcc-8ec7a9b5d99e','080436e6-c414-4e76-9d71-a50109708715');
 INSERT INTO "attendee" VALUES ('b461c005-24c5-47f1-889e-894bbd018bd0',36,'G2',1,NULL,'+123456789','Mr. Granger',0,'6e7daf33-b72e-4fb5-b58b-b125df48cbc0','');
 INSERT INTO "user" VALUES (1,'Andreas','Kleber','andreas@drosselweg7a.de',NULL,'0e818cff-1f45-4af2-8e10-31c36cdfdfa0');
@@ -83,26 +26,4 @@ Quelle: https://harry-potter.fandom.com/de/wiki/Zauberschach',8,'2022-07-08 14:5
 INSERT INTO "activity" VALUES ('6e7daf33-b72e-4fb5-b58b-b125df48cbc0','6b8f666b-e74e-44f2-9c11-5eb59625b232',1,'Zauberschnippschnapp 🃏','Snape explodiert oder auch Zauberschnippschnapp (im Original: _Exploding Snap_) ist ein Kartenspiel mit magischen Knalleffekten. Die Spielregeln sind wahrscheinlich so, wie bei dem heutzutage seltener gespielten _Schnippschnapp_.
 
 Quelle: https://harry-potter.fandom.com/de/wiki/Zauberschnippschnapp',8,'2022-07-08 14:54:55.284346','2022-07-08 14:54:55.284346');
-DROP VIEW IF EXISTS "eventAttendees";
-CREATE VIEW "eventAttendees" AS SELECT e.eventID, u.firstName, u.familyName, u.mail, u.mailVerificationToken,at.klasse,group_concat(a.title, "|") as AGs,at.attendeeID
-FROM event as e
-INNER JOIN activity a ON a.eventID = e.eventID
-INNER JOIN attendee at ON a.activityID = at.primaryActivityChoice OR a.activityID = at.secondaryActivityChoice
-INNER JOIN user u ON at.userID = u.userID
-GROUP BY u.userID;
-DROP VIEW IF EXISTS "eventAttendeesXlsx";
-CREATE VIEW "eventAttendeesXlsx" AS SELECT e.eventID, u.firstName, u.familyName, u.mail, u.mailVerificationToken,at.klasse,at.geschlecht,at.ganztag,at.telefonnummer,at.foevMitgliedsname,at.beideAGs,a.title as AG
-FROM event as e
-INNER JOIN activity a ON a.eventID = e.eventID
-INNER JOIN attendee at ON a.activityID = at.primaryActivityChoice OR a.activityID = at.secondaryActivityChoice
-INNER JOIN user u ON at.userID = u.userID;
-DROP VIEW IF EXISTS "gdprView";
-CREATE VIEW gdprView AS
-SELECT user.firstName , user.familyName , user.mail, user.mailVerificationToken , user.gdprToken, 
-attendee.klasse, attendee.geschlecht, attendee.ganztag, attendee.telefonnummer, attendee.foevMitgliedsname , attendee.beideAGs,
-a1.title AS title1, a2.title as title2
-FROM user 
-JOIN attendee ON user.userID = attendee.userID 
-LEFT OUTER JOIN activity a1 ON attendee.primaryActivityChoice = a1.activityID
-LEFT OUTER JOIN activity a2 ON attendee.secondaryActivityChoice = a2.activityID;
 COMMIT;

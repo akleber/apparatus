@@ -101,13 +101,14 @@ with app.app_context():
     rv = cur.fetchone()
     if not rv:
         app.logger.warn("found empty db, loading default")
-        with open("event.sql") as f:
+        with open("event-schema.sql") as f:
             schema = f.read()
         get_db().executescript(schema)
 
-    get_db().executescript(eventAttendees_view)
-    get_db().executescript(eventAttendeesXlsx_view)
-    get_db().executescript(gdprView)
+        with open("event-demo.sql") as f:
+            schema = f.read()
+        get_db().executescript(schema)
+
     get_db().commit()
 app.logger.info(f"updated sql views")
 
