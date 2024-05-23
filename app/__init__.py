@@ -65,42 +65,11 @@ def close_connection(exception):
         db.close()
 
 
-eventAttendees_view = """
-DROP VIEW IF EXISTS "main"."eventAttendees";
-CREATE VIEW "eventAttendees" AS SELECT e.eventID, u.firstName, u.familyName, u.mail, u.mailVerificationToken,at.klasse,group_concat(a.title, "|") as AGs,at.attendeeID
-FROM event as e
-INNER JOIN activity a ON a.eventID = e.eventID
-INNER JOIN attendee at ON a.activityID = at.primaryActivityChoice OR a.activityID = at.secondaryActivityChoice
-INNER JOIN user u ON at.userID = u.userID
-GROUP BY u.userID
-"""
-
-eventAttendeesXlsx_view = """
-DROP VIEW IF EXISTS "main"."eventAttendeesXlsx";
-CREATE VIEW "eventAttendeesXlsx" AS SELECT e.eventID, u.firstName, u.familyName, u.mail, u.mailVerificationToken,at.klasse,at.geschlecht,at.ganztag,at.telefonnummer,at.foevMitgliedsname,at.beideAGs,a.title as AG
-FROM event as e
-INNER JOIN activity a ON a.eventID = e.eventID
-INNER JOIN attendee at ON a.activityID = at.primaryActivityChoice OR a.activityID = at.secondaryActivityChoice
-INNER JOIN user u ON at.userID = u.userID
-"""
-
-gdprView = """
-DROP VIEW IF EXISTS "main"."gdprView";
-CREATE VIEW gdprView AS
-SELECT user.firstName , user.familyName , user.mail, user.mailVerificationToken , user.gdprToken, 
-attendee.klasse, attendee.geschlecht, attendee.ganztag, attendee.telefonnummer, attendee.foevMitgliedsname , attendee.beideAGs,
-a1.title AS title1, a2.title as title2
-FROM user 
-JOIN attendee ON user.userID = attendee.userID 
-LEFT OUTER JOIN activity a1 ON attendee.primaryActivityChoice = a1.activityID
-LEFT OUTER JOIN activity a2 ON attendee.secondaryActivityChoice = a2.activityID
-"""
-
 with app.app_context():
     cur = get_db().execute("SELECT name FROM sqlite_schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%'")
     rv = cur.fetchone()
     if not rv:
-        app.logger.warn("found empty db, loading default")
+        app.logger.warn("found empty db, loading schema and demo data")
         with open("event-schema.sql") as f:
             schema = f.read()
         get_db().executescript(schema)
@@ -109,8 +78,7 @@ with app.app_context():
             schema = f.read()
         get_db().executescript(schema)
 
-    get_db().commit()
-app.logger.info(f"updated sql views")
+        get_db().commit()
 
 from app.election import bp as election_bp
 
