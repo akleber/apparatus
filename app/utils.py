@@ -1,5 +1,5 @@
 from app import app, mail, get_db
-from datetime import datetime
+from datetime import datetime, timezone
 from threading import Thread
 from flask_mail import Message
 import uuid
@@ -52,7 +52,7 @@ def strip_markdown(md):
 
 
 def stats_event(event: str):
-    timestamp = datetime.utcnow().isoformat()
+    timestamp = datetime.now(timezone.utc).isoformat()
     sql = """INSERT INTO stats (timestamp, event) VALUES (?, ?);"""
     get_db().execute(sql, (timestamp, event))
     get_db().commit()

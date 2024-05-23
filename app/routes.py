@@ -197,7 +197,7 @@ def deregister(eventID, attendeeID):
     rv = cur.fetchone()
     if not rv:
         app.logger.error(f"deregister: eventID {eventID} unknown or inactive")
-        return abort(404)
+        return abort(404, "Event unknown or inactive")
     event_data = dict(rv)
 
     cur = get_db().execute(
@@ -206,7 +206,22 @@ def deregister(eventID, attendeeID):
     rv = cur.fetchone()
     if not rv:
         app.logger.error(f"deregister: attendeeID {attendeeID} unknown")
-        return abort(404)
+        return abort(404, "Attendee unknown")
+
+    return render_template("deregister.html", event_data=event_data, attendeeID=attendeeID)
+
+
+@app.route("/event/<uuid:eventID>/deregisterConfirmed/<uuid:attendeeID>")
+def deregister_confirmed(eventID, attendeeID):
+    cur = get_db().execute(
+        "SELECT * FROM event WHERE eventID = ? and active = 1",
+        (str(eventID),),
+    )
+    rv = cur.fetchone()
+    if not rv:
+        app.logger.error(f"deregister: eventID {eventID} unknown or inactive")
+        return abort(404, "Event unknown or inactive")
+    event_data = dict(rv)
 
     get_db().execute(
         "DELETE FROM user WHERE userID = ?",
@@ -221,7 +236,6 @@ def deregister(eventID, attendeeID):
     app.logger.info(f"attendeeID {attendeeID} deleted")
 
     return render_template("deregistered.html", event_data=event_data)
-
 
 @app.route("/event/<uuid:eventID>/legal")
 def legal(eventID):
@@ -268,7 +282,7 @@ def eventBanner(eventID):
         "SELECT bannerImage FROM event WHERE eventID = ?", (str(eventID),)
     )
     rv = cur.fetchone()
-    if not rv:
+    if not rv or not rv[0]:
         return app.send_static_file("banner-fallback.jpg")
 
     image = rv[0]
@@ -327,7 +341,7 @@ def gdpr(gdprToken):
     rv = cur.fetchone()
     if not rv:
         app.logger.error(f"gdpr: gdprToken {gdprToken} unknown")
-        return abort(404)
+        return abort(404, "No GDPR data found for you.")
     gdpr_data = dict(rv)
 
     gdpr_data_desc = {}

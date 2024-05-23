@@ -97,6 +97,14 @@ LEFT OUTER JOIN activity a2 ON attendee.secondaryActivityChoice = a2.activityID
 """
 
 with app.app_context():
+    cur = get_db().execute("SELECT name FROM sqlite_schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%'")
+    rv = cur.fetchone()
+    if not rv:
+        app.logger.warn("found empty db, loading default")
+        with open("event.sql") as f:
+            schema = f.read()
+        get_db().executescript(schema)
+
     get_db().executescript(eventAttendees_view)
     get_db().executescript(eventAttendeesXlsx_view)
     get_db().executescript(gdprView)

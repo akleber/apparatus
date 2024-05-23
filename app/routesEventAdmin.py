@@ -1,6 +1,6 @@
 from app import app, get_db, qrcode, utils
 from flask import render_template, abort, url_for, send_file, request, redirect
-from datetime import datetime
+from datetime import datetime, timezone
 from pyexcel_xlsx import save_data
 from collections import OrderedDict
 from docx import Document
@@ -43,7 +43,7 @@ def eventAdmin(adminToken, eventID):
 
 @app.route("/eventAdmin/add", methods=["GET"])
 def eventAdmin_event_add():
-    event_data = {"eventID": str(uuid.uuid4()), "title": "", "description": ""}
+    event_data = {"eventID": str(uuid.uuid4()), "title": "", "description": "", "adminToken": "00000000-0000-0000-0000-000000000000"}
     return render_template("eventEdit.html", event_data=event_data, add=True)
 
 
@@ -60,7 +60,7 @@ def eventAdmin_event_edit(adminToken, eventID):
 
 @app.route("/eventAdmin/<uuid:adminToken>/<uuid:eventID>/save", methods=["POST"])
 def eventAdmin_event_save(adminToken, eventID):
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
 
     blob = None
     if "bannerImage" in request.files:
@@ -104,6 +104,7 @@ def eventAdmin_event_save(adminToken, eventID):
         )
 
         tinylink = shortuuid.uuid()[:10]
+        newAdminToken = str(uuid.uuid4())
 
         sql_data = {
             "eventID": str(eventID),
@@ -115,7 +116,7 @@ def eventAdmin_event_save(adminToken, eventID):
             "creator": userID,
             "creationDate": now.isoformat(" "),
             "lastChangedDate": now.isoformat(" "),
-            "adminToken": str(uuid.uuid4()),
+            "adminToken": newAdminToken,
             "bannerImage": blob,
         }
         sql = """INSERT INTO event (eventID, tinylink, active, title, description, legal, creator, creationDate, lastChangedDate, adminToken, bannerImage) 
@@ -124,7 +125,7 @@ def eventAdmin_event_save(adminToken, eventID):
     get_db().execute(sql, sql_data)
     get_db().commit()
 
-    return redirect(url_for("eventAdmin", adminToken=adminToken, eventID=eventID))
+    return redirect(url_for("eventAdmin", adminToken=newAdminToken, eventID=eventID))
 
 
 @app.route("/eventAdmin/<uuid:eventID>/qr", methods=["GET"])
