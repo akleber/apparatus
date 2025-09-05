@@ -184,7 +184,7 @@ def register(eventID):
     )
 
     return render_template(
-        "registered.html", user_data=user_data, event_data=event_data
+        "registered.html", user_data=user_data, event_data=event_data, activity_titles=activity_titles,
     )
 
 

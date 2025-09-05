@@ -9,6 +9,18 @@
         Vielen Dank {{ user_data.firstName }} für Deine Anmeldung bei "{{ event_data.title }}".
     </p>
     <p>
+        {% if activity_titles|length > 0 -%}
+        Deine AG Wünsche:
+    <ul>
+        {% for at in activity_titles -%}
+        <li>{{ at }}</li>
+        {% endfor -%}
+    </ul>
+    {% else -%}
+    Du hast dich für kein AGs eingetragen!
+    {% endif %}
+    </p>
+    <p>
         Eine E-Mail mit einem Link zum Bestätigen Deiner E-Mail Adresse '{{ user_data.mail }}'
         wurde gerade versendet und sollte in Kürze bei Dir eintreffen.
     </p>
