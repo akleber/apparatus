@@ -1,7 +1,7 @@
 Hallo {{ user_data.firstName }},
 
 Deine Anmeldung für '{{ event_data.title }}' haben wir erhalten.
-Dies ist aber noch keine Bestätigung für einen Teilnahme an der AG.
+Dies ist aber noch keine Bestätigung für eine Teilnahme an der AG.
 Darüber wirst Du gesondert informiert.
 
 {% if activity_titles|length > 0 -%}
