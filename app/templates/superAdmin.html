@@ -1,0 +1,28 @@
+{% extends 'apparatusBase.html' %}
+
+{% block content %}
+
+<div class="p-2"></div>
+
+<h1>Apparatus - Super Admin</h1>
+
+<p>
+    Liste der Events:
+</p>
+
+<table>
+    {% for e in events_data %}
+    <tr>
+        <td>{% if e.active == 0 %}<span class="text-error">(Inaktiv)</span> {% endif %}</td>
+        <td style="padding-right: 30px;">{{ e.title }}</td>
+        <td style="padding-right: 30px;"><a href="{{ url_for('eventAdmin', adminToken=e.adminToken, eventID=e.eventID) }}">Admin <i class="icon icon-edit"></i></a></td>
+        <td style="padding-right: 30px;"><a href="{{ url_for('superAdminDeleteEvent', superAdminToken=superAdminToken, eventID=e.eventID) }}">Delete <i class="icon icon-delete"></i></a></td>
+    </tr>
+    {% endfor %}
+</table>
+
+
+
+<div class="p-2"></div>
+
+{% endblock %}

@@ -23,6 +23,7 @@ app.config["MAIL_DEBUG"] = False
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 app.config["BACKUP_SECRET"] = os.getenv("BACKUP_SECRET")
 app.config["STATS_SECRET"] = os.getenv("STATS_SECRET")
+app.config["SUPER_ADMIN_SECRET"] = os.getenv("SUPER_ADMIN_SECRET")
 
 app.config["WTF_CSRF_TIME_LIMIT"] = 21600  # 6h
 
@@ -69,7 +70,7 @@ with app.app_context():
     cur = get_db().execute("SELECT name FROM sqlite_schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%'")
     rv = cur.fetchone()
     if not rv:
-        app.logger.warn("found empty db, loading schema and demo data")
+        app.logger.warning("found empty db, loading schema and demo data")
         with open("event-schema.sql") as f:
             schema = f.read()
         get_db().executescript(schema)
@@ -87,3 +88,4 @@ app.register_blueprint(election_bp, url_prefix="/election")
 
 from app import routes
 from app import routesEventAdmin
+from app import routesSuperAdmin
