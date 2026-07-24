@@ -13,6 +13,10 @@ def send_async_email(app, msg):
 def send_email(
     subject, recipients, text_body, html_body, att_filename, att_mime, att_content
 ):
+    if not app.config["MAIL_SERVER"]:
+        app.logger.warning("mail sending disabled")
+        return
+
     msg = Message(subject, recipients=recipients)
     msg.body = text_body
     msg.html = html_body
@@ -36,6 +40,7 @@ def add_user(firstName: str, familyName: str, mail: str) -> int:
     sql = """INSERT INTO user (firstName, familyName, mail, mailVerificationToken, gdprToken) 
              VALUES (:firstName, :familyName, :mail, :mailVerificationToken, :gdprToken);"""
     cur = get_db().execute(sql, user_data)
+    get_db().commit()
     userID = cur.lastrowid
     return userID, user_data
 

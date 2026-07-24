@@ -43,7 +43,12 @@ def eventAdmin(adminToken, eventID):
 
 @app.route("/eventAdmin/add", methods=["GET"])
 def eventAdmin_event_add():
-    event_data = {"eventID": str(uuid.uuid4()), "title": "", "description": "", "adminToken": "00000000-0000-0000-0000-000000000000"}
+    event_data = {
+        "eventID": str(uuid.uuid4()),
+        "title": "",
+        "description": "",
+        "adminToken": "00000000-0000-0000-0000-000000000000",
+    }
     return render_template("eventEdit.html", event_data=event_data, add=True)
 
 
@@ -61,6 +66,7 @@ def eventAdmin_event_edit(adminToken, eventID):
 @app.route("/eventAdmin/<uuid:adminToken>/<uuid:eventID>/save", methods=["POST"])
 def eventAdmin_event_save(adminToken, eventID):
     now = datetime.now(timezone.utc)
+    redirectAdminToken = ""
 
     blob = None
     if "bannerImage" in request.files:
@@ -95,6 +101,8 @@ def eventAdmin_event_save(adminToken, eventID):
             sql_image = """UPDATE event SET bannerImage = ? WHERE eventID = ?;"""
             get_db().execute(sql_image, (memoryview(blob), str(eventID)))
 
+        redirectAdminToken = adminToken
+
     else:
         # add event
         userID, user_data = utils.add_user(
@@ -122,10 +130,14 @@ def eventAdmin_event_save(adminToken, eventID):
         sql = """INSERT INTO event (eventID, tinylink, active, title, description, legal, creator, creationDate, lastChangedDate, adminToken, bannerImage) 
                  VALUES (:eventID, :tinylink, :active, :title, :description, :legal, :creator, :creationDate, :lastChangedDate, :adminToken, :bannerImage);"""
 
+        redirectAdminToken = newAdminToken
+
     get_db().execute(sql, sql_data)
     get_db().commit()
 
-    return redirect(url_for("eventAdmin", adminToken=newAdminToken, eventID=eventID))
+    return redirect(
+        url_for("eventAdmin", adminToken=redirectAdminToken, eventID=eventID)
+    )
 
 
 @app.route("/eventAdmin/<uuid:eventID>/qr", methods=["GET"])
@@ -431,26 +443,27 @@ def eventAdmin_duplicate(adminToken, eventID):
     )
     rv = cur.fetchone()
     if not rv:
-        app.logger.error(f"eventAdmin_duplicate: creator user not found")
+        app.logger.error("eventAdmin_duplicate: creator user not found")
         abort(500)
     user_data = dict(rv)
-    if user_data["mailVerificationToken"]:
-        app.logger.error(f"eventAdmin_duplicate: creator user not verified")
+    if not user_data["mailVerificationToken"]:
+        app.logger.error("eventAdmin_duplicate: creator user not verified")
         abort(500)
 
-    # duplicate user
+    # duplicate user, we assume verified mail as the admin doing the duplication is verified already
     sql_data = {
         "firstName": user_data["firstName"],
         "familyName": user_data["familyName"],
         "mail": user_data["mail"],
-        "mailVerificationToken": "",
+        "mailVerificationToken": str(uuid.uuid4()),
         "gdprToken": str(uuid.uuid4()),
     }
     sql = """INSERT INTO user (firstName, familyName, mail, mailVerificationToken, gdprToken) 
              VALUES (:firstName, :familyName, :mail, :mailVerificationToken, :gdprToken);"""
-    get_db().execute(sql, sql_data)
+    cur = get_db().execute(sql, sql_data)
+    duplicate_creator = cur.lastrowid
 
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
     new_eventID = str(uuid.uuid4())
     new_adminToken = str(uuid.uuid4())
 
@@ -459,10 +472,10 @@ def eventAdmin_duplicate(adminToken, eventID):
         "eventID": new_eventID,
         "tinylink": shortuuid.uuid()[:10],
         "active": "0",
-        "title": event_data["title"],
+        "title": "[Duplicate] " + event_data["title"],
         "description": event_data["description"],
         "legal": event_data["legal"],
-        "creator": event_data["creator"],
+        "creator": duplicate_creator,
         "creationDate": now.isoformat(" "),
         "lastChangedDate": now.isoformat(" "),
         "adminToken": new_adminToken,
