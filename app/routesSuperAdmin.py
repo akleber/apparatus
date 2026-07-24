@@ -1,4 +1,5 @@
 from flask import abort, redirect, render_template, url_for
+
 from app import app, get_db
 
 
@@ -63,14 +64,51 @@ def superAdminDeleteEvent(superAdminToken, eventID):
 
     get_db().execute("DELETE FROM activity WHERE eventID = ?", (str(eventID),))
 
-    cur = get_db().execute(
-        "SELECT creator FROM event WHERE eventID = ?", (str(eventID),)
-    )
-    rv = cur.fetchone()
-    creator = rv["creator"]
-    get_db().execute("DELETE FROM user WHERE userID = ?", (str(creator),))
+    # We do not delete the creator user here. Due to a bug we can have duplicated userID in events.
+    # Users can be cleared through the maintenance.
+    # cur = get_db().execute(
+    #     "SELECT creator FROM event WHERE eventID = ?", (str(eventID),)
+    # )
+    # rv = cur.fetchone()
+    # creator = rv["creator"]
+    # get_db().execute("DELETE FROM user WHERE userID = ?", (str(creator),))
 
     get_db().execute("DELETE FROM event WHERE eventID = ?", (str(eventID),))
+
+    get_db().commit()
+
+    return redirect(url_for("superAdmin", superAdminToken=superAdminToken))
+
+
+@app.route("/superAdmin/<superAdminToken>/maintenance", methods=["GET"])
+def superAdminMaintenance(superAdminToken):
+    ensureSuperAdmin(superAdminToken)
+
+    users_data = []
+    delete_candidates = []
+
+    cur = get_db().execute("SELECT userID FROM user")
+    for row in cur:
+        user = dict(row)
+        users_data.append(user["userID"])
+
+    for u in users_data:
+        cur = get_db().execute(
+            "SELECT attendeeID FROM attendee WHERE userID = ?", (str(u),)
+        )
+        rv = cur.fetchone()
+        if not rv:
+            delete_candidates.append(u)
+
+    revised_delete_candidates = []
+    for c in delete_candidates:
+        cur = get_db().execute("SELECT title FROM event WHERE creator = ?", (c,))
+        rv = cur.fetchone()
+        if not rv:
+            revised_delete_candidates.append(c)
+
+    for rc in revised_delete_candidates:
+        get_db().execute("DELETE FROM user WHERE userID = ?", (rc,))
 
     get_db().commit()
 

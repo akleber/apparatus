@@ -7,6 +7,10 @@
 <h1>Apparatus - Super Admin</h1>
 
 <p>
+    <a href="{{ url_for('superAdminMaintenance', superAdminToken=superAdminToken) }}">Maintenance ausführen</a>
+</p>
+
+<p>
     Liste der Events:
 </p>
 
@@ -15,8 +19,13 @@
     <tr>
         <td>{% if e.active == 0 %}<span class="text-error">(Inaktiv)</span> {% endif %}</td>
         <td style="padding-right: 30px;">{{ e.title }}</td>
-        <td style="padding-right: 30px;"><a href="{{ url_for('eventAdmin', adminToken=e.adminToken, eventID=e.eventID) }}">Admin <i class="icon icon-edit"></i></a></td>
-        <td style="padding-right: 30px;"><a href="{{ url_for('superAdminDeleteEvent', superAdminToken=superAdminToken, eventID=e.eventID) }}">Delete <i class="icon icon-delete"></i></a></td>
+        <td style="padding-right: 30px;">{{ e.creationDate }}</td>
+        <td style="padding-right: 30px;"><a
+                href="{{ url_for('eventAdmin', adminToken=e.adminToken, eventID=e.eventID) }}">Admin <i
+                    class="icon icon-edit"></i></a></td>
+        <td style="padding-right: 30px;"><a
+                href="{{ url_for('superAdminDeleteEvent', superAdminToken=superAdminToken, eventID=e.eventID) }}">Delete
+                <i class="icon icon-delete"></i></a></td>
     </tr>
     {% endfor %}
 </table>
