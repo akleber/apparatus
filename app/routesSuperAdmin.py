@@ -84,32 +84,46 @@ def superAdminDeleteEvent(superAdminToken, eventID):
 def superAdminMaintenance(superAdminToken):
     ensureSuperAdmin(superAdminToken)
 
-    users_data = []
-    delete_candidates = []
+    ## We are looking for user entries that are not referenced anywhere and remove them
 
+    # get all users
     cur = get_db().execute("SELECT userID FROM user")
+    delete_candidates = []
     for row in cur:
         user = dict(row)
-        users_data.append(user["userID"])
+        delete_candidates.append(user["userID"])
 
-    for u in users_data:
-        cur = get_db().execute(
-            "SELECT attendeeID FROM attendee WHERE userID = ?", (str(u),)
-        )
+    # filter users that are referenced in attendee
+    delete_candidates_filtered_1 = []
+    for u in delete_candidates:
+        cur = get_db().execute("SELECT attendeeID FROM attendee WHERE userID = ?", (u,))
         rv = cur.fetchone()
         if not rv:
-            delete_candidates.append(u)
+            delete_candidates_filtered_1.append(u)
 
-    revised_delete_candidates = []
-    for c in delete_candidates:
+    # filter users that are creator users
+    delete_candidates_filtered_2 = []
+    for c in delete_candidates_filtered_1:
         cur = get_db().execute("SELECT title FROM event WHERE creator = ?", (c,))
         rv = cur.fetchone()
         if not rv:
-            revised_delete_candidates.append(c)
+            delete_candidates_filtered_2.append(c)
 
-    for rc in revised_delete_candidates:
+    # remove remaining users
+    for rc in delete_candidates_filtered_2:
         get_db().execute("DELETE FROM user WHERE userID = ?", (rc,))
 
     get_db().commit()
+
+    ## Due to omission/bug the user 1 might not be validated. Lets fix that
+    cur = get_db().execute(
+        "SELECT mailVerificationToken FROM user WHERE userID = 1 AND mailVerificationToken IS NULL"
+    )
+    rv = cur.fetchone()
+    if rv:
+        get_db().execute(
+            "UPDATE user SET mailVerificationToken = 'cfa82b3d-4649-4c23-8aa8-af56a9bddcb9' WHERE userID = 1"
+        )
+        get_db().commit()
 
     return redirect(url_for("superAdmin", superAdminToken=superAdminToken))
