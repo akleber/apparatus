@@ -31,13 +31,18 @@
         <td>{{ a.klasse }}</td>
         <td>
             {% if a.mailVerificationToken %}
-            <a
-                href="{{ url_for('eventAdmin_verifyMail', adminToken=event_data.adminToken, eventID=event_data.eventID, mailVerificationToken=a.mailVerificationToken) }}"><i
-                    class="icon icon-cross text-error"></i></a>
+            <a href="{{ url_for('eventAdmin_verifyMail', adminToken=event_data.adminToken, eventID=event_data.eventID, mailVerificationToken=a.mailVerificationToken) }}"
+                title="Manuelle Bestätigung der eMail Adresse">
+                <i class="icon icon-cross text-error"></i>
+            </a>
             {% else %}
             <i class="icon icon-check text-success"></i>
             {% endif %}
             {{ a.mail }}
+            <a href="{{ url_for('eventAdmin_attendees_resend_registration_email', adminToken=event_data.adminToken, eventID=event_data.eventID, attendeeID=a.attendeeID) }}"
+                title="Anmeldebestätigung erneut senden">
+                <i class="icon icon-refresh"></i>
+            </a>
         </td>
         <td>{{ a.AGs.replace("|", "<br />") | safe }}</td>
 

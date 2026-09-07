@@ -321,7 +321,7 @@ def eventAdmin_attendees_delete(adminToken, eventID, attendeeID):
     )
     rv = cur.fetchone()
     if not rv:
-        app.logger.error(f"eventAdmin_attendees_delete: attendeeID invalid")
+        app.logger.error("eventAdmin_attendees_delete: attendeeID invalid")
         abort(403)
 
     attendee_data = dict(rv)
@@ -336,6 +336,85 @@ def eventAdmin_attendees_delete(adminToken, eventID, attendeeID):
             adminToken=str(adminToken),
             eventID=str(eventID),
         )
+    )
+
+
+@app.route(
+    "/eventAdmin/<uuid:adminToken>/<uuid:eventID>/attendees/resend-registration-email/<uuid:attendeeID>"
+)
+def eventAdmin_attendees_resend_registration_email(adminToken, eventID, attendeeID):
+    event_data = get_event_data_verify_admin(adminToken, eventID)
+
+    cur = get_db().execute(
+        "SELECT * FROM attendee WHERE attendeeID = ?", (str(attendeeID),)
+    )
+    rv = cur.fetchone()
+    if not rv:
+        app.logger.error(
+            "eventAdmin_attendees_resent_registration_email: attendeeID invalid"
+        )
+        abort(403)
+
+    attendee_data = dict(rv)
+
+    # reconstruct user_data
+    cur = get_db().execute(
+        "SELECT * FROM user WHERE userID = ?", (attendee_data["userID"],)
+    )
+    rv = cur.fetchone()
+    if not rv:
+        app.logger.error(
+            "eventAdmin_attendees_resent_registration_email: userID invalid"
+        )
+        abort(403)
+
+    user_data = dict(rv)
+
+    # reconstruct activity_titles
+    activity_titles = []
+
+    activities = []
+    if attendee_data["primaryActivityChoice"]:
+        activities.append(attendee_data["primaryActivityChoice"])
+    if attendee_data["secondaryActivityChoice"]:
+        activities.append(attendee_data["secondaryActivityChoice"])
+
+    for a in activities:
+        cur = get_db().execute(
+            "SELECT title FROM activity WHERE activityID = ?",
+            (str(a),),
+        )
+        rv = cur.fetchone()
+        if rv:
+            activity_titles.append(rv["title"])
+
+    # reconstruct attachment
+    legal_plain = utils.strip_markdown(event_data["legal"])
+    legal_filename = f"AGB_{event_data['title'].replace(' ', '_')}.txt"
+
+    # construct email to resend
+    subject = f"Anmeldebestätigung für '{event_data['title']}'"
+    utils.send_email(
+        subject,
+        recipients=[user_data["mail"]],
+        text_body=render_template(
+            "email_registered.txt",
+            user_data=user_data,
+            event_data=event_data,
+            attendee_data=attendee_data,
+            activity_titles=activity_titles,
+        ),
+        html_body=None,
+        att_filename=legal_filename,
+        att_mime="text/plain",
+        att_content=legal_plain,
+    )
+
+    return render_template(
+        "registered.html",
+        user_data=user_data,
+        event_data=event_data,
+        activity_titles=activity_titles,
     )
 
 
